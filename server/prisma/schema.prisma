@@ -12,22 +12,38 @@ datasource db {
   provider = "postgresql"
 }
 
+model JobPosting {
+  id                  String      @id @default(uuid())
+  title               String
+  description         String
+  created_at          DateTime    @default(now())
+  updated_at          DateTime    @updatedAt
+}
+
+model AIAnalysis {
+  id             String    @id @default(uuid())
+  candidate_id   String
+  job_posting_id String
+  skills         Json
+  years_experience Float
+  education_level String    @db.VarChar(20) // none | bachelor | master | phd
+  keyword_matches Json
+  strengths      Json
+  weaknesses     Json
+  summary        String
+  raw_ai_response Json
+}
+
 model Candidate {
   id        String   @id @default(uuid())
   name      String
-  email     String   @unique
+  email     String   
   createdAt DateTime @default(now())
-
-  cvs       CV[]
 }
 
-model CV {
-  id          String   @id @default(uuid())
-  filename    String
-  score       Float?
-  parsedText  String
-  uploadedAt  DateTime @default(now())
-
-  candidate   Candidate @relation(fields: [candidateId], references: [id])
-  candidateId String
+model ApplicationDocument {
+  id                String    @id @default(uuid())
+  candidate_id      String
+  document_type     String    @db.VarChar(20)
 }
+

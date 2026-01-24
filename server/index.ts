@@ -1,11 +1,11 @@
-const express = require('express')
+import express, { Request, Response } from 'express';
 
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = parseInt(process.env.PORT || '3000', 10)
 
 app.use(express.json())
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })
 })
 

@@ -14,7 +14,7 @@ async function main() {
   const candidate = await prisma.candidate.create({
     data: {
       name: "Test Candidate",
-      email: "test@example.com",
+      email: "Test@example.com",
     },
   });
 
