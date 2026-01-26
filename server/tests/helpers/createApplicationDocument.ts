@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import prisma from './prisma'
+import prisma from "../../src/prisma";
 
 export const createApplicationDocument = async (candidate_id: string) => {
     return prisma.applicationDocument.create({
