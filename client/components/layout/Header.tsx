@@ -21,13 +21,13 @@ export default function Component() {
           </Link>
           <div className="grid gap-2 py-6">
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
-              Home
+              Job Postings
             </Link>
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
-              About
+              Resume Analyzer
             </Link>
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
-              Services
+              Analytics
             </Link>
             <Link href="#" className="flex w-full items-center py-2 text-lg font-semibold" prefetch={false}>
               Contact
