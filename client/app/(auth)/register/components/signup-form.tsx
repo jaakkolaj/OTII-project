@@ -14,7 +14,26 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
-export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+interface SignupFormProps extends Omit<React.ComponentProps<"div">, 'onSubmit'> {
+  email: string;
+  password: string;
+  passwordRepeat: string;
+  onEmailChange?: (email: string) => void;
+  onPasswordChange?: (password: string) => void;
+  onPasswordRepeatChange?: (passwordRepeat: string) => void;
+  onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+}
+
+export function SignupForm({ 
+  email,
+  password,
+  passwordRepeat,
+  onEmailChange,
+  onPasswordChange,
+  onPasswordRepeatChange,
+  onSubmit,
+  ...props
+}: SignupFormProps) {
   return (
     <Card {...props}>
       <CardHeader>
@@ -24,12 +43,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={onSubmit}>
           <FieldGroup>
-            <Field>
-              <FieldLabel htmlFor="name">Company Name</FieldLabel>
-              <Input id="name" type="text" placeholder="John Doe" required />
-            </Field>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
@@ -37,6 +52,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 type="email"
                 placeholder="m@example.com"
                 required
+                onChange={(e) => onEmailChange?.(e.target.value)}
               />
               <FieldDescription>
                 We&apos;ll use this to contact you. We will not share your email
@@ -45,7 +61,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input id="password" type="password" required />
+              <Input 
+              id="password" 
+              type="password" 
+              required 
+              onChange={(e) => onPasswordChange?.(e.target.value)}
+              />
               <FieldDescription>
                 Must be at least 8 characters long.
               </FieldDescription>
@@ -54,7 +75,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password
               </FieldLabel>
-              <Input id="confirm-password" type="password" required />
+              <Input 
+              id="confirm-password" 
+              type="password" 
+              required 
+              onChange={(e) => onPasswordRepeatChange?.(e.target.value)}
+              />
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>
             <FieldGroup>
