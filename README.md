@@ -1,10 +1,11 @@
 # OTII-project
-Ohjelmistotuotanto 2 projekti.
+Ohjelmistotuotanto 2 -projekti.
 
-##Client
+## Client
 -cd client
 -npm install
 -npm run dev
+
 ## Server
 -cd server
 
