@@ -15,10 +15,24 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
+interface LoginFormProps extends Omit<React.ComponentProps<"div">, 'onSubmit'> {
+  email: string;
+  password: string;
+  onEmailChange?: (email: string) => void;
+  onPasswordChange?: (password: string) => void;
+  onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
+}
+
 export function LoginForm({
   className,
+  email,
+  password,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
   ...props
-}: React.ComponentProps<"div">) {
+}: LoginFormProps) {
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -29,7 +43,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={onSubmit}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -38,6 +52,8 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  value={email}
+                  onChange={(e) => onEmailChange?.(e.target.value)}
                 />
               </Field>
               <Field>
@@ -50,7 +66,13 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input 
+                  id="password" 
+                  type="password" 
+                  required 
+                  value={password}
+                  onChange={(e) => onPasswordChange?.(e.target.value)}
+                />
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
