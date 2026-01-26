@@ -1,5 +1,5 @@
 import prisma from '../src/prisma'
-import { createApplicationDocument } from '../src/createApplicationDocument'
+import { createApplicationDocument } from './helpers/createApplicationDocument'
 
 describe("createApplication", () => {
     let candidate_id: string;

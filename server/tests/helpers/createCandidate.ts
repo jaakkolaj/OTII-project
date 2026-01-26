@@ -1,5 +1,5 @@
 import "dotenv/config";
-import prisma from "./prisma";
+import prisma from "../../src/prisma";
 
 export async function createCandidate() {
   return prisma.candidate.create({

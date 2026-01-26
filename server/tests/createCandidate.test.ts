@@ -1,5 +1,5 @@
 import prisma from "../src/prisma";
-import { createCandidate } from "../src/createCandidate";
+import { createCandidate } from "./helpers/createCandidate";
 import 'dotenv/config';
 
 describe("createCandidate", () => {
