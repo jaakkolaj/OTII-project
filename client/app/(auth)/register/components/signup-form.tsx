@@ -64,6 +64,7 @@ export function SignupForm({
               <Input 
               id="password" 
               type="password" 
+              placeholder="Password"
               required 
               onChange={(e) => onPasswordChange?.(e.target.value)}
               />
@@ -78,6 +79,7 @@ export function SignupForm({
               <Input 
               id="confirm-password" 
               type="password" 
+              placeholder="confirm-password"
               required 
               onChange={(e) => onPasswordRepeatChange?.(e.target.value)}
               />
