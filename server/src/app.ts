@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import signupRouter from './Controls/signup.routes.js';
-import loginRouter from './Controls/login.routes.js';
+import signupRouter from './Controls/signup.routes';
+import loginRouter from './Controls/login.routes';
 import cors from 'cors';
 
 const app = express()
