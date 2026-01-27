@@ -5,6 +5,14 @@ export default function JobPostingsList() {
   const jobs = [
     { id: "1", title: "Backend Developer" },
     { id: "2", title: "Frontend Developer" },
+    { id: "3", title: "Full Stack Developer"},
+    { id: "4", title: "DevOps Engineer" },
+    { id: "5", title: "Data Scientist" },
+    { id: "6", title: "Product Manager" },
+    { id: "7", title: "UX/UI Designer" },
+    { id: "8", title: "QA Engineer" },
+    { id: "9", title: "Mobile Developer" },
+    { id: "10", title: "Cloud Architect" }
   ];
 
   return (
