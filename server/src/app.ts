@@ -3,6 +3,7 @@ import signupRouter from './Controls/signup.routes';
 import loginRouter from './Controls/login.routes';
 import jobPostingsRouter from './Controls/jobPostings.routes';
 import cors from 'cors';
+import uploadRouter from './Controls/upload.routes';
 import { analyzeTextWithAI } from './services/ai.service';
 import { tokenizeText, getTopKeywords } from './services/nlp.services';
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use('/signup', signupRouter);
 app.use('/login', loginRouter);
 app.use('/job-postings', jobPostingsRouter);
+app.use('/upload', uploadRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })

@@ -13,9 +13,11 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2",
     "natural": "^8.1.0",
     "openai": "^6.16.0",
-    "pg": "^8.17.2"
+    "pg": "^8.17.2",
+    "unpdf": "^1.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -23,6 +25,7 @@
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
     "@types/natural": "^5.1.5",
     "@types/node": "^25.0.10",
     "@types/pg": "^8.16.0",
