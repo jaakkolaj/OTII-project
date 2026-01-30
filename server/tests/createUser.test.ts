@@ -5,7 +5,11 @@ import bcrypt from 'bcrypt';
 
 describe("createUser", () => {
     beforeAll(async () => {
-        await prisma.user.deleteMany();
+        await prisma.user.deleteMany({
+            where: {
+                email: "jestTest@admin.com"
+            }
+        });
     });
 
     afterAll(async () => {
@@ -13,7 +17,7 @@ describe("createUser", () => {
     });
 
     it('creates a user in database', async () => {
-        const user = await createUser();
+        const user = await createUser("jestTest@admin.com");
 
         expect(user).toBeDefined();
         expect(user.id).toBeDefined();

@@ -16,20 +16,20 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })
 })
 
-async function main() {
-  const mockText = `
-    Software developer with 2 years of experience.
-    Skills: JavaScript, React, Node.js, SQL.
-    Bachelor's degree in Computer Science.
-  `;
+// async function main() {
+//   const mockText = `
+//     Software developer with 2 years of experience.
+//     Skills: JavaScript, React, Node.js, SQL.
+//     Bachelor's degree in Computer Science.
+//   `;
 
-  console.log("TOKENS:", tokenizeText(mockText));
-  console.log("KEYWORDS:", getTopKeywords(mockText));
+//   console.log("TOKENS:", tokenizeText(mockText));
+//   console.log("KEYWORDS:", getTopKeywords(mockText));
 
-  const aiResult = await analyzeTextWithAI(mockText);
-  console.log("AI RESULT:", aiResult);
-}
+//   const aiResult = await analyzeTextWithAI(mockText);
+//   console.log("AI RESULT:", aiResult);
+// }
 
-main();
+// main();
 
 export default app;

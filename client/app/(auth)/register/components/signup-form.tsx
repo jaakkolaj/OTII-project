@@ -18,6 +18,7 @@ interface SignupFormProps extends Omit<React.ComponentProps<"div">, 'onSubmit'> 
   email: string;
   password: string;
   passwordRepeat: string;
+  error?: string;
   onEmailChange?: (email: string) => void;
   onPasswordChange?: (password: string) => void;
   onPasswordRepeatChange?: (passwordRepeat: string) => void;
@@ -28,6 +29,7 @@ export function SignupForm({
   email,
   password,
   passwordRepeat,
+  error,
   onEmailChange,
   onPasswordChange,
   onPasswordRepeatChange,
@@ -52,6 +54,7 @@ export function SignupForm({
                 type="email"
                 placeholder="m@example.com"
                 required
+                value={email}
                 onChange={(e) => onEmailChange?.(e.target.value)}
               />
               <FieldDescription>
@@ -66,6 +69,7 @@ export function SignupForm({
               type="password" 
               placeholder="Password"
               required 
+              value={password}
               onChange={(e) => onPasswordChange?.(e.target.value)}
               />
               <FieldDescription>
@@ -81,11 +85,17 @@ export function SignupForm({
               type="password" 
               placeholder="confirm-password"
               required 
+              value={passwordRepeat}
               onChange={(e) => onPasswordRepeatChange?.(e.target.value)}
               />
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>
             <FieldGroup>
+              {error && (
+                <div id="errorMsg" className="text-red-600 text-sm mb-2 text-center">
+                  {error}
+                </div>
+              )}
               <Field>
                 <Button type="submit">Create Account</Button>
                 <FieldDescription className="px-6 text-center">
