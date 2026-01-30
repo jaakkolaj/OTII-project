@@ -3,7 +3,9 @@
 import { useMemo, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, KeyboardEvent } from "react";
 import { useParams } from "next/navigation";
+import SidebarLayout from "@/app/SidebarLayout";
 
+// Upload constraints shared by validation and UI copy.
 const MAX_FILE_SIZE_MB = 10;
 const ACCEPTED_EXTENSIONS = ["pdf", "doc", "docx"];
 const ACCEPTED_MIME_TYPES = [
@@ -12,9 +14,11 @@ const ACCEPTED_MIME_TYPES = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
+// Stable key for deduping and list rendering.
 const toFileKey = (file: File) =>
   `${file.name}-${file.size}-${file.lastModified}`;
 
+// Convert raw bytes into a compact, human-readable label.
 const formatBytes = (bytes: number) => {
   if (bytes === 0) return "0 B";
   const k = 1024;
@@ -23,6 +27,7 @@ const formatBytes = (bytes: number) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 };
 
+// Validate extension, MIME type, and size; return a reason for UI feedback.
 const validateFile = (file: File) => {
   const lowerName = file.name.toLowerCase();
   const extensionOk = ACCEPTED_EXTENSIONS.some((ext) =>
@@ -45,6 +50,7 @@ const validateFile = (file: File) => {
   return { ok: true as const };
 };
 
+// Job detail view with drag-and-drop CV upload and client-side validation.
 export default function JobPostingDetail() {
   const params = useParams<{ id: string }>();
   const jobId = Array.isArray(params.id) ? params.id[0] : params.id ?? "";
@@ -53,11 +59,13 @@ export default function JobPostingDetail() {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // Build the accept attribute once for both drag-drop and file picker.
   const accept = useMemo(() => {
     const extensions = ACCEPTED_EXTENSIONS.map((ext) => `.${ext}`);
     return [...ACCEPTED_MIME_TYPES, ...extensions].join(",");
   }, []);
 
+  // Validate incoming files, collect errors, and dedupe accepted ones.
   const handleFiles = (fileList: FileList | null) => {
     if (!fileList) return;
     const incoming = Array.from(fileList);
@@ -90,11 +98,13 @@ export default function JobPostingDetail() {
     });
   };
 
+  // Clear the input so the same file can be reselected after removal.
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     handleFiles(event.target.files);
     event.target.value = "";
   };
 
+  // Drag-and-drop handlers keep the UI responsive and accessible.
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsDragging(false);
@@ -110,6 +120,7 @@ export default function JobPostingDetail() {
     setIsDragging(false);
   };
 
+  // Support keyboard activation for the dropzone "button".
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -126,9 +137,11 @@ export default function JobPostingDetail() {
     setErrors([]);
   };
 
+  // Aggregate size shown in the summary line.
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
 
   return (
+    <SidebarLayout>
     <main className="container mx-auto flex flex-col gap-8 p-8">
       <header className="space-y-2">
         <p className="text-sm uppercase tracking-widest text-muted-foreground">
@@ -233,5 +246,6 @@ export default function JobPostingDetail() {
         </div>
       </section>
     </main>
+    </SidebarLayout>
   );
 }
