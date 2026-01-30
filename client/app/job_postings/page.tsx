@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import SidebarLayout from "@/app/SidebarLayout";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
 type JobPosting = {
   id: string;
@@ -35,6 +35,7 @@ export default function JobPostingsList() {
       setError(null);
       try {
         const response = await fetch(`${API_BASE_URL}/job-postings`);
+        console.log("Fetch response:", response);
         if (!response.ok) {
           const payload = await response.json().catch(() => null);
           const message = payload?.error ?? "Failed to load job postings.";

@@ -1,0 +1,14 @@
+POST http://localhost:5001/job-postings
+Content-Type: application/json
+
+{
+    "title": "Software Engineer",
+    "description": "Develop and maintain software applications.",
+    "department": "Tech Corp",
+    "location": "New York, NY",
+    "salaryRange": "100000",
+    "requirements": "Bachelor's degree in Computer Science or related field",
+    "closingDate": "2024-12-31",
+    "employmentType": "Full-time",
+    "seniority": "Mid-level"
+}
