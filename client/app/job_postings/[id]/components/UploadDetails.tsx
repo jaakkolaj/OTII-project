@@ -56,8 +56,8 @@ export function UploadDetails({
       {errors.length > 0 ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
           <ul className="list-disc space-y-1 pl-4">
-            {errors.map((error) => (
-              <li key={error}>{error}</li>
+            {errors.map((error, index) => (
+              <li key={`${index}-${error}`}>{error}</li>
             ))}
           </ul>
         </div>

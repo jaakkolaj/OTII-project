@@ -27,7 +27,7 @@ export function JobPostingCard({
             <h2 className="text-base font-semibold">
               <Link
                 href={`/job_postings/${job.id}`}
-                className="hover:underline focus-visible"
+                className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 {job.title}
               </Link>

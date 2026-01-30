@@ -1,5 +1,3 @@
-"use client";
-
 export function JobPostingsHeader() {
   return (
     <header className="space-y-2">
