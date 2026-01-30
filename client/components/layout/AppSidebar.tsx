@@ -24,7 +24,8 @@ import {
 } from "@/components/ui/sidebar"
 
 const mainItems = [
-  { title: "Job Postings", href: "/", icon: Briefcase },
+  { title: "Home", href: "/", icon: Home },
+  { title: "Job Postings", href: "/job_postings", icon: Briefcase },
   { title: "Resume Analyzer", href: "/dashboard", icon: LayoutDashboard },
   { title: "Analytics", href: "#", icon: BarChart },
   { title: "Contact", href: "#", icon: Mail },

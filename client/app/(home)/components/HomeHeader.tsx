@@ -1,0 +1,57 @@
+import Link from "next/link";
+import { ArrowUpRight, Search } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export function HomeHeader() {
+  return (
+    <header className="flex flex-col gap-6">
+      <div className="space-y-2">
+        <p className="text-sm uppercase tracking-widest text-muted-foreground">
+          ATS Home
+        </p>
+        <h1 className="text-3xl font-bold">Recruiting command center</h1>
+        <p className="max-w-2xl text-muted-foreground">
+          Track open roles, candidate flow, and the next steps across every
+          pipeline from one focused workspace.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full max-w-xl">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search roles, candidates, or pipelines..."
+              className="pl-9"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="secondary">
+              My roles
+            </Button>
+            <Button size="sm" variant="outline">
+              Interviews
+            </Button>
+            <Button size="sm" variant="outline">
+              Offers
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Button asChild size="lg">
+            <Link href="/job_postings/create_posting">Create job posting</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/job_postings">
+              View all roles
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+}
