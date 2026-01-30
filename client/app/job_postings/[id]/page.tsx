@@ -4,51 +4,16 @@ import { useMemo, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, KeyboardEvent } from "react";
 import { useParams } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
-
-// Upload constraints shared by validation and UI copy.
-const MAX_FILE_SIZE_MB = 10;
-const ACCEPTED_EXTENSIONS = ["pdf", "doc", "docx"];
-const ACCEPTED_MIME_TYPES = [
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-];
-
-// Stable key for deduping and list rendering.
-const toFileKey = (file: File) =>
-  `${file.name}-${file.size}-${file.lastModified}`;
-
-// Convert raw bytes into a compact, human-readable label.
-const formatBytes = (bytes: number) => {
-  if (bytes === 0) return "0 B";
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-};
-
-// Validate extension, MIME type, and size; return a reason for UI feedback.
-const validateFile = (file: File) => {
-  const lowerName = file.name.toLowerCase();
-  const extensionOk = ACCEPTED_EXTENSIONS.some((ext) =>
-    lowerName.endsWith(`.${ext}`),
-  );
-  const mimeOk = ACCEPTED_MIME_TYPES.includes(file.type);
-  if (!extensionOk && !mimeOk) {
-    return {
-      ok: false,
-      reason: "Unsupported file type. Use PDF, DOC, or DOCX.",
-    };
-  }
-  const maxBytes = MAX_FILE_SIZE_MB * 1024 * 1024;
-  if (file.size > maxBytes) {
-    return {
-      ok: false,
-      reason: `File is too large. Max ${MAX_FILE_SIZE_MB} MB.`,
-    };
-  }
-  return { ok: true as const };
-};
+import { JobPostingDetailHeader } from "./components/JobPostingDetailHeader";
+import { UploadDetails } from "./components/UploadDetails";
+import { UploadDropzone } from "./components/UploadDropzone";
+import {
+  ACCEPTED_EXTENSIONS,
+  ACCEPTED_MIME_TYPES,
+  MAX_FILE_SIZE_MB,
+  toFileKey,
+  validateFile,
+} from "./uploadUtils";
 
 // Job detail view with drag-and-drop CV upload and client-side validation.
 export default function JobPostingDetail() {
@@ -179,119 +144,30 @@ export default function JobPostingDetail() {
   return (
     <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
-        <header className="space-y-2">
-          <p className="text-sm uppercase tracking-widest text-muted-foreground">
-            Job Posting
-          </p>
-          <h1 className="text-3xl font-bold">Job Detail for ID: {jobId}</h1>
-          <p className="max-w-2xl text-muted-foreground">
-            Upload applicant CVs for this job posting. Drag and drop files below
-            or browse from your computer.
-          </p>
-        </header>
+        <JobPostingDetailHeader jobId={jobId} />
 
         <section className="rounded-2xl border bg-card p-6 shadow-sm">
-          <div
-            className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-10 text-center transition ${
-              isDragging
-                ? "border-primary bg-primary/10"
-                : "border-muted-foreground/30 bg-muted/40 hover:border-muted-foreground/50"
-            }`}
+          <UploadDropzone
+            accept={accept}
+            inputRef={inputRef}
+            isDragging={isDragging}
+            maxFileSizeMb={MAX_FILE_SIZE_MB}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
-            onClick={() => inputRef.current?.click()}
             onKeyDown={handleKeyDown}
-            role="button"
-            tabIndex={0}
-            aria-label="Upload CVs by dropping files or browsing"
-          >
-            <div className="space-y-2">
-              <p className="text-lg font-semibold">Drop CV files here</p>
-              <p className="text-sm text-muted-foreground">
-                PDF, DOC, or DOCX up to {MAX_FILE_SIZE_MB} MB each
-              </p>
-            </div>
-            <span className="pointer-events-none rounded-full border px-4 py-2 text-sm font-medium transition hover:bg-muted">
-              Browse files
-            </span>
-            <input
-              ref={inputRef}
-              type="file"
-              accept={accept}
-              multiple
-              className="hidden"
-              onChange={handleInputChange}
-            />
-          </div>
+            onInputChange={handleInputChange}
+          />
 
-          <div className="mt-6 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="text-sm text-muted-foreground">
-                {files.length === 0
-                  ? "No files selected yet."
-                  : `${files.length} file${files.length > 1 ? "s" : ""} • ${formatBytes(
-                      totalSize,
-                    )}`}
-              </div>
-              {files.length > 0 ? (
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={clearAll}
-                    className="text-sm font-medium text-muted-foreground transition hover:text-foreground"
-                  >
-                    Clear all
-                  </button>
-
-                  {/* Submit button */}
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary"
-                  >
-                    Upload Files
-                  </button>
-                </div>
-              ) : null}
-            </div>
-
-            {errors.length > 0 ? (
-              <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                <ul className="list-disc space-y-1 pl-4">
-                  {errors.map((error) => (
-                    <li key={error}>{error}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {files.length > 0 ? (
-              <ul className="space-y-2">
-                {files.map((file) => (
-                  <li
-                    key={toFileKey(file)}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3"
-                  >
-                    <div>
-                      <p className="font-medium">{file.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatBytes(file.size)}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeFile(file)}
-                      className="text-sm font-medium text-destructive transition hover:text-destructive/80"
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
+          <UploadDetails
+            files={files}
+            errors={errors}
+            totalSize={totalSize}
+            isSubmitting={isSubmitting}
+            onClearAll={clearAll}
+            onSubmit={handleSubmit}
+            onRemoveFile={removeFile}
+          />
         </section>
       </main>
     </SidebarLayout>
