@@ -7,12 +7,15 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [error, setError] = useState("");
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if(password != passwordRepeat) {
-          return console.log("Passwords are not the same")
+          return setError("Passwords are not the same!");
+          // return console.log("Passwords are not the same")
         }
+        setError("");
         try {
         const user = {
             email,
@@ -36,6 +39,7 @@ export default function Page() {
           onPasswordRepeatChange={setPasswordRepeat}
           onPasswordChange={setPassword}
           onSubmit={onSubmit}
+          error={error}
         />
       </div>
     </div>

@@ -8,7 +8,11 @@ import request from 'supertest';
 
 describe('email and password validation', () => {
     beforeAll(async () => {
-        await prisma.user.deleteMany();
+        await prisma.user.deleteMany({
+            where: {
+                email: "jestTest1@admin.com"
+            }
+        });
     });
 
     afterAll(async () => {
@@ -16,10 +20,10 @@ describe('email and password validation', () => {
     });
 
     it('creates user when both are valid', async () => {
-        const user = await createUser();
+        const user = await createUser("jestTest1@admin.com");
         expect(user).toBeDefined();
         expect(user.id).toBeDefined();
-        expect(user.email).toBe("jestTest@admin.com");
+        expect(user.email).toBe("jestTest1@admin.com");
         
         const isPasswordCorrect = await bcrypt.compare("secret", user.password);
         expect(isPasswordCorrect).toBe(true);
