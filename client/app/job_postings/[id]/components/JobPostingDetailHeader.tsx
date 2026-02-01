@@ -1,5 +1,3 @@
-"use client";
-
 type JobPostingDetailHeaderProps = {
   jobId: string;
 };
