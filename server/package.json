@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "test:prisma": "node --loader ts-node/esm testPrisma.ts",
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "dev": "tsx index.ts"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "multer": "^2.0.2",
     "natural": "^8.1.0",
     "openai": "^6.16.0",
+    "pdfjs-dist": "^5.4.530",
     "pg": "^8.17.2",
     "unpdf": "^1.4.0"
   },

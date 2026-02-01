@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
-import signupRouter from './Controls/signup.routes';
-import loginRouter from './Controls/login.routes';
-import jobPostingsRouter from './Controls/jobPostings.routes';
+import signupRouter from './routes/signup.routes';
+import loginRouter from './routes/login.routes';
+import jobPostingsRouter from './routes/jobPostings.routes';
 import cors from 'cors';
-import uploadRouter from './Controls/upload.routes';
+import uploadRouter from './routes/upload.routes';
 import { analyzeTextWithAI } from './services/ai.service';
 import { tokenizeText, getTopKeywords } from './services/nlp.services';
 
