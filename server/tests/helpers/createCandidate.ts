@@ -1,11 +1,11 @@
 import "dotenv/config";
 import prisma from "../../src/prisma";
 
-export async function createCandidate() {
+export async function createCandidate(email: string) {
   return prisma.candidate.create({
     data: {
       name: "Test Candidate",
-      email: "anotherTest1@example.com",
+      email: email,
     },
   });
 }
