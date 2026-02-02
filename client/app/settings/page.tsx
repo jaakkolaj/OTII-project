@@ -21,10 +21,14 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button"
 import { AlignCenter } from "lucide-react";
+import { AppSidebar } from "@/components/layout/AppSidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 
 export default function SettingsPage() {
     return (
-    <div className="container mx-auto flex flex-col items-center gap-10 py-6">
+    <SidebarProvider>
+      <AppSidebar />
+      <div className="container mx-auto flex flex-col items-center gap-10 py-6">
       <div className="text-left text-3xl w-full max-w-xl">Settings</div>
 
       <Card className="w-full max-w-xl">
@@ -106,6 +110,7 @@ export default function SettingsPage() {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-    </div>
+      </div>
+    </SidebarProvider>
   )
 }
