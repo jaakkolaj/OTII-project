@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { useState } from "react";
 
+// Wrapper hallitsee tilaa ja validointia testejä varten
 function TestWrapper({ onSubmit = jest.fn() }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -13,14 +14,15 @@ function TestWrapper({ onSubmit = jest.fn() }) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // Tarkistetaan, että salasanat täsmäävät
         if (password !== passwordRepeat) {
-        setError("Passwords are not the same!");
-        return;
+            setError("Passwords are not the same!");
+            return;
         }
 
         setError("");
         onSubmit(e);
-  };
+    };
 
     return (
         <SignupForm 
@@ -33,13 +35,16 @@ function TestWrapper({ onSubmit = jest.fn() }) {
             onPasswordRepeatChange={setPasswordRepeat}
             onSubmit={handleSubmit}
         />
-    )
+    );
 }
 
 describe('SignupForm', () => {
+
     it('renders form fields', () => {
         const handleSubmit = jest.fn((e) => e.preventDefault());
-        render(<TestWrapper onSubmit={handleSubmit}/>)
+        render(<TestWrapper onSubmit={handleSubmit}/>);
+
+        // Tarkistetaan, että lomakekentät näkyvät
         expect(screen.getByPlaceholderText('m@example.com')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('confirm-password')).toBeInTheDocument();
@@ -47,36 +52,40 @@ describe('SignupForm', () => {
 
     it('submits signup form', async () => {
         const handleSubmit = jest.fn((e) => e.preventDefault());
-        render(<TestWrapper onSubmit={handleSubmit}/>)
-        
+        render(<TestWrapper onSubmit={handleSubmit}/>);
+
         const inputEmail = screen.getByPlaceholderText('m@example.com');
         const inputPassword = screen.getByPlaceholderText('Password');
-        const inputPaswordRepeat = screen.getByPlaceholderText('confirm-password');
-        
+        const inputPasswordRepeat = screen.getByPlaceholderText('confirm-password');
+
+        // Kirjoitetaan kenttiin ja klikataan submit
         await userEvent.type(inputEmail, "test@admin.com");
         await userEvent.type(inputPassword, "secret");
-        await userEvent.type(inputPaswordRepeat, 'secret');
+        await userEvent.type(inputPasswordRepeat, "secret");
         await userEvent.click(screen.getByText("Create Account"));
 
+        // Varmistetaan arvot ja submit kutsu
         expect(inputEmail).toHaveValue("test@admin.com");
         expect(inputPassword).toHaveValue("secret");
-        expect(inputPaswordRepeat).toHaveValue('secret');
+        expect(inputPasswordRepeat).toHaveValue("secret");
         expect(handleSubmit).toHaveBeenCalled();
     });
 
-    it('Throw error if passwords are not the same', async () => {
+    it('throws error if passwords are not the same', async () => {
         const handleSubmit = jest.fn((e) => e.preventDefault());
-        render(<TestWrapper onSubmit={handleSubmit}/>)
-        
+        render(<TestWrapper onSubmit={handleSubmit}/>);
+
         const inputEmail = screen.getByPlaceholderText('m@example.com');
         const inputPassword = screen.getByPlaceholderText('Password');
-        const inputPaswordRepeat = screen.getByPlaceholderText('confirm-password');
-        
+        const inputPasswordRepeat = screen.getByPlaceholderText('confirm-password');
+
+        // Syötetään eri salasanat
         await userEvent.type(inputEmail, "test@admin.com");
         await userEvent.type(inputPassword, "secret");
-        await userEvent.type(inputPaswordRepeat, 'secretsecret');
+        await userEvent.type(inputPasswordRepeat, "secretsecret");
         await userEvent.click(screen.getByText("Create Account"));
 
+        // Varmistetaan virheilmoitus näkyvissä
         const errorMsg = screen.getByText("Passwords are not the same!");
         expect(errorMsg).toBeInTheDocument();
     });
