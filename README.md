@@ -1,16 +1,29 @@
 # OTII-project
 Ohjelmistotuotanto 2 -projekti.
 
+### ATS järjestelmä, joka OpenAI kirjaston avulla muodostaa CV:istä ja saatekirjeistä tiivistettyjä yhteenvetoja sekä ränkkää hakijat ennaltamääritettyjen kriteerien perusteella.
+- CV:iden ja saatekirjeiden automaattinen analysointi
+- Tiivistettyjen yhteenvetojen generointi OpenAI:n avulla
+- Hakijoiden vertailu ja pisteytys ennalta määritettyjen kriteerien perusteella
+- Selainpohjainen käyttöliittymä
+- Erillinen client- ja server-arkkitehtuuri
+
 ## Client
--cd client
--npm install
--npm run dev
+```bash
+cd client
+npm install
+npm run dev
+```
 
 ## Server
--cd server
+```bash
+cd server
+npm install
+npm run dev
+```
 
-Taulujen muutokset
-- npx prisma migrate dev if changes were made to the tables
-
-Tietokannan synkronointiin
-- npx prisma generate
+## Tietokanta taulujen muutokset ja synkronointi
+```bash
+npx prisma migrate dev
+npx prisma generate
+```
