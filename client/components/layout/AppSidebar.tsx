@@ -33,7 +33,7 @@ const mainItems = [
 
 const footerItems = [
   { title: "Profile", href: "#", icon: User },
-  { title: "Settings", href: "#", icon: Settings },
+  { title: "Settings", href: "/settings", icon: Settings },
 ]
 
 export function AppSidebar() {
