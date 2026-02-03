@@ -21,6 +21,9 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button"
 import SidebarLayout from "../SidebarLayout";
+
+import { ModeToggle } from "@/components/layout/ModeToggle";
+
 export default function SettingsPage() {
     return (
     <SidebarLayout>
@@ -74,12 +77,13 @@ export default function SettingsPage() {
             <CardTitle>Misc</CardTitle>
           </div>
         </CardHeader>
-        <CardContent className="flex flex-col items-start gap-6">
+        <CardContent className="flex flex-col items-start gap-4">
           <div className="flex items-center space-x-2">
-            <Switch id="dark-mode" />
-            <Label htmlFor="dark-mode">Dark Mode</Label>
+            <Label className="mb-0" htmlFor="Theme">
+              Theme
+            </Label>
           </div>
-
+          <ModeToggle/>
           <div className="text-left">
             <Label className="mb-2" htmlFor="Language">
               Language
