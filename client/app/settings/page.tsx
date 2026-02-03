@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button"
-import { AlignCenter } from "lucide-react";
+
 import { AppSidebar } from "@/components/layout/AppSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 
