@@ -1,19 +1,19 @@
 
 import { Request, Response } from "express";
-import { parsePdfFiles } from "../services/pdf.service";
+import { parseDocument } from "../services/parser.service";
 
 // Tiedostojen latauksen käsittelijä
 export const uploadFiles = async (req: Request, res: Response) => {
   try {
+    // Haetaan ladatut tiedostot pyynnöstä
     const files = req.files as Express.Multer.File[];
     
     if (!files || files.length === 0) {
       res.status(400).json({ error: "Tiedostoja ei löytynyt" });
       return;
     }
-
-    const parsedResults = await parsePdfFiles(files);
-
+    // Kutsutaan parser-palvelua tiedostojen käsittelyyn
+    const parsedResults = await parseDocument(files);
     // Lähetetään vastaus takaisin asiakkaalle
     res.status(200).json({
       message: "Käsittely valmis",

@@ -117,7 +117,7 @@ export default function JobPostingDetail() {
         formData.append("files", file);
       });
 
-      const res = await fetch("http://localhost:5000/upload", {
+      const res = await fetch("http://localhost:5001/upload", {
         method: "POST",
         body: formData,
       });
