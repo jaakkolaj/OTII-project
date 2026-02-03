@@ -26,7 +26,7 @@ import {
 const mainItems = [
   { title: "Home", href: "/", icon: Home },
   { title: "Job Postings", href: "/job_postings", icon: Briefcase },
-  { title: "Resume Analyzer", href: "/dashboard", icon: LayoutDashboard },
+  { title: "Resume Analyzer", href: "/resumeAnalyzer", icon: LayoutDashboard },
   { title: "Analytics", href: "#", icon: BarChart },
   { title: "Contact", href: "#", icon: Mail },
 ]
