@@ -7,7 +7,7 @@ import { ArrowLeft, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
 type JobFormState = {
   title: string;
@@ -50,6 +50,8 @@ export default function CreateJobPostingPage() {
     event.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    
+    console.log("Submitting form:", form);
 
     try {
       const response = await fetch(`${API_BASE_URL}/job-postings`, {
@@ -58,6 +60,13 @@ export default function CreateJobPostingPage() {
         body: JSON.stringify({
           title: form.title,
           description: form.description,
+          location: form.location,
+          employmentType: form.employmentType,
+          seniority: form.seniority,
+          department: form.department,
+          requirements: form.requirements,
+          salaryRange: form.salaryRange,
+          closingDate: form.closingDate,
         }),
       });
 

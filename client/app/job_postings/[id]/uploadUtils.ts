@@ -1,8 +1,7 @@
 export const MAX_FILE_SIZE_MB = 10;
-export const ACCEPTED_EXTENSIONS = ["pdf", "doc", "docx"];
+export const ACCEPTED_EXTENSIONS = ["pdf", "docx"];
 export const ACCEPTED_MIME_TYPES = [
   "application/pdf",
-  "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
@@ -29,7 +28,7 @@ export const validateFile = (file: File) => {
   if (!extensionOk && !mimeOk) {
     return {
       ok: false,
-      reason: "Unsupported file type. Use PDF, DOC, or DOCX.",
+      reason: "Unsupported file type. Use PDF or DOCX.",
     };
   }
   const maxBytes = MAX_FILE_SIZE_MB * 1024 * 1024;

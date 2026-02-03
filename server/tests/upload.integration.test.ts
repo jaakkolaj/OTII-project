@@ -2,8 +2,8 @@ import request from "supertest";
 import app from "../src/app";
 
 
-jest.mock("../src/services/pdf.service", () => ({
-  parsePdfFiles: jest.fn().mockResolvedValue([
+jest.mock("../src/services/parser.service", () => ({
+  parseDocument: jest.fn().mockResolvedValue([
     {
       fileName: "test.pdf",
       status: "success",

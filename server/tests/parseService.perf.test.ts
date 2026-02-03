@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { performance } from "perf_hooks";
-import { parsePdfFiles } from "../src/services/pdf.service";
+import { parseDocument } from "../src/services/parser.service";
 
 describe("Suorituskykytesti aidoilla tiedostoilla", () => {
   let warnSpy: jest.SpyInstance;
@@ -45,7 +45,7 @@ describe("Suorituskykytesti aidoilla tiedostoilla", () => {
 
     // 3. Mitataan suoritusaika
     const start = performance.now();
-    const results = await parsePdfFiles(mockFiles);
+    const results = await parseDocument(mockFiles);
     const end = performance.now();
 
     const duration = end - start;

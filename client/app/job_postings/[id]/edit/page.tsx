@@ -7,7 +7,7 @@ import { ArrowLeft, Briefcase } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://";
 
 type JobFormState = {
   title: string;

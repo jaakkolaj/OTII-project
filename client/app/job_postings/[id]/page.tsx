@@ -113,11 +113,14 @@ export default function JobPostingDetail() {
 
     try {
       const formData = new FormData();
+      // Append jobPostingId for backend association
+      formData.append("jobPostingId", jobId);
+
       files.forEach((file) => {
         formData.append("files", file);
       });
 
-      const res = await fetch("http://localhost:5000/upload", {
+      const res = await fetch("http://localhost:5001/upload", {
         method: "POST",
         body: formData,
       });
@@ -126,13 +129,12 @@ export default function JobPostingDetail() {
         const text = await res.text();
         throw new Error(text || "Upload failed");
       }
-      
+
       // Successful upload results
       const data = await res.json();
       console.log("Upload success:", data);
       clearAll();
       alert(`Uploaded file(s) successfully`);
-
     } catch (error) {
       console.error("Upload error:", error);
       setErrors(["Failed to upload files. Please try again."]);
