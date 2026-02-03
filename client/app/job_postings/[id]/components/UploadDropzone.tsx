@@ -49,7 +49,7 @@ export function UploadDropzone({
       <div className="space-y-2">
         <p className="text-lg font-semibold">Drop CV files here</p>
         <p className="text-sm text-muted-foreground">
-          PDF, DOC, or DOCX up to {maxFileSizeMb} MB each
+          PDF or DOCX up to {maxFileSizeMb} MB each
         </p>
       </div>
       <span className="pointer-events-none rounded-full border px-4 py-2 text-sm font-medium transition hover:bg-muted">

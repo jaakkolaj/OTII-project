@@ -12,11 +12,11 @@ interface ParseResult {
 
 // Funktio, joka käsittelee ladatut tiedostot ja palauttaa niiden parsimis tulokset
 export const parseDocument = async (files: Express.Multer.File[]) => {
+
 // Käsitellään kaikki tiedostot rinnakkain Promise.all-metodilla
   return Promise.all(
     files.map(async (file) : Promise<ParseResult> => {
       try {
-        
         //pdf-tiedostojen käsittely
         if(file.mimetype === "application/pdf"){
         // Muunnetaan buffer Uint8Array-muotoon

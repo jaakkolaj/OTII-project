@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  url       = env("DATABASE_URL")
 }
 
 datasource db {
@@ -31,6 +32,9 @@ model JobPosting {
   closingDate         String
   created_at          DateTime    @default(now())
   updated_at          DateTime    @updatedAt
+
+  candidates      Candidate[]
+  ai_analyses     AIAnalysis[]
 }
 
 model AIAnalysis {
@@ -45,18 +49,34 @@ model AIAnalysis {
   weaknesses     Json
   summary        String
   raw_ai_response Json
+  created_at     DateTime    @default(now())
+
+  candidate        Candidate   @relation(fields: [candidate_id], references: [id])
+  job_posting      JobPosting @relation(fields: [job_posting_id], references: [id])
 }
 
 model Candidate {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   
-  createdAt DateTime @default(now())
+  id             String                @id @default(uuid())
+  job_posting_id String
+  name           String
+  email          String
+  createdAt      DateTime              @default(now())
+
+  job_posting    JobPosting            @relation(fields: [job_posting_id], references: [id])
+  documents      ApplicationDocument[]
+  ai_analyses    AIAnalysis[]
 }
 
 model ApplicationDocument {
   id                String    @id @default(uuid())
   candidate_id      String
-  document_type     String    @db.VarChar(20)
+  document_type     String    @db.VarChar(20) // CV | COVER_LETTER
+  original_filename String
+  file_type         String    // pdf | docx
+  file_size         Int       @default(0)
+  extracted_text    String    @db.Text
+  created_at        DateTime  @default(now())
+
+  candidate         Candidate @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
 }
 
