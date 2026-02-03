@@ -6,6 +6,7 @@ import { JobPostingsHeader } from "./components/JobPostingsHeader";
 import { JobPostingsToolbar } from "./components/JobPostingsToolbar";
 import { JobPostingsList } from "./components/JobPostingsList";
 import type { JobPosting } from "./types";
+import { getJobPostings } from "../services/jobPostingService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
@@ -23,7 +24,7 @@ export default function JobPostingsPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_BASE_URL}/job-postings`);
+        const response = await getJobPostings();
         console.log("Fetch response:", response);
         if (!response.ok) {
           const payload = await response.json().catch(() => null);

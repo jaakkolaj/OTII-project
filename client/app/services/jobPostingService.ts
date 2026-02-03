@@ -28,6 +28,12 @@ export const createJobPosting = async (jobPosting: JobPosting) => {
 
 // Fetch all job postings
 export const getJobPostings = async () => {
-  const response = await axios.get(`${baseUrl}/job-postings`);
-  return response.data;
+  try {
+    const response = await axios.get(`${baseUrl}/job-postings`, {
+      withCredentials: true
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error)
+  }
 }
