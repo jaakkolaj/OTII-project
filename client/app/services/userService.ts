@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:5000';
+const baseUrl = 'http://localhost:5001';
 
 interface User {
     email: string,
@@ -20,7 +20,8 @@ export const loginUser = async (user: User) => {
   const response = await axios.post(`${baseUrl}/login`, user, {
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true
   });
   return response.data;
 };

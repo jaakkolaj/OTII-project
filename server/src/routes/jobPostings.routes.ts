@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { Prisma } from "@prisma/client";
 import prisma from "../prisma";
+import { authentication } from "../middleware/authentication";
 
 const jobPostingsRouter = Router();
 
@@ -23,13 +24,18 @@ jobPostingsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response
   res.json(job);
 });
 
-jobPostingsRouter.post("/", async (req: Request, res: Response) => {
+jobPostingsRouter.post("/", authentication, async (req: Request, res: Response) => {
   const { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate } = req.body ?? {};
+  console.log("🍪 Cookies:", req.cookies);
 
   if (!title || !description) {
     return res
       .status(400)
       .json({ error: "Title and description are required." });
+  }
+
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
   const job = await prisma.jobPosting.create({

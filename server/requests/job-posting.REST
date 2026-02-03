@@ -1,5 +1,6 @@
 POST http://localhost:5001/job-postings
 Content-Type: application/json
+Cookie: access_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RVc2VyMjJAYWRtaW4uY29tIiwiaWQiOiJjZDg0MmUwOC04MmM1LTQyMzgtYTVlYy1kZWQ3M2UwMDNlZTciLCJpYXQiOjE3NzAxMjM4OTB9.7OnQNQ8yQEm0KxwO1KoEF_m3fTyWRxRkPUqFCea9A-Q"
 
 {
     "title": "Software Engineer",

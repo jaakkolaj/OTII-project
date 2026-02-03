@@ -7,7 +7,7 @@ import { ArrowLeft, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
 type JobFormState = {
   title: string;
@@ -54,6 +54,7 @@ export default function CreateJobPostingPage() {
     try {
       const response = await fetch(`${API_BASE_URL}/job-postings`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: form.title,
