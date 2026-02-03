@@ -20,14 +20,11 @@ import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button"
-import { AlignCenter } from "lucide-react";
-import { AppSidebar } from "@/components/layout/AppSidebar"
-import { SidebarProvider } from "@/components/ui/sidebar"
+import SidebarLayout from "../SidebarLayout";
 
 export default function SettingsPage() {
     return (
-    <SidebarProvider>
-      <AppSidebar />
+    <SidebarLayout>
       <div className="container mx-auto flex flex-col items-center gap-10 py-6">
       <div className="text-left text-3xl w-full max-w-xl">Settings</div>
 
@@ -39,7 +36,6 @@ export default function SettingsPage() {
               <Button variant="outline">Save</Button>
             </CardAction>
           </div>
-          <CardDescription></CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-start gap-4">
           <div className="flex justify-start gap-4">
@@ -71,16 +67,13 @@ export default function SettingsPage() {
             </Select>
           </div>
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
 
       <Card className="w-full max-w-xl">
         <CardHeader className="flex flex-col gap-2">
           <div className="flex items-center justify-between w-full">
             <CardTitle>Misc</CardTitle>
-            <CardAction></CardAction>
           </div>
-          <CardDescription></CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-start gap-6">
           <div className="flex items-center space-x-2">
@@ -108,9 +101,8 @@ export default function SettingsPage() {
             </Select>
           </div>
         </CardContent>
-        <CardFooter></CardFooter>
       </Card>
       </div>
-    </SidebarProvider>
+    </SidebarLayout>
   )
 }
