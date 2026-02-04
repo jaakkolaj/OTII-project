@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:5000';
+const baseUrl = 'http://localhost:5001';
 
 // Define the JobPosting interface
 interface JobPosting {
@@ -21,7 +21,8 @@ export const createJobPosting = async (jobPosting: JobPosting) => {
   const response = await axios.post(`${baseUrl}/job-postings`, jobPosting, {
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true,
   });
   return response.data;
 };

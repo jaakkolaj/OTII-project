@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
+import { createJobPosting } from "@/app/services/jobPostingService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
@@ -52,15 +53,19 @@ export default function CreateJobPostingPage() {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/job-postings`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: form.title,
-          description: form.description,
-        }),
-      });
+      const jobPosting: JobFormState = {
+        title: form.title,
+        department: form.department,
+        location: form.location,
+        employmentType: form.employmentType,
+        seniority: form.seniority,
+        description: form.description,
+        requirements: form.requirements,
+        salaryRange: form.salaryRange,
+        closingDate: form.closingDate,
+      }
+      const response = await createJobPosting(jobPosting);
+      console.log(response)
 
       if (!response.ok) {
         const payload = await response.json().catch(() => null);
