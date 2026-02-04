@@ -5,7 +5,10 @@ import { authentication } from "../middleware/authentication";
 
 const jobPostingsRouter = Router();
 
-jobPostingsRouter.get("/", async (_req: Request, res: Response) => {
+jobPostingsRouter.get("/", authentication, async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   const jobs = await prisma.jobPosting.findMany({
     orderBy: { created_at: "desc" },
   });
@@ -26,7 +29,6 @@ jobPostingsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response
 
 jobPostingsRouter.post("/", authentication, async (req: Request, res: Response) => {
   const { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate } = req.body ?? {};
-  console.log("🍪 Cookies:", req.cookies);
 
   if (!title || !description) {
     return res
