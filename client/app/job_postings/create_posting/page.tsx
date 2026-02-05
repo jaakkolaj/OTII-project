@@ -51,6 +51,8 @@ export default function CreateJobPostingPage() {
     event.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    
+    console.log("Submitting form:", form);
 
     try {
       const jobPosting: JobFormState = {
@@ -64,15 +66,7 @@ export default function CreateJobPostingPage() {
         salaryRange: form.salaryRange,
         closingDate: form.closingDate,
       }
-      const response = await createJobPosting(jobPosting);
-      console.log(response)
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        const message = payload?.error ?? "Failed to create job posting.";
-        throw new Error(message);
-      }
-
+      await createJobPosting(jobPosting);
       router.push("/job_postings");
     } catch (err) {
       setError(

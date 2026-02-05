@@ -34,3 +34,11 @@ export const getJobPostings = async () => {
   });
   return response;
 };
+
+// Delete job posting
+export const deleteJobPosting = async () => {
+  const response = await axios.delete(`${baseUrl}/job-postings`, {
+    withCredentials: true
+  });
+  return response;
+}

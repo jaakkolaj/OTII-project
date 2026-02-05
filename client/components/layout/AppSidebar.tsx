@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link"
 import {
   Home,
@@ -9,6 +10,9 @@ import {
   User,
   PanelLeft,
 } from "lucide-react"
+
+import { LogOut } from "lucide-react"
+import { logoutUser } from "@/app/services/userService";
 
 import {
   Sidebar,
@@ -22,21 +26,27 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
 
 const mainItems = [
   { title: "Home", href: "/", icon: Home },
   { title: "Job Postings", href: "/job_postings", icon: Briefcase },
-  { title: "Resume Analyzer", href: "/dashboard", icon: LayoutDashboard },
+  { title: "Resume Analyzer", href: "/resumeAnalyzer", icon: LayoutDashboard },
   { title: "Analytics", href: "#", icon: BarChart },
   { title: "Contact", href: "#", icon: Mail },
 ]
 
 const footerItems = [
   { title: "Profile", href: "#", icon: User },
-  { title: "Settings", href: "#", icon: Settings },
+  { title: "Settings", href: "/settings", icon: Settings },
 ]
 
 export function AppSidebar() {
+  const router = useRouter()
+  const handleLogout = async () => {
+    await logoutUser();
+    router.push("/login")
+  }
   return (
     <Sidebar collapsible="icon"className="shadow-[2px_0_10px_rgba(0,0,0,0.15)] 
     ">
@@ -71,6 +81,18 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+
+      {/* LOGOUT */}
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            tooltip="Logout"
+            onClick={handleLogout}
+            className="py-[1vh] px-[1vw] text-[clamp(0.8rem,1vw,1.2rem)] text-red-600"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Logout</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
 
       {/* FOOTER (BOTTOM) */}
       <SidebarFooter className="pb-16">

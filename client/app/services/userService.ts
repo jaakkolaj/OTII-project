@@ -25,3 +25,10 @@ export const loginUser = async (user: User) => {
   });
   return response.data;
 };
+
+export const logoutUser = async () => {
+  const response = await axios.post(`${baseUrl}/logout`, {}, {
+    withCredentials: true
+  });
+  return response.data;
+};

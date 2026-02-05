@@ -9,13 +9,23 @@ jobPostingsRouter.get("/", authentication, async (req: Request, res: Response) =
   if (!req.user) {
     return res.status(401).json({ error: "Unauthorized" });
   }
-  const jobs = await prisma.jobPosting.findMany({
-    orderBy: { created_at: "desc" },
-  });
-  res.json(jobs);
+  try {
+    const jobs = await prisma.jobPosting.findMany({
+      where: {
+        user_id: req.user.id
+      }
+    });
+    return res.json(jobs);
+  } catch(error) {
+    return res.status(400).json({ error: "Job-postings not found!" })
+  }
 });
 
-jobPostingsRouter.get("/:id", async (req: Request<{ id: string }>, res: Response) => {
+jobPostingsRouter.get("/:id", authentication, async (req: Request<{ id: string }>, res: Response) => {
+  if(!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const job = await prisma.jobPosting.findUnique({
     where: { id: req.params.id },
   });
@@ -40,15 +50,34 @@ jobPostingsRouter.post("/", authentication, async (req: Request, res: Response) 
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const job = await prisma.jobPosting.create({
-    data: { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate },
-  });
+  try {
+    const job = await prisma.jobPosting.create({
+      data: {
+        title,
+        description,
+        location,
+        employmentType,
+        seniority,
+        department,
+        requirements,
+        salaryRange,
+        closingDate,
+        user_id: req.user.id as string,
+      },
+    });
 
-  res.status(201).json(job);
+    res.status(201).json(job);
+  } catch(error) {
+    return res.status(400).json({ error: "Invalid request" });
+  }
 });
 
-jobPostingsRouter.put("/:id", async (req: Request<{ id: string }>, res: Response) => {
+jobPostingsRouter.put("/:id", authentication, async (req: Request<{ id: string }>, res: Response) => {
   const { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate } = req.body ?? {};
+
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
   if (!title || !description) {
     return res
@@ -73,7 +102,11 @@ jobPostingsRouter.put("/:id", async (req: Request<{ id: string }>, res: Response
   }
 });
 
-jobPostingsRouter.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
+jobPostingsRouter.delete("/:id", authentication, async (req: Request<{ id: string }>, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   try {
     await prisma.jobPosting.delete({ where: { id: req.params.id } });
     res.status(204).send();
