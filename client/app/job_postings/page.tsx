@@ -8,6 +8,7 @@ import { JobPostingsList } from "./components/JobPostingsList";
 import type { JobPosting } from "./types";
 import { getJobPostings } from "../services/jobPostingService";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
@@ -27,22 +28,28 @@ export default function JobPostingsPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await getJobPostings(); // axios-response
+        const response = await getJobPostings();
 
-        console.log("Status code:", response.status);
-
-        if (response.status === 401) {
-          console.log("Not Authenticated!");
+        if (isMounted) {
+          const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.jobs)
+              ? response.data.jobs
+              : Array.isArray(response.data?.data)
+                ? response.data.data
+                : [];
+          setJobs(data);
+        }
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err) && err.response?.status === 401) {
           setError("Not Authenticated!");
           router.push("/login"); // ✅ client-side redirect
           return;
         }
 
-        if (isMounted) {
-          setJobs(response.data); // axios.data sisältää JobPosting[]
-        }
-      } catch (err: any) {
-        setError(err.message ?? "Something went wrong");
+        const message =
+          err instanceof Error ? err.message : "Something went wrong";
+        setError(message);
       } finally {
         if (isMounted) {
           setIsLoading(false);

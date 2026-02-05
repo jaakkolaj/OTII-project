@@ -12,7 +12,7 @@ type JobPostingsListProps = {
 };
 
 export function JobPostingsList({
-  jobs,
+  jobs = [],
   isLoading,
   error,
   deletingId,
