@@ -24,8 +24,18 @@ loginRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
         id: user.id
     }
 
-    const token = jwt.sign(userForToken, "SECRET");
-    res.status(200).json({ token, email: user.email, id: user.id })
-})
+    const token = jwt.sign(userForToken, "kosodpskop");
+
+    res.cookie("access_token", token, {
+        httpOnly: true,
+        secure: false,        // vain HTTPS
+        sameSite: "lax",     // suojaa CSRF:ltä
+        maxAge: 15 * 60 * 1000
+    });
+
+    console.log("Generated JWT token:", token);
+
+    res.status(200).json({ email: user.email, id: user.id, token: token })
+});
 
 export default loginRouter;

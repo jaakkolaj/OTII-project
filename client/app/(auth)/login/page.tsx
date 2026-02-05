@@ -2,10 +2,12 @@
 import { LoginForm } from "@/app/(auth)/login/components/login-form"
 import { useState } from "react";
 import { loginUser } from "@/app/services/userService";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('')
+  const router = useRouter();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -16,8 +18,7 @@ export default function Page() {
       }
       const response = await loginUser(user);
       console.log(response);
-      // User's token is stored in localstorage in client side.
-      localStorage.setItem('token', response.token);
+      router.push('/');
       } catch (error) {
       console.log(error);
       };

@@ -20,7 +20,15 @@ export const loginUser = async (user: User) => {
   const response = await axios.post(`${baseUrl}/login`, user, {
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true
+  });
+  return response.data;
+};
+
+export const logoutUser = async () => {
+  const response = await axios.post(`${baseUrl}/logout`, {}, {
+    withCredentials: true
   });
   return response.data;
 };

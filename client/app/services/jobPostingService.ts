@@ -21,13 +21,24 @@ export const createJobPosting = async (jobPosting: JobPosting) => {
   const response = await axios.post(`${baseUrl}/job-postings`, jobPosting, {
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true,
   });
   return response.data;
 };
 
 // Fetch all job postings
 export const getJobPostings = async () => {
-  const response = await axios.get(`${baseUrl}/job-postings`);
-  return response.data;
+  const response = await axios.get(`${baseUrl}/job-postings`, {
+    withCredentials: true
+  });
+  return response;
+};
+
+// Delete job posting
+export const deleteJobPosting = async (jobId: any) => {
+  const response = await axios.delete(`${baseUrl}/job-postings/${jobId}`, {
+    withCredentials: true
+  });
+  return response;
 }

@@ -6,6 +6,10 @@ import { JobPostingsHeader } from "./components/JobPostingsHeader";
 import { JobPostingsToolbar } from "./components/JobPostingsToolbar";
 import { JobPostingsList } from "./components/JobPostingsList";
 import type { JobPosting } from "./types";
+import { getJobPostings } from "../services/jobPostingService";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { deleteJobPosting } from "../services/jobPostingService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
@@ -16,6 +20,8 @@ export default function JobPostingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  const router = useRouter();
+
   useEffect(() => {
     let isMounted = true;
 
@@ -23,23 +29,28 @@ export default function JobPostingsPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_BASE_URL}/job-postings`);
-        console.log("Fetch response:", response);
-        if (!response.ok) {
-          const payload = await response.json().catch(() => null);
-          const message = payload?.error ?? "Failed to load job postings.";
-          throw new Error(message);
-        }
-        const data = (await response.json()) as JobPosting[];
+        const response = await getJobPostings();
+
         if (isMounted) {
+          const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.jobs)
+              ? response.data.jobs
+              : Array.isArray(response.data?.data)
+                ? response.data.data
+                : [];
           setJobs(data);
         }
-      } catch (err) {
-        if (isMounted) {
-          setError(
-            err instanceof Error ? err.message : "Failed to load job postings."
-          );
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err) && err.response?.status === 401) {
+          setError("Not Authenticated!");
+          router.push("/login"); // ✅ client-side redirect
+          return;
         }
+
+        const message =
+          err instanceof Error ? err.message : "Something went wrong";
+        setError(message);
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -63,29 +74,12 @@ export default function JobPostingsPage() {
   }, [jobs, query]);
 
   const handleDelete = async (jobId: string) => {
-    const confirmed = window.confirm(
-      "Delete this job posting? This action cannot be undone."
-    );
-    if (!confirmed) return;
-
-    setDeletingId(jobId);
-    setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/job-postings/${jobId}`, {
-        method: "DELETE",
-      });
-      if (!response.ok && response.status !== 204) {
-        const payload = await response.json().catch(() => null);
-        const message = payload?.error ?? "Failed to delete job posting.";
-        throw new Error(message);
-      }
-      setJobs((prev) => prev.filter((job) => job.id !== jobId));
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to delete job posting."
-      );
-    } finally {
-      setDeletingId(null);
+      await deleteJobPosting(jobId);
+      setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
+      console.log("job posting successfully deleted")
+    } catch(error) {
+      return console.log(error);
     }
   };
 
