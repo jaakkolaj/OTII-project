@@ -36,8 +36,8 @@ export const getJobPostings = async () => {
 };
 
 // Delete job posting
-export const deleteJobPosting = async () => {
-  const response = await axios.delete(`${baseUrl}/job-postings`, {
+export const deleteJobPosting = async (jobId: any) => {
+  const response = await axios.delete(`${baseUrl}/job-postings/${jobId}`, {
     withCredentials: true
   });
   return response;

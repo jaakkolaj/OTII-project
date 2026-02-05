@@ -9,6 +9,7 @@ import type { JobPosting } from "./types";
 import { getJobPostings } from "../services/jobPostingService";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { deleteJobPosting } from "../services/jobPostingService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
 
@@ -73,6 +74,13 @@ export default function JobPostingsPage() {
   }, [jobs, query]);
 
   const handleDelete = async (jobId: string) => {
+    try {
+      await deleteJobPosting(jobId);
+      setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
+      console.log("job posting successfully deleted")
+    } catch(error) {
+      return console.log(error);
+    }
   };
 
   return (
