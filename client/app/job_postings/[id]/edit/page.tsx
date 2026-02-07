@@ -6,9 +6,9 @@ import Link from "next/link";
 import { ArrowLeft, Briefcase } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
+import { getJobPostingById, editJobPostingById } from "@/app/services/jobPostingService";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://";
-
+// Job-postauksen lomaketiedot
 type JobFormState = {
   title: string;
   department: string;
@@ -21,6 +21,7 @@ type JobFormState = {
   closingDate: string;
 };
 
+// Lomakkeen alkuarvot
 const emptyForm: JobFormState = {
   title: "",
   department: "",
@@ -42,51 +43,39 @@ export default function EditJobPostingPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // useEffect hookki lataa nykyisen jobPostingin datan ja syöttää arvot lomakkeeseen.
   useEffect(() => {
     if (!jobId) {
       setIsLoading(false);
       return;
     }
 
-    const controller = new AbortController();
-
     const loadJob = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/job-postings/${jobId}`,
-          { signal: controller.signal }
-        );
-        if (!response.ok) {
-          const payload = await response.json().catch(() => null);
-          const message = payload?.error ?? "Failed to load job posting.";
-          throw new Error(message);
-        }
-        const job = (await response.json()) as {
-          title?: string;
-          description?: string;
-        };
-        setForm((prev) => ({
-          ...prev,
-          title: job.title ?? "",
-          description: job.description ?? "",
-        }));
-      } catch (err) {
-        if (controller.signal.aborted) return;
-        setError(
-          err instanceof Error ? err.message : "Failed to load job posting."
-        );
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
+    setIsLoading(true);
+    setError(null);
+    try {
+      // service funktio apuna, joka lähettää GET pyynnön palvelimelle
+      const response = await getJobPostingById(jobId);
+      setForm((prev) => ({
+        ...prev,
+        title: response.data.title ?? "",
+        department: response.data.department ?? "",
+        description: response.data.description ?? "",
+        location: response.data.location ?? "",
+        employmentType: response.data.employmentType,
+        salaryRange: response.data.salaryRange ?? "",
+        requirements: response.data.requirements ?? "",
+        seniority: response.data.seniority ?? ""
+      }));
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to load job posting."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
     loadJob();
-
-    return () => controller.abort();
   }, [jobId]);
 
   const handleChange = (
@@ -96,6 +85,7 @@ export default function EditJobPostingPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // HandleSubmit käsittelee jobPostingin muokkauksen
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!jobId) return;
@@ -104,22 +94,22 @@ export default function EditJobPostingPage() {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/job-postings/${jobId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: form.title,
-          description: form.description,
-        }),
-      });
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        const message = payload?.error ?? "Failed to update job posting.";
-        throw new Error(message);
+      const job: JobFormState = {
+        title: form.title,
+        department: form.department,
+        location: form.location,
+        employmentType: form.employmentType,
+        seniority: form.seniority,
+        description: form.description,
+        requirements: form.requirements,
+        salaryRange: form.salaryRange,
+        closingDate: form.closingDate,
       }
 
-      router.push(`/job_postings/${jobId}`);
+      // Service funktio, joka lähettää PUT pyynnön palvelimelle
+      await editJobPostingById(jobId, job);
+      // Redirectaus takaisin jobPosting sivulle
+      router.push(`/job_postings`);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to update job posting."
