@@ -11,8 +11,6 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { deleteJobPosting } from "../services/jobPostingService";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
-
 export default function JobPostingsPage() {
   const [jobs, setJobs] = useState<JobPosting[]>([]);
   const [query, setQuery] = useState("");
