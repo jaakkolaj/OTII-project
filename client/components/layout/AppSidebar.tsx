@@ -44,8 +44,12 @@ const footerItems = [
 export function AppSidebar() {
   const router = useRouter()
   const handleLogout = async () => {
-    await logoutUser();
-    router.push("/login")
+    try {
+      await logoutUser();
+      router.push("/login")
+    } catch (err) {
+      router.push("/login")
+    }
   }
   return (
     <Sidebar collapsible="icon"className="shadow-[2px_0_10px_rgba(0,0,0,0.15)] 

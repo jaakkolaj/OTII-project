@@ -8,8 +8,7 @@ import { useRouter } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
 import { createJobPosting } from "@/app/services/jobPostingService";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
-
+// Job-postauksen lomaketiedot
 type JobFormState = {
   title: string;
   department: string;
@@ -22,6 +21,7 @@ type JobFormState = {
   closingDate: string;
 };
 
+// Lomakkeen alkuarvot
 const initialForm: JobFormState = {
   title: "",
   department: "",
@@ -36,6 +36,8 @@ const initialForm: JobFormState = {
 
 export default function CreateJobPostingPage() {
   const router = useRouter();
+
+  // Lomakkeen tila
   const [form, setForm] = useState<JobFormState>(initialForm);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,14 +49,14 @@ export default function CreateJobPostingPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Lomakkeen lähetys funktio, jossa muodostetaan jobPosting
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitting(true);
     setError(null);
-    
-    console.log("Submitting form:", form);
 
     try {
+      // Luodaan job-postaus olion lomaketiedoista
       const jobPosting: JobFormState = {
         title: form.title,
         department: form.department,
@@ -66,6 +68,8 @@ export default function CreateJobPostingPage() {
         salaryRange: form.salaryRange,
         closingDate: form.closingDate,
       }
+
+      // Service funktio, joka lähettää POST pyynnön backend routtiin.
       await createJobPosting(jobPosting);
       router.push("/job_postings");
     } catch (err) {

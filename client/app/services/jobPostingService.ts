@@ -13,7 +13,6 @@ interface JobPosting {
     description: string;
     requirements: string;
     closingDate: string;
-    
 }
 
 // Create a new job posting
@@ -42,3 +41,22 @@ export const deleteJobPosting = async (jobId: any) => {
   });
   return response;
 }
+
+// Get job posting by ID
+export const getJobPostingById = async (jobId: any) => {
+  const response = await axios.get(`${baseUrl}/job-postings/${jobId}`, {
+    withCredentials: true
+  });
+  return response;
+};
+
+// Edit existing job osting
+export const editJobPostingById = async (jobId: any, jobPosting: JobPosting) => {
+  const response = await axios.put(`${baseUrl}/job-postings/${jobId}`, jobPosting, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    withCredentials: true
+  });
+  return response;
+};
