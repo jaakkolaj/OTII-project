@@ -9,7 +9,7 @@
     "types": ["node", "jest"],
     "typeRoots": ["./node_modules/@types", "./src/types"] 
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "ts-node": {
     "esm": true
   }
