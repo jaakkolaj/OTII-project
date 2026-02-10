@@ -18,6 +18,8 @@ const jobTitleMap: Record<string, string> = {
 
 type AiAnalysisResponse = {
   id: string;
+  name: string;
+  email: string;
   candidate_id?: string;
   skills?: unknown;
   strengths?: unknown;
@@ -61,8 +63,8 @@ export default function ResumeAnalyzerCandidatesPage() {
         console.log(response)
         const mappedCandidates = data.map((analysis, index) => ({
           id: analysis.candidate_id ?? analysis.id ?? String(index),
-          name: "Unknown",
-          email: "Unknown",
+          name: analysis.name,
+          email: analysis.email,
           phone: "Unknown",
           position: jobTitle,
           strengths: toStringList(analysis.strengths),

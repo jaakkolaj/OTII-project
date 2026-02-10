@@ -48,8 +48,24 @@ export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) =
       }
     });
 
+    const aiAnalysesWithName = await Promise.all(
+      aiAnalyses.map(async (analysis) => {
+        const candidate = await prisma.candidate.findUnique({
+          where: {
+            id: analysis.candidate_id,
+          },
+        });
+
+        return {
+          ...analysis,
+          name: candidate?.name ?? null,
+          email: candidate?.email ?? null
+        };
+      }),
+    );
+
     
-    return res.status(200).json(aiAnalyses);
+    return res.status(200).json(aiAnalysesWithName);
   } catch (error) {
     res.status(400).json({ message: error });
   }
