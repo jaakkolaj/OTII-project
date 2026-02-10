@@ -8,6 +8,7 @@ import uploadRouter from './routes/upload.routes';
 import { analyzeTextWithAI } from './services/ai.service';
 import { tokenizeText, getTopKeywords } from './services/nlp.services';
 import cookieParser from 'cookie-parser'
+import analysisRouter from './routes/aianalysis.route';
 
 const app = express()
 app.use(express.json())
@@ -23,6 +24,7 @@ app.use('/login', loginRouter);
 app.use('/job-postings', jobPostingsRouter);
 app.use('/upload', uploadRouter);
 app.use('/logout', logouRouter);
+app.use('/analyze', analysisRouter)
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })

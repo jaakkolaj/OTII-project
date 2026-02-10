@@ -51,8 +51,10 @@ model AIAnalysis {
   strengths      Json
   weaknesses     Json
   summary        String
+  score          Float
   raw_ai_response Json
   created_at     DateTime    @default(now())
+
 
   candidate        Candidate   @relation(fields: [candidate_id], references: [id])
   job_posting      JobPosting @relation(fields: [job_posting_id], references: [id])
