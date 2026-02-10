@@ -9,7 +9,7 @@ import {
 const aiAnalysisRouter = Router();
 
 //Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-aiAnalysisRouter.post('/analyze/:jobPostingId', aianalysis);
+aiAnalysisRouter.post('/:jobPostingId', aianalysis);
 
 //Testi routti aiAnalyysien luontiin
 aiAnalysisRouter.post('/', createAnalysis);

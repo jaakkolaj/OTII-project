@@ -12,6 +12,7 @@ export const aianalysis = async (req: Request, res: Response) => {
           "Virheellinen jobPostingId. ID:n on oltava yksittäinen merkkijono.",
       });
     }
+
     //Haetaan kaikki ehdokkaat, joilla ei ole vielä analyysia tässä työpaikassa
     const candidates = await prisma.candidate.findMany({
       where: {
@@ -24,11 +25,70 @@ export const aianalysis = async (req: Request, res: Response) => {
       },
     });
 
-    //Analysoidaan jokainen cv seuraavaksi
-    //kutsutaan ai service
-    //const aiResult = await analyzeTextWithAI();
+    if (candidates.length === 0) {
+      return res
+        .status(200)
+        .json({ message: "Ei uusia analysoitavia ehdokkaita." });
+    }
 
-  } catch (error) {}
+    const results = [];
+
+    //Käydään läpi jokainen kandidaatti sen cv ja kutsutaan AI service
+    //TODO: for looppauksen sijasta voi olla parempi hyödyntä jonoa
+    for (const candidate of candidates) {
+      const cvText = candidate.documents[0]?.extracted_text;
+      const jobRequirements = candidate.job_posting.requirements;
+
+      //Jos cv teksti ei ole tyhjä
+      if (cvText) {
+        try {
+          const aiResult = await analyzeTextWithAI(cvText, jobRequirements);
+
+          //päivitetään tietokantaan kandidaatin tiedot ja luodaan aiAnalyysi
+          await prisma.$transaction([
+            prisma.candidate.update({
+              where: { id: candidate.id },
+              data: { name: aiResult.name, email: aiResult.email },
+            }),
+            prisma.aIAnalysis.create({
+              data: {
+                candidate_id: candidate.id,
+                job_posting_id: candidate.job_posting_id,
+                skills: aiResult.skills,
+                years_experience: aiResult.years_experience,
+                education_level: aiResult.education_level,
+                keyword_matches: aiResult.keyword_matches,
+                strengths: aiResult.strengths,
+                weaknesses: aiResult.weaknesses,
+                summary: aiResult.summary,
+                score: aiResult.score,
+                raw_ai_response: aiResult as any,
+              },
+            }),
+          ]);
+          results.push({ id: candidate.id, status: "success" });
+        } catch (error: any) {
+          console.error(
+            `Analyysi epäonnistui ehdokkaalle ${candidate.id}:`,
+            error.message,
+          );
+          results.push({
+            id: candidate.id,
+            status: "error",
+            error: error.message,
+          });
+        }
+      }
+    }
+    res.status(200).json({
+      message: "Analyysiprosessi valmis",
+      processed_count: results.length,
+      details: results
+    });
+  } catch (error: any) {
+    console.error("Virhe analyysiä tehdessä", error.message);
+    res.status(500).json({ error: "Palvelinvirhe analyysin alustuksessa" });
+  }
 };
 
 // Hakee yhden jobPostingin kaikki aiAnalyysit
@@ -86,6 +146,7 @@ export const createAnalysis = async (req: Request, res: Response) => {
     strengths,
     weaknesses,
     summary,
+    score,
     raw_ai_response
   } = req.body;
 
@@ -101,6 +162,7 @@ export const createAnalysis = async (req: Request, res: Response) => {
         strengths,
         weaknesses,
         summary,
+        score,
         raw_ai_response
       }
     });
