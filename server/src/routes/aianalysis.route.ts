@@ -3,19 +3,23 @@ import {
   aianalysis, 
   getAnalysisResults, 
   getAnalysisById, 
-  deleteAnalysis 
+  deleteAnalysis,
+  getAiAnalysesByJobPostingId
 } from '../controllers/aianalysis.controller';
-const router = Router();
+const aiAnalysisRouter = Router();
 
 //Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-router.post('/analyze/:jobPostingId', aianalysis);
+aiAnalysisRouter.post('/analyze/:jobPostingId', aianalysis);
+
+
+aiAnalysisRouter.get('/:jobPostingId', getAiAnalysesByJobPostingId)
 
 
 //muut reitit
-router.get('/job/:jobPostingId', getAnalysisResults);
+aiAnalysisRouter.get('/job/:jobPostingId', getAnalysisResults);
 
-router.get('/candidate/:candidateId', getAnalysisById);
+aiAnalysisRouter.get('/candidate/:candidateId', getAnalysisById);
 
-router.delete('/:analysisId', deleteAnalysis); 
+aiAnalysisRouter.delete('/:analysisId', deleteAnalysis); 
 
-export default router;
+export default aiAnalysisRouter;

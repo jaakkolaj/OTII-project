@@ -31,6 +31,28 @@ export const aianalysis = async (req: Request, res: Response) => {
   } catch (error) {}
 };
 
+// Hakee yhden jobPostingin kaikki aiAnalyysit
+export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) => {
+  try {
+    const { jobPostingId } = req.params;
+    if (typeof jobPostingId !== "string") {
+      return res.status(400).json({
+        error:
+          "Virheellinen jobPostingId. ID:n on oltava yksittäinen merkkijono.",
+      });
+    }
+
+    const aiAnalyses = await prisma.aIAnalysis.findMany({
+      where: {
+        job_posting_id: jobPostingId
+      }
+    });
+    return res.status(200).json(aiAnalyses);
+  } catch (error) {
+    res.status(400).json({ message: error });
+  }
+};
+
 
   // Hae analyysi ehdokkaan ID:n perusteella
   export const getAnalysisById = async (req: Request, res: Response) => {

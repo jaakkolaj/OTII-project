@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import SidebarLayout from "@/app/SidebarLayout";
 import { CandidatesHeader } from "./components/CandidatesHeader";
 import { CandidatesToolbar } from "./components/CandidatesToolbar";
 import { CandidatesList } from "./components/CandidatesList";
 import type { ResumeCandidate } from "../types";
+import { getAiAnalysisByJobPostingId } from "@/app/services/aiAnalysisService";
 
 const jobTitleMap: Record<string, string> = {
   "full-stack-developer": "Full Stack Developer",
@@ -28,39 +29,26 @@ const baseCandidates: ResumeCandidate[] = [
     score: 86,
     rank: 1,
   },
-  {
-    id: "erkki-esimerkki",
-    name: "Erkki Esimerkki",
-    email: "erkki@gmail.com",
-    phone: "040 555 2211",
-    position: "Full Stack Developer",
-    strengths: ["API design", "Testing", "Mentoring"],
-    weaknesses: ["Limited product analytics"],
-    topSkills: ["Node.js", "Jest", "Docker"],
-    score: 72,
-    rank: 2,
-  },
-  {
-    id: "aino-virtanen",
-    name: "Aino Virtanen",
-    email: "aino@gmail.com",
-    phone: "050 902 7788",
-    position: "Full Stack Developer",
-    strengths: ["UI polish", "Accessibility", "Collaboration"],
-    weaknesses: ["Less backend depth"],
-    topSkills: ["React", "Figma", "CSS"],
-    score: 64,
-    rank: 3,
-  },
 ];
 
 export default function ResumeAnalyzerCandidatesPage() {
-  const params = useParams<{ id: string }>();
-  const jobId = Array.isArray(params.id) ? params.id[0] : (params.id ?? "");
+  const { id : jobId} = useParams<{ id: string }>();
   const jobTitle = jobTitleMap[jobId] ?? "Selected role";
 
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("score-desc");
+
+  useEffect(() => {
+    const queryAiAnalyses = async () => {
+      try {
+        const response = await getAiAnalysisByJobPostingId(jobId);
+        console.log(response)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    queryAiAnalyses();
+  }, [])
 
   const candidates = useMemo(
     () =>
