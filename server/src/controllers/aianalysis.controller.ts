@@ -47,11 +47,49 @@ export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) =
         job_posting_id: jobPostingId
       }
     });
+
+    
     return res.status(200).json(aiAnalyses);
   } catch (error) {
     res.status(400).json({ message: error });
   }
 };
+
+// Testi routti analyysin luontiin
+export const createAnalysis = async (req: Request, res: Response) => {
+  // Testauksessa postmaniin syötetään manuaalisesti job_posting_id ja candidate_id
+  const { candidate_id, 
+    job_posting_id, 
+    skills, 
+    years_experience, 
+    education_level,
+    keyword_matches,
+    strengths,
+    weaknesses,
+    summary,
+    raw_ai_response
+  } = req.body;
+
+  try {
+    const aiAnalysis = await prisma.aIAnalysis.create({
+      data: {
+        candidate_id, 
+        job_posting_id, 
+        skills, 
+        years_experience, 
+        education_level,
+        keyword_matches,
+        strengths,
+        weaknesses,
+        summary,
+        raw_ai_response
+      }
+    });
+    res.status(200).json({ message: aiAnalysis })
+  } catch (error) {
+    res.status(400).json({ message: error })
+  }
+}
 
 
   // Hae analyysi ehdokkaan ID:n perusteella

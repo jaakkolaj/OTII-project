@@ -4,7 +4,8 @@ import {
   getAnalysisResults, 
   getAnalysisById, 
   deleteAnalysis,
-  getAiAnalysesByJobPostingId
+  getAiAnalysesByJobPostingId,
+  createAnalysis
 } from '../controllers/aianalysis.controller';
 const aiAnalysisRouter = Router();
 
@@ -12,7 +13,10 @@ const aiAnalysisRouter = Router();
 aiAnalysisRouter.post('/analyze/:jobPostingId', aianalysis);
 
 
-aiAnalysisRouter.get('/:jobPostingId', getAiAnalysesByJobPostingId)
+aiAnalysisRouter.get('/:jobPostingId', getAiAnalysesByJobPostingId);
+
+//Testi routti aiAnalyysien luontiin
+aiAnalysisRouter.post('/', createAnalysis);
 
 
 //muut reitit
