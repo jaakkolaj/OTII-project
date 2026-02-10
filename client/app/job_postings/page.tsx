@@ -71,6 +71,7 @@ export default function JobPostingsPage() {
     );
   }, [jobs, query]);
 
+  // JobPostingien poistamista varten
   const handleDelete = async (jobId: string) => {
     try {
       await deleteJobPosting(jobId);

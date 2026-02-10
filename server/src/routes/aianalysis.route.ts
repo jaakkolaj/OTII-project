@@ -1,21 +1,26 @@
 import { Router } from 'express';
 import { 
   aianalysis, 
-  getAnalysisResults, 
   getAnalysisById, 
-  deleteAnalysis 
+  deleteAnalysis,
+  getAiAnalysesByJobPostingId,
+  createAnalysis
 } from '../controllers/aianalysis.controller';
-const analysisRouter = Router();
+const aiAnalysisRouter = Router();
 
 //Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-analysisRouter.post('/:jobPostingId', aianalysis);
+aiAnalysisRouter.post('/:jobPostingId', aianalysis);
 
+//Testi routti aiAnalyysien luontiin
+aiAnalysisRouter.post('/', createAnalysis);
 
-//muut reitit
-analysisRouter.get('/job/:jobPostingId', getAnalysisResults);
+//Reitti hakee kaikki kandidaatit ja niiden analyysit yhdessä jobPostingissa
+aiAnalysisRouter.get('/job/:jobPostingId', getAiAnalysesByJobPostingId);
 
-analysisRouter.get('/candidate/:candidateId', getAnalysisById);
+// Hakee yhden kandidaatin ja sen ai analyysin
+aiAnalysisRouter.get('/candidate/:analysisId', getAnalysisById);
 
-analysisRouter.delete('/:analysisId', deleteAnalysis); 
+// Poistaa Ai analyysin ID:n perusteella
+aiAnalysisRouter.delete('/:analysisId', deleteAnalysis); 
 
-export default analysisRouter;
+export default aiAnalysisRouter;

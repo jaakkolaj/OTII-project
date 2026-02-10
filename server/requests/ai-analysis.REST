@@ -1,0 +1,29 @@
+POST http://localhost:5001/aiAnalysis
+Content-Type: application/json
+
+{
+  "candidate_id": "bae54c6f-4237-4e32-9fcb-94113813089f",
+  "job_posting_id": "fba7270c-1ae9-4e3d-b9be-a03846e6ec9b",
+  "skills": {
+    "technical": ["JavaScript", "TypeScript", "Node.js", "PostgreSQL", "Docker"],
+    "soft": ["Teamwork", "Problem solving", "Communication"]
+  },
+  "years_experience": 3,
+  "education_level": "master",
+  "keyword_matches": {
+    "matched": ["Node.js", "REST APIs", "Docker", "SQL"],
+    "missing": ["Kubernetes", "AWS"]
+  },
+  "strengths": [
+    "backend devaus"
+  ],
+  "weaknesses": [
+    "Frontti devaus"
+  ],
+  "summary": "Mid-level backend developer with strong Node.js and database experience. Good match for backend-focused roles but may need support with cloud-native tooling.",
+  "raw_ai_response": {
+    "score": 0.82,
+    "notes": "Candidate matches most core technical requirements but lacks advanced cloud experience.",
+    "model": "gpt-analysis-v1"
+  }
+}
