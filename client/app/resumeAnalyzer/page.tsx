@@ -15,10 +15,13 @@ export default function ResumeAnalyzerPage() {
   const [jobs, setJobs] = useState<JobPosting[]>([]);
   const router = useRouter();
 
+  // Ladataan kaikki jobPostingit
   useEffect(() => {
     const loadJobPostings = async() => {
       try {
         const response = await getJobPostings();
+
+        // Liitetään vastaukset osaksi jobs tilaa
         const data = Array.isArray(response.data)
             ? response.data
             : Array.isArray(response.data?.jobs)
@@ -30,7 +33,7 @@ export default function ResumeAnalyzerPage() {
       } catch (err: unknown) {
         if (axios.isAxiosError(err) && err.response?.status === 401) {
           console.log("Not Authenticated!");
-          router.push("/login"); // client-side redirect
+          router.push("/login"); // client-side redirect jos tokenia ei löydy cookiesta
           return;
         }
       }

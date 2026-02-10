@@ -42,12 +42,15 @@ export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) =
       });
     }
 
+    // Haetaan kaikki analyysit yhdestä jobPostingista
     const aiAnalyses = await prisma.aIAnalysis.findMany({
       where: {
         job_posting_id: jobPostingId
       }
     });
 
+    // Käydään kaikki analyysit läpi ja lisätään niihin kandidaatin nimi ja email
+    // Muodostetaan uusi analyysi objekti ja lähetetään se
     const aiAnalysesWithName = await Promise.all(
       aiAnalyses.map(async (analysis) => {
         const candidate = await prisma.candidate.findUnique({

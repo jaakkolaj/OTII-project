@@ -16,6 +16,7 @@ export const getAiAnalysisById = async(analysisId: any) => {
     return response;
 };
 
+// Service funktio, joka lähettää pyynnön palvelimelle hakeakseen kaikki analyysit yhdestä jobPostingista.
 export const getAiAnalysisByJobPostingId = async (jobId: any) => {
     const response = await axios.get(`${baseUrl}/${jobId}`, {
         withCredentials: true
