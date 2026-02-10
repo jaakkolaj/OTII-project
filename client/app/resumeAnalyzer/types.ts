@@ -2,10 +2,10 @@ export type ResumeJobPosting = {
   id: string;
   title: string;
   description: string;
-  applicants: number;
   location: string;
-  status: "Open" | "Paused" | "Closed";
-  lastUpdated: string;
+  applicants?: number;
+  status?: "Open" | "Paused" | "Closed";
+  lastUpdated?: string;
 };
 
 export type ResumeCandidate = {
@@ -20,3 +20,16 @@ export type ResumeCandidate = {
   score: number;
   rank: number;
 };
+
+export type AiAnalysis = {
+  id: string,
+  candidate_id: string,
+  skills: JSON,
+  years_expericene: GLfloat,
+  education_level: string,
+  keyword_matches: JSON,
+  strengths: JSON,
+  weaknesses: JSON,
+  summary: string,
+  raw_ai_response: JSON
+}

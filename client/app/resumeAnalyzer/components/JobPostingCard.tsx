@@ -30,17 +30,21 @@ export function JobPostingCard({ posting }: JobPostingCardProps) {
             <CardTitle className="text-base">{posting.title}</CardTitle>
             <CardDescription>{posting.description}</CardDescription>
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="rounded-full bg-muted px-2 py-0.5">
-                {posting.status}
-              </span>
+              {posting.status && (
+                <span className="rounded-full bg-muted px-2 py-0.5">
+                  {posting.status}
+                </span>
+              )}
               <span>{posting.location}</span>
-              <span>Updated {posting.lastUpdated}</span>
+              {posting.lastUpdated && <span>Updated {posting.lastUpdated}</span>}
             </div>
           </div>
         </div>
-        <div className="text-sm font-medium text-muted-foreground">
-          Applicants: {posting.applicants}
-        </div>
+        {typeof posting.applicants === "number" && (
+          <div className="text-sm font-medium text-muted-foreground">
+            Applicants: {posting.applicants}
+          </div>
+        )}
       </CardHeader>
       <CardContent className="pt-0">
         <div className="h-px w-full bg-border" />

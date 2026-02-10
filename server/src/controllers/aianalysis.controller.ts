@@ -31,18 +31,129 @@ export const aianalysis = async (req: Request, res: Response) => {
   } catch (error) {}
 };
 
+// Hakee yhden jobPostingin kaikki aiAnalyysit
+export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) => {
+  try {
+    const { jobPostingId } = req.params;
+    if (typeof jobPostingId !== "string") {
+      return res.status(400).json({
+        error:
+          "Virheellinen jobPostingId. ID:n on oltava yksittäinen merkkijono.",
+      });
+    }
 
-  // Hae analyysi ehdokkaan ID:n perusteella
-  export const getAnalysisById = async (req: Request, res: Response) => {
+    // Haetaan kaikki analyysit yhdestä jobPostingista
+    const aiAnalyses = await prisma.aIAnalysis.findMany({
+      where: {
+        job_posting_id: jobPostingId
+      }
+    });
 
-  };
+    // Käydään kaikki analyysit läpi ja lisätään niihin kandidaatin nimi ja email
+    // Muodostetaan uusi analyysi objekti ja lähetetään se
+    const aiAnalysesWithName = await Promise.all(
+      aiAnalyses.map(async (analysis) => {
+        const candidate = await prisma.candidate.findUnique({
+          where: {
+            id: analysis.candidate_id,
+          },
+        });
 
-  // Poista analyysi
-  export const deleteAnalysis = async (req: Request, res: Response) => {
-   
-  };
+        return {
+          ...analysis,
+          name: candidate?.name ?? null,
+          email: candidate?.email ?? null
+        };
+      }),
+    );
 
-  // Hae analyysi tulokset
-  export const getAnalysisResults = async (req: Request, res: Response) => {
+    
+    return res.status(200).json(aiAnalysesWithName);
+  } catch (error) {
+    res.status(400).json({ message: error });
+  }
 };
 
+// Testi routti analyysin luontiin
+export const createAnalysis = async (req: Request, res: Response) => {
+  // Testauksessa postmaniin syötetään manuaalisesti job_posting_id ja candidate_id
+  const { candidate_id, 
+    job_posting_id, 
+    skills, 
+    years_experience, 
+    education_level,
+    keyword_matches,
+    strengths,
+    weaknesses,
+    summary,
+    raw_ai_response
+  } = req.body;
+
+  try {
+    const aiAnalysis = await prisma.aIAnalysis.create({
+      data: {
+        candidate_id, 
+        job_posting_id, 
+        skills, 
+        years_experience, 
+        education_level,
+        keyword_matches,
+        strengths,
+        weaknesses,
+        summary,
+        raw_ai_response
+      }
+    });
+    res.status(200).json({ message: aiAnalysis })
+  } catch (error) {
+    res.status(400).json({ message: error })
+  }
+}
+
+
+// Hae analyysi ehdokkaan ID:n perusteella
+export const getAnalysisById = async (req: Request, res: Response) => {
+  const { analysisId } = req.params;
+  if (typeof analysisId !== "string") {
+    return res.status(400).json({
+      error:
+        "Virheellinen jobPostingId. ID:n on oltava yksittäinen merkkijono.",
+    });
+  }
+
+  try {
+    const aiAnalysis = prisma.aIAnalysis.findUnique({
+      where: {
+        id: analysisId
+      }
+    });
+    res.status(200).json(aiAnalysis);
+  } catch (error) {
+    return res.status(400).json({ message: error })
+  }
+};
+
+// Poista analyysin ID:n perusteella
+export const deleteAnalysis = async (req: Request, res: Response) => {
+  const { analysisId } = req.params;
+  if(typeof analysisId !== "string") {
+    return res.status(400).json({ message: "Virheellinen AI Analyysin ID" });
+  }
+
+  const aiAnalysis = prisma.aIAnalysis.findUnique({
+    where: {
+      id: analysisId
+    }
+  });
+
+  if(!aiAnalysis) {
+    return res.status(404).json({ message: "AI analyysiä ei löytynt!" });
+  }
+
+  try {
+    await prisma.aIAnalysis.delete({ where: { id: analysisId } });
+    res.status(200); 
+  } catch (error) {
+    res.status(400).json({ message: error })
+  }
+};
