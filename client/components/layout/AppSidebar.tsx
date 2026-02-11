@@ -37,7 +37,7 @@ const mainItems = [
 ]
 
 const footerItems = [
-  { title: "Profile", href: "#", icon: User },
+  { title: "Profile", href: "/profile", icon: User },
   { title: "Settings", href: "/settings", icon: Settings },
 ]
 
