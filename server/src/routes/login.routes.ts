@@ -30,10 +30,8 @@ loginRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
         httpOnly: true,
         secure: false,        // vain HTTPS
         sameSite: "lax",     // suojaa CSRF:ltä
-        maxAge: 15 * 60 * 1000
+        maxAge: 60 * 60 * 1000
     });
-
-    console.log("Generated JWT token:", token);
 
     res.status(200).json({ email: user.email, id: user.id, token: token })
 });
