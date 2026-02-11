@@ -9,7 +9,7 @@ export const uploadFiles = async (req: Request, res: Response) => {
     // Haetaan ladatut tiedostot pyynnöstä
     const files = req.files as Express.Multer.File[];
 
-    const { jobPostingId } = req.body;
+    const jobPostingId = req.body?.jobPostingId;
     
     if (!files || files.length === 0) {
       res.status(400).json({ error: "Tiedostoja ei löytynyt" });
