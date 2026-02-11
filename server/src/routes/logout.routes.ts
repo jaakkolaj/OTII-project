@@ -1,18 +1,9 @@
-import {Router, Request, Response, NextFunction } from 'express';
+import { Router } from 'express';
 import { authentication } from '../middleware/authentication';
+import { logoutUser } from '../controllers/logout.controller';
 
 const logouRouter = Router();
 
-logouRouter.post('/', authentication, (req: Request, res: Response) => {
-
-    res.cookie("access_token", "", {
-        httpOnly: true,
-        secure: false,        // vain HTTPS
-        sameSite: "lax",     // suojaa CSRF:ltä
-        expires: new Date(0),
-        path: "/"
-    });
-    res.status(200).json({ message: "Logged out" })
-});
+logouRouter.post('/', authentication, logoutUser)
 
 export default logouRouter;
