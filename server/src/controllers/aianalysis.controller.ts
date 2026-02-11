@@ -44,6 +44,11 @@ export const aianalysis = async (req: Request, res: Response) => {
         try {
           const aiResult = await analyzeTextWithAI(cvText, jobRequirements);
 
+          // Varmistetaan, että score on aina välillä 0 - 100
+          const safeScore = Math.min(Math.max(aiResult.score, 0), 100);
+          aiResult.score = safeScore;
+          
+      
           //päivitetään tietokantaan kandidaatin tiedot ja luodaan aiAnalyysi
           await prisma.$transaction([
             prisma.candidate.update({
@@ -83,7 +88,7 @@ export const aianalysis = async (req: Request, res: Response) => {
     res.status(200).json({
       message: "Analyysiprosessi valmis",
       processed_count: results.length,
-      details: results
+      details: results,
     });
   } catch (error: any) {
     console.error("Virhe analyysiä tehdessä", error.message);
@@ -92,7 +97,10 @@ export const aianalysis = async (req: Request, res: Response) => {
 };
 
 // Hakee yhden jobPostingin kaikki aiAnalyysit
-export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) => {
+export const getAiAnalysesByJobPostingId = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { jobPostingId } = req.params;
     if (typeof jobPostingId !== "string") {
@@ -105,8 +113,8 @@ export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) =
     // Haetaan kaikki analyysit yhdestä jobPostingista
     const aiAnalyses = await prisma.aIAnalysis.findMany({
       where: {
-        job_posting_id: jobPostingId
-      }
+        job_posting_id: jobPostingId,
+      },
     });
 
     // Käydään kaikki analyysit läpi ja lisätään niihin kandidaatin nimi ja email
@@ -122,12 +130,11 @@ export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) =
         return {
           ...analysis,
           name: candidate?.name ?? null,
-          email: candidate?.email ?? null
+          email: candidate?.email ?? null,
         };
       }),
     );
 
-    
     return res.status(200).json(aiAnalysesWithName);
   } catch (error) {
     res.status(400).json({ message: error });
@@ -137,41 +144,41 @@ export const getAiAnalysesByJobPostingId = async (req: Request, res: Response) =
 // Testi routti analyysin luontiin
 export const createAnalysis = async (req: Request, res: Response) => {
   // Testauksessa postmaniin syötetään manuaalisesti job_posting_id ja candidate_id
-  const { candidate_id, 
-    job_posting_id, 
-    skills, 
-    years_experience, 
+  const {
+    candidate_id,
+    job_posting_id,
+    skills,
+    years_experience,
     education_level,
     keyword_matches,
     strengths,
     weaknesses,
     summary,
     score,
-    raw_ai_response
+    raw_ai_response,
   } = req.body;
 
   try {
     const aiAnalysis = await prisma.aIAnalysis.create({
       data: {
-        candidate_id, 
-        job_posting_id, 
-        skills, 
-        years_experience, 
+        candidate_id,
+        job_posting_id,
+        skills,
+        years_experience,
         education_level,
         keyword_matches,
         strengths,
         weaknesses,
         summary,
         score,
-        raw_ai_response
-      }
+        raw_ai_response,
+      },
     });
-    res.status(200).json({ message: aiAnalysis })
+    res.status(200).json({ message: aiAnalysis });
   } catch (error) {
-    res.status(400).json({ message: error })
+    res.status(400).json({ message: error });
   }
-}
-
+};
 
 // Hae analyysi ehdokkaan ID:n perusteella
 export const getAnalysisById = async (req: Request, res: Response) => {
@@ -186,36 +193,36 @@ export const getAnalysisById = async (req: Request, res: Response) => {
   try {
     const aiAnalysis = prisma.aIAnalysis.findUnique({
       where: {
-        id: analysisId
-      }
+        id: analysisId,
+      },
     });
     res.status(200).json(aiAnalysis);
   } catch (error) {
-    return res.status(400).json({ message: error })
+    return res.status(400).json({ message: error });
   }
 };
 
 // Poista analyysin ID:n perusteella
 export const deleteAnalysis = async (req: Request, res: Response) => {
   const { analysisId } = req.params;
-  if(typeof analysisId !== "string") {
+  if (typeof analysisId !== "string") {
     return res.status(400).json({ message: "Virheellinen AI Analyysin ID" });
   }
 
   const aiAnalysis = prisma.aIAnalysis.findUnique({
     where: {
-      id: analysisId
-    }
+      id: analysisId,
+    },
   });
 
-  if(!aiAnalysis) {
+  if (!aiAnalysis) {
     return res.status(404).json({ message: "AI analyysiä ei löytynt!" });
   }
 
   try {
     await prisma.aIAnalysis.delete({ where: { id: analysisId } });
-    res.status(200); 
+    res.status(200);
   } catch (error) {
-    res.status(400).json({ message: error })
+    res.status(400).json({ message: error });
   }
 };
