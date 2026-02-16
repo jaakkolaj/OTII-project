@@ -2,6 +2,8 @@
 import { SignupForm } from "@/app/(auth)/register/components/signup-form"
 import { useState } from "react"
 import { createUser } from "@/app/services/userService"
+import { Toaster } from "sonner"
+import axios from "axios"
 
 export default function Page() {
   const [email, setEmail] = useState("");
