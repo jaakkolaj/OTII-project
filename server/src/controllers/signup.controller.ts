@@ -15,6 +15,16 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         return res.status(400).json({error: "Email is invalid!"});
     }
 
+    const user = await prisma.user.findUnique({
+        where: { 
+            email: email
+        }
+    });
+
+    if(user) {
+        return res.status(400).json({ error: "This email is already in use" })
+    }
+
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
