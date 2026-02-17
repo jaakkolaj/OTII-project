@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { transport } from "../config/mail";
 import prisma from "../prisma";
-import jwt from 'jsonwebtoken';
+import jwt, {JwtPayload} from 'jsonwebtoken';
 import 'dotenv/config';
+import bcrypt from 'bcrypt';
 
-const EMAIL = process.env.EMAIL;
+const MAIL_USER = process.env.MAIL_USER;
+const JWT_SECRET = process.env.JWT_SECRET || "kosodpskop";
 
 // Routti lähettää sähköposti viestin ja linkin salasanan palautusta varten.
 export const resetPassword = async(req: Request, res: Response) => {
@@ -27,13 +29,13 @@ export const resetPassword = async(req: Request, res: Response) => {
         <tr>
             <td>
                 <p>Here is your password reset link:</p>
-                <a href="https://chat-app-kufo.onrender.com/reset-password/${token}">Reset your password</a>
+                <a href="http://localhost:3000/reset-password/${token}">Reset your password</a>
             </td>
         </tr>
     </table>`;
 
     const mailOptions = {
-        from: EMAIL,
+        from: MAIL_USER,
         to: email,
         subject: 'Password Reset',
         html: emailBody
@@ -47,4 +49,40 @@ export const resetPassword = async(req: Request, res: Response) => {
             res.send('Email sent successfully!');
         }
     });
+};
+
+export const passwordResetToken = async(req: Request, res: Response) => {
+    const tokenParam = req.params.token ?? req.query.token;
+    const token = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
+
+    if (typeof token !== "string" || token.trim() === "") {
+        return res.status(400).json({ error: "Invalid token" });
+    }
+
+    const { password } = req.body;
+    if (typeof password !== "string" || password.length < 5) {
+        return res.status(400).json({ error: "Password must be at least 5 characters" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+        const userId = decoded.id;
+        if (!userId) {
+            return res.status(400).json({ error: "Token payload is invalid" });
+        }
+
+        const user = prisma.user.findUnique({ where: { id: decoded.user_id } });
+        if (!user) {
+            return res.status(404).json({ error: "User with token was not found" });
+        }
+
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: { password: passwordHash },
+        });
+    } catch (error) {
+        return res.status(400).json({ message: error });
+    }
 };
