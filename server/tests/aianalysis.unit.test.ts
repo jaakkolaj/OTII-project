@@ -86,5 +86,4 @@ describe("ai.service: analyzeTextWithAI", () => {
     const resultHigh = await analyzeTextWithAI(mockCv, mockRequirements);
     expect(resultHigh.score).toBe(100);
   });
-  
 });

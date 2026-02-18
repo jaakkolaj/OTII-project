@@ -2,14 +2,17 @@ import { Request, Response } from "express";
 import prisma from "../prisma";
 import { analyzeTextWithAI } from "../services/ai.service";
 
+const isUuid = (id: string) => 
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
+
 export const aianalysis = async (req: Request, res: Response) => {
   try {
     const { jobPostingId } = req.params;
 
-    if (typeof jobPostingId !== "string") {
+    // Varmistetaan, että jobPostingId on validi UUID-merkkijono
+    if (typeof jobPostingId !== "string" || !isUuid(jobPostingId)) {
       return res.status(400).json({
-        error:
-          "Virheellinen jobPostingId. ID:n on oltava yksittäinen merkkijono.",
+        error: "Virheellinen jobPostingId. ID:n on oltava validi UUID-merkkijono.",
       });
     }
 
@@ -24,7 +27,7 @@ export const aianalysis = async (req: Request, res: Response) => {
         job_posting: true,
       },
     });
-
+    
     if (candidates.length === 0) {
       return res
         .status(200)
@@ -46,7 +49,6 @@ export const aianalysis = async (req: Request, res: Response) => {
 
           // Varmistetaan, että score on aina välillä 0 - 100
           const safeScore = Math.min(Math.max(aiResult.score, 0), 100);
-          aiResult.score = safeScore;
           
       
           //päivitetään tietokantaan kandidaatin tiedot ja luodaan aiAnalyysi
@@ -66,7 +68,7 @@ export const aianalysis = async (req: Request, res: Response) => {
                 strengths: aiResult.strengths,
                 weaknesses: aiResult.weaknesses,
                 summary: aiResult.summary,
-                score: aiResult.score,
+                score: safeScore,
                 raw_ai_response: aiResult as any,
               },
             }),
@@ -191,7 +193,7 @@ export const getAnalysisById = async (req: Request, res: Response) => {
   }
 
   try {
-    const aiAnalysis = prisma.aIAnalysis.findUnique({
+    const aiAnalysis = await prisma.aIAnalysis.findUnique({
       where: {
         id: analysisId,
       },
@@ -209,7 +211,7 @@ export const deleteAnalysis = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Virheellinen AI Analyysin ID" });
   }
 
-  const aiAnalysis = prisma.aIAnalysis.findUnique({
+  const aiAnalysis = await prisma.aIAnalysis.findUnique({
     where: {
       id: analysisId,
     },
@@ -221,7 +223,7 @@ export const deleteAnalysis = async (req: Request, res: Response) => {
 
   try {
     await prisma.aIAnalysis.delete({ where: { id: analysisId } });
-    res.status(200);
+    res.status(200).json({ message: "Analyysi poistettu" });
   } catch (error) {
     res.status(400).json({ message: error });
   }
