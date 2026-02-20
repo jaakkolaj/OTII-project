@@ -53,7 +53,7 @@ export const sendPasswordResetEmail = async(req: Request, res: Response) => {
             console.error(error);
             return res.status(500).send('Error sending email');
         } else {
-            res.send('Email sent successfully!');
+            res.status(200).send('Email sent successfully!');
         }
     });
 };
@@ -78,7 +78,7 @@ export const resetPasswordWithToken = async(req: Request, res: Response) => {
         const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
         const userId = decoded.id;
         if (!userId) {
-            return res.status(400).json({ error: "Token payload is invalid" });
+            return res.status(401).json({ error: "Token payload is invalid" });
         }
 
         // Etsii käyttäjän tokenin perusteella
@@ -94,7 +94,7 @@ export const resetPasswordWithToken = async(req: Request, res: Response) => {
             where: { id: userId },
             data: { password: passwordHash },
         });
-        return res.status(200).json({ message: "Password Updated successfully" });
+        return res.status(201).json({ message: "Password Updated successfully" });
     } catch (error) {
         // Muut errorit
         return res.status(400).json({ message: error });
