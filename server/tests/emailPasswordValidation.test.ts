@@ -7,12 +7,16 @@ import app from '../src/app';
 import request from 'supertest';
 
 describe('email and password validation', () => {
+    let newUser;
+
     beforeAll(async () => {
         await prisma.user.deleteMany({
             where: {
                 email: "jestTest1@admin.com"
             }
         });
+
+        newUser = await createUser('uniqueTest@gmail.com');
     });
 
     afterAll(async () => {
@@ -51,5 +55,17 @@ describe('email and password validation', () => {
             });
             expect(response.status).toBe(400);
             expect(response.body.error).toBeDefined()
+    });
+
+    it('fails if email is not unique', async() => {
+        const response = await request(app)
+            .post('/signup')
+            .send({
+                email: "uniqueTest@gmail.com",
+                password: "123456"
+            });
+            // Expect status 400, email is not unique.
+            expect(response.status).toBe(400)
+            expect(response.body.error).toBeDefined();
     });
 });
