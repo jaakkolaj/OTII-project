@@ -54,12 +54,13 @@ describe("AI Analysis Controller - Integration Tests", () => {
     await prisma.$disconnect();
   });
 
+  // 1. Väärän tyyppinen jobPostingId (ei UUID)
   test("IT-01: Should return 400 if jobPostingId is invalid UUID", async () => {
     const response = await request(app).post(`${BASE_URL}/not-a-uuid`).send();
 
     expect(response.status).toBe(400);
   });
-
+  // 2. Ei ehdokkaita analysoitavaksi
   test("IT-02: Should return message if no candidates exist for job", async () => {
     const response = await request(app)
       .post(`${BASE_URL}/${globalJobPostingId}`)
@@ -68,7 +69,7 @@ describe("AI Analysis Controller - Integration Tests", () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Ei uusia analysoitavia ehdokkaita.");
   });
-
+  // 3. Onnistuu analysoimaan ehdokas ja tallentamaan tulokset tietokantaan 
   test("IT-03: Should successfully analyze real candidate from DB", async () => {
     // 1. Luodaan ehdokas ja liitetään siihen dokumentti (CV)
     const candidate = await prisma.candidate.create({
