@@ -3,31 +3,47 @@ import { LoginForm } from "@/app/(auth)/login/components/login-form"
 import { useState } from "react";
 import { loginUser } from "@/app/services/userService";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import axios from "axios";
 
 export default function Page() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      try {
-      const user = {
-          email,
-          password
-      }
-      const response = await loginUser(user);
-      console.log(response);
-      router.push('/');
-      } catch (error) {
-      console.log(error);
-      };
+    event.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const user = { email, password };
+      await loginUser(user);
+
+      toast.success('Login successful!', {
+        description: 'Redirecting you to the dashboard...',
+      });
+
+      setTimeout(() => router.push('/'), 1000);
+
+    } catch (error) {
+      // Axios error — kaiva backendisi palauttama message suoraan
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message ?? error.response?.data?.error ?? 'Login failed. Please try again.'
+        : 'An unexpected error occurred.';
+
+      toast.error('Login failed', { description: message });
+      setPassword('');
+
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <LoginForm 
+        <LoginForm
           email={email}
           password={password}
           onEmailChange={setEmail}
@@ -36,5 +52,5 @@ export default function Page() {
         />
       </div>
     </div>
-  )
+  );
 }

@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { performance } from "perf_hooks";
 import { parseDocument } from "../src/services/parser.service";
+import prisma from "../src/prisma";
 
 describe("Suorituskykytesti aidoilla tiedostoilla", () => {
   let warnSpy: jest.SpyInstance;
@@ -68,9 +69,10 @@ describe("Suorituskykytesti aidoilla tiedostoilla", () => {
     expect(duration).toBeLessThan(10000);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     // Palautetaan konsolin normaali toiminta testien jälkeen
     warnSpy.mockRestore();
+    await prisma.$disconnect();
   });
 
 });
