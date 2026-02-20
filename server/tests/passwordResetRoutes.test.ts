@@ -30,4 +30,37 @@ describe('Password reset routes', () => {
             .send({ email: 'passwordResetRoutes@gmail.com' });
         expect(response.status).toBe(200);
     });
+
+    it('fails to update password if token is not correct', async() => {
+        const token = jwt.sign(
+            { id: user_id, email: email },
+            "kosodpskopssss"
+        );
+        const response = await request(app)
+            .post(`/reset-password/${token}`)
+            .send({ password: "123123" });
+        expect(response.status).toBe(400);
+    });
+
+    it('fails if password is not valid', async() => {
+        const token = jwt.sign(
+            { id: user_id, email: email },
+            "kosodpskop"
+        );
+        const response = await request(app)
+            .post(`/reset-password/${token}`)
+            .send({ password: "123" });
+        expect(response.status).toBe(400);
+    });
+
+    it('Updates password correctly', async() => {
+        const token = jwt.sign(
+            { id: user_id, email: email },
+            "kosodpskop"
+        );
+        const response = await request(app)
+            .post(`/reset-password/${token}`)
+            .send({ password: "123123123" });
+        expect(response.status).toBe(201);
+    });
 });
