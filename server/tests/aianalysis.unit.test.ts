@@ -45,6 +45,7 @@ describe("ai.service: analyzeTextWithAI", () => {
     expect(result.score).toBe(95);
     expect(openai.chat.completions.create).toHaveBeenCalledTimes(1);
   });
+  
   //Virheellinen JSON
   test("UT-02: malformed JSON from AI throws an error", async () => {
     (openai.chat.completions.create as jest.Mock).mockResolvedValue({
