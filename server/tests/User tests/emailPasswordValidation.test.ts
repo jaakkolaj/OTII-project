@@ -1,9 +1,9 @@
-import prisma from '../src/prisma';
-import { createUser } from './helpers/createUser';
-import { validateEmail } from '../src/utils/validation';
+import prisma from '../../src/prisma';
+import { createUser } from '../helpers/createUser';
+import { validateEmail } from '../../src/utils/validation';
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
-import app from '../src/app';
+import app from '../../src/app';
 import request from 'supertest';
 
 describe('email and password validation', () => {

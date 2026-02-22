@@ -1,8 +1,8 @@
-import prisma from "../src/prisma";
+import prisma from "../../src/prisma";
 import jwt from 'jsonwebtoken';
 import request from "supertest";
-import app from "../src/app";
-import { createUser } from "./helpers/createUser";
+import app from "../../src/app";
+import { createUser } from "../helpers/createUser";
 
 describe('Password reset routes', () => {
     let email = 'passwordResetRoutes@gmail.com';

@@ -1,5 +1,5 @@
-import prisma from '../src/prisma';
-import { createUser } from './helpers/createUser';
+import prisma from '../../src/prisma';
+import { createUser } from '../helpers/createUser';
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
 
