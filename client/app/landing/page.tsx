@@ -1,6 +1,4 @@
 
-"use client";
-
 import { FileText, Users, BarChart3, Zap, Shield, Clock, ArrowRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
