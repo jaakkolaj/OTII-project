@@ -1,4 +1,4 @@
-// NOTE: Copy this file to client/app/landing/page.tsx in your Next.js project
+
 "use client";
 
 import { FileText, Users, BarChart3, Zap, Shield, Clock, ArrowRight, CheckCircle } from "lucide-react";
@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-// In Next.js, use next/link for internal routes:
-// import Link from "next/link";
+
 
 const Navbar = () => (
   <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
