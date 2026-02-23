@@ -1,11 +1,11 @@
 import request from "supertest";
-import app from "../src/app";
-import prisma from "../src/prisma";
-import { createUser } from "./helpers/createUser";
-import { createJobPosting } from "./helpers/createJobPosting";
+import app from "../../src/app";
+import prisma from "../../src/prisma";
+import { createUser } from "../helpers/createUser";
+import { createJobPosting } from "../helpers/createJobPosting";
 
 
-jest.mock("../src/services/parser.service", () => ({
+jest.mock("../../src/services/parser.service", () => ({
   parseDocument: jest.fn().mockImplementation(async (files: Express.Multer.File[]) =>
     files.map((file) => ({
       fileName: file.originalname,

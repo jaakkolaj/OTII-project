@@ -1,6 +1,6 @@
-import prisma from "../src/prisma";
-import { createUser } from "./helpers/createUser";
-import app from "../src/app";
+import prisma from "../../src/prisma";
+import { createUser } from "../helpers/createUser";
+import app from "../../src/app";
 import request from "supertest";
 import jwt from "jsonwebtoken";
 

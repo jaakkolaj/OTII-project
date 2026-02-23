@@ -1,8 +1,8 @@
-import { analyzeTextWithAI, AnalysisResult } from "../src/services/ai.service";
-import { openai } from "../src/config/openai";
+import { analyzeTextWithAI, AnalysisResult } from "../../src/services/ai.service";
+import { openai } from "../../src/config/openai";
 import Test from "supertest/lib/test";
 
-jest.mock("../src/config/openai", () => ({
+jest.mock("../../src/config/openai", () => ({
   openai: {
     chat: {
       completions: {
