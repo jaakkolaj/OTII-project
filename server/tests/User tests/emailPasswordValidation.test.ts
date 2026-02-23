@@ -8,29 +8,28 @@ import request from 'supertest';
 
 describe('email and password validation', () => {
     let newUser;
-
+    let user_id: string;
+    let new_user_id: string;
     beforeAll(async () => {
-        await prisma.user.deleteMany({
-            where: {
-                email: "jestTest1@admin.com"
-            }
-        });
-
-        newUser = await createUser('uniqueTest@gmail.com');
+        newUser = await createUser('emailPasswordValidationFail@gmail.com');
+        new_user_id = newUser.id;
     });
 
     afterAll(async () => {
+        await prisma.user.delete({ where: { id: user_id } });
+        await prisma.user.delete({ where: { id: new_user_id } });
         await prisma.$disconnect();
     });
 
     it('creates user when both are valid', async () => {
-        const user = await createUser("jestTest1@admin.com");
+        const user = await createUser("emailPasswordValidationPass@admin.com");
         expect(user).toBeDefined();
         expect(user.id).toBeDefined();
-        expect(user.email).toBe("jestTest1@admin.com");
+        expect(user.email).toBe("emailPasswordValidationPass@admin.com");
         
         const isPasswordCorrect = await bcrypt.compare("secret", user.password);
         expect(isPasswordCorrect).toBe(true);
+        user_id = user.id;
     });
     it('fails when email is invalid', async () => {
         const invalidEmail = "jestTestDecisionTableadmin.com";
@@ -61,7 +60,7 @@ describe('email and password validation', () => {
         const response = await request(app)
             .post('/signup')
             .send({
-                email: "uniqueTest@gmail.com",
+                email: "emailPasswordValidationFail@gmail.com",
                 password: "123456"
             });
             // Expect status 400, email is not unique.

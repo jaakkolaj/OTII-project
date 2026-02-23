@@ -4,24 +4,19 @@ import 'dotenv/config';
 import bcrypt from 'bcrypt';
 
 describe("createUser", () => {
-    beforeAll(async () => {
-        await prisma.user.deleteMany({
-            where: {
-                email: "jestTest@admin.com"
-            }
-        });
-    });
-
+    let user_id: string;
+   
     afterAll(async () => {
         await prisma.$disconnect();
+        await prisma.user.delete({ where: { id: user_id } });
     });
 
     it('creates a user in database', async () => {
-        const user = await createUser("jestTest@admin.com");
+        const user = await createUser("createUserTest@admin.com");
 
         expect(user).toBeDefined();
         expect(user.id).toBeDefined();
-        expect(user.email).toBe("jestTest@admin.com");
+        expect(user.email).toBe("createUserTest@admin.com");
         
         const isPasswordCorrect = await bcrypt.compare("secret", user.password);
         expect(isPasswordCorrect).toBe(true);
@@ -31,5 +26,6 @@ describe("createUser", () => {
         });
 
         expect(found).not.toBeNull();
+        user_id = user.id;
     });
 });
