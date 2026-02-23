@@ -1,5 +1,5 @@
 
-import { FileText, Users, BarChart3, Zap, Shield, Clock, ArrowRight, CheckCircle } from "lucide-react";
+import { FileText, Users, BarChart3, Zap, Shield, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
