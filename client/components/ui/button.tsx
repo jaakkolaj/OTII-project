@@ -19,7 +19,7 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        hero: "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 animate-pulse-glow",
+        hero: "bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 animate-[pulse-glow_2s_ease-in-out_infinite]",
         navCta: "bg-primary text-primary-foreground hover:bg-primary/90",
 
       },
