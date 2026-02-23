@@ -1,10 +1,10 @@
 import request from "supertest";
-import app from "../src/app";
+import app from "../../src/app";
 
-import * as aiService from "../src/services/ai.service";
-import prisma from "../src/prisma";
+import * as aiService from "../../src/services/ai.service";
+import prisma from "../../src/prisma";
 
-jest.mock("../src/services/ai.service");
+jest.mock("../../src/services/ai.service");
 
 describe("AI Analysis Controller - Integration Tests", () => {
   const BASE_URL = "/aiAnalysis";

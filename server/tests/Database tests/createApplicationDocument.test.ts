@@ -1,8 +1,8 @@
-import prisma from '../src/prisma'
-import { createApplicationDocument } from './helpers/createApplicationDocument'
-import { createCandidate } from './helpers/createCandidate';
-import { createUser } from './helpers/createUser';
-import { createJobPosting } from './helpers/createJobPosting';
+import prisma from '../../src/prisma'
+import { createApplicationDocument } from '../helpers/createApplicationDocument'
+import { createCandidate } from '../helpers/createCandidate';
+import { createUser } from '../helpers/createUser';
+import { createJobPosting } from '../helpers/createJobPosting';
 
 /*
     application Dokumenttia luodessa tietokannasta pitää löytyä seuraavat tiedot:
@@ -30,6 +30,7 @@ describe("createApplication", () => {
         jobPosting_id = jobPosting.id;
     });
 
+    // Suljetaan Prisma-yhteys testien jälkeen
     afterAll(async () => {
         // Siivotaan testien jälkeen ja poistetaan applicationDocument, candidaatti, jobPosting ja user.
         await prisma.applicationDocument.delete({ where: { id: applicationDocument_id } });
