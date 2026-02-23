@@ -1,19 +1,23 @@
 import { supabase } from "../config/supabaseClient";
-import { File } from "buffer";
 
-export async function uploadFileToSupabase(fileName: string, bucket: string, file: File.buffer) {
+export async function uploadFileToSupabase(fileName: string, file: Express.Multer.File) {
     // Lataa Supabaseen
     const { data, error } = await supabase.storage
-        .from(bucket)
+        .from('ATS')
         .upload(fileName, file.buffer, {
         cacheControl: '3600',
         upsert: true,
-        });
+    });
 
-    if (error) {
+    if (error || !data) {
         console.error('Upload error:', error);
         return;
-    }
+    };
 
     console.log('Tiedosto ladattu onnistuneesti:', data);
-}
+    return {
+        id: data.id,
+        path: data.path,
+        fullPath: data.fullPath
+    };
+};
