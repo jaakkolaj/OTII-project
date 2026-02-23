@@ -36,6 +36,8 @@ npx prisma generate
 docker compose up -d
 docker ps
 npm run db:test:push
+npx prisma generate
+```
+```bash
 npm test
 ```
-
