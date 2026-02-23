@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { parseDocument } from "../services/parser.service";
 import prisma from "../prisma";
 
-
 // Tiedostojen latauksen käsittelijä
 export const uploadFiles = async (req: Request, res: Response) => {
   try {
