@@ -8,6 +8,7 @@ import { CandidatesToolbar } from "./components/CandidatesToolbar";
 import { CandidatesList } from "./components/CandidatesList";
 import type { ResumeCandidate } from "../types";
 import { getAiAnalysisByJobPostingId } from "@/app/services/aiAnalysisService";
+import { getSignedURL } from "@/app/services/supaBaseService";
 
 const jobTitleMap: Record<string, string> = {
   "full-stack-developer": "Full Stack Developer",
@@ -27,6 +28,7 @@ type AiAnalysisResponse = {
   score?: number;
   years_experience?: number;
   summary?: string;
+  pdfUrl?: string;
 };
 
 const toStringList = (value: unknown): string[] => {
@@ -55,27 +57,37 @@ export default function ResumeAnalyzerCandidatesPage() {
     const queryAiAnalyses = async () => {
       try {
         const response = await getAiAnalysisByJobPostingId(jobId);
+        
         const data: AiAnalysisResponse[] = Array.isArray(response.data)
           ? response.data
           : Array.isArray(response.data?.data)
             ? response.data.data
             : [];
-        console.log(response)
-        const mappedCandidates = data.map((analysis, index) => ({
-          id: analysis.candidate_id ?? analysis.id ?? String(index),
-          name: analysis.name,
-          email: analysis.email,
-          phone: "Unknown",
-          position: jobTitle,
-          strengths: toStringList(analysis.strengths),
-          weaknesses: toStringList(analysis.weaknesses),
-          topSkills: toStringList(analysis.skills),
-          score:
-            typeof analysis.score === "number"
-              ? analysis.score
-              : Math.round((analysis.years_experience ?? 0) * 10),
-          rank: index + 1,
-        }));
+        const mappedCandidates = await Promise.all(
+        data.map(async (analysis, index) => {
+          let pdfUrl;
+          if (analysis.candidate_id) {
+            pdfUrl = await getSignedURL(analysis.candidate_id);
+          }
+
+          return {
+            id: analysis.candidate_id ?? analysis.id ?? String(index),
+            name: analysis.name,
+            email: analysis.email,
+            phone: "Unknown",
+            position: jobTitle,
+            strengths: toStringList(analysis.strengths),
+            weaknesses: toStringList(analysis.weaknesses),
+            topSkills: toStringList(analysis.skills),
+            score:
+              typeof analysis.score === "number"
+                ? analysis.score
+                : Math.round((analysis.years_experience ?? 0) * 10),
+            rank: index + 1,
+            pdfUrl: pdfUrl ?? "" // attach signed URL for the PDF
+          };
+        })
+      );
 
         setCandidates(mappedCandidates);
       } catch (error) {

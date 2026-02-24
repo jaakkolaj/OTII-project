@@ -1,15 +1,25 @@
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
+import { Navbar } from '@/app/landing/components/navbar'
+import { Hero } from '@/app/landing/components/hero'
+import { Problem } from '@/app/landing/components/problem'
+import { Solution } from '@/app/landing/components/solution'
+import { HowItWorks } from '@/app/landing/components/how-it-works'
+import { Comparison } from '@/app/landing/components/comparison'
+import { SocialProof } from '@/app/landing/components/social-proof'
+import { FinalCTA } from '@/app/landing/components/final-cta'
+import { Footer } from '@/app/landing/components/footer'
 
 export default function LandingPage() {
     return (
         <div className="flex flex-col min-h-screen">
-            <Header />
+            <Navbar />
             <main className="flex-1">
-                <section className="py-12 px-4 text-center">
-                    <h1 className="text-4xl font-bold mb-4">Welcome</h1>
-                    <p className="text-lg text-gray-600">Moi</p>
-                </section>
+                <Hero />
+                <Problem />
+                <Solution />
+                <HowItWorks />
+                <Comparison />
+                <SocialProof />
+                <FinalCTA />
             </main>
             <Footer />
         </div>

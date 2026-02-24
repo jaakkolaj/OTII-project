@@ -1,7 +1,7 @@
-import prisma from "../src/prisma";
-import { createCandidate } from "./helpers/createCandidate";
-import { createUser } from "./helpers/createUser";
-import { createJobPosting } from "./helpers/createJobPosting";
+import prisma from "../../src/prisma";
+import { createCandidate } from "../helpers/createCandidate";
+import { createUser } from "../helpers/createUser";
+import { createJobPosting } from "../helpers/createJobPosting";
 import 'dotenv/config';
 
 describe("createCandidate", () => {

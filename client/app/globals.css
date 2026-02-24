@@ -2,7 +2,11 @@
 @import "./tw-animate.css";
 @import "tw-animate-css";
 
+
+
+
 @custom-variant dark (&:is(.dark *));
+
 
 @theme inline {
   --color-background: var(--background);
@@ -80,6 +84,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --gradient-primary: linear-gradient(135deg, hsl(0 72% 55%), hsl(15 80% 60%));
+  --gradient-card: linear-gradient(180deg, hsl(0 0% 10%), hsl(0 0% 7%));
+  --shadow-glow: 0 0 40px -10px hsl(0 72% 55% / 0.25);
+
 }
 
 .dark {
@@ -122,5 +132,24 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-body);
   }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px -5px hsl(0 72% 55% / 0.3); }
+  50% { box-shadow: 0 0 40px -5px hsl(0 72% 55% / 0.5); }
 }
