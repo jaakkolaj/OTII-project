@@ -1,6 +1,6 @@
 POST http://localhost:5001/job-postings
 Content-Type: application/json
-Cookie: access_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RVc2VyMjJAYWRtaW4uY29tIiwiaWQiOiJjZDg0MmUwOC04MmM1LTQyMzgtYTVlYy1kZWQ3M2UwMDNlZTciLCJpYXQiOjE3NzAxMjM4OTB9.7OnQNQ8yQEm0KxwO1KoEF_m3fTyWRxRkPUqFCea9A-Q"
+Cookie: access_token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im51dXR0aS5ueXlzc29uZW5AZ21haWwuY29tIiwiaWQiOiJmOThjYjZlOS04ZDVmLTRiNDctYTY3NC0zNzBmMjNlNjBiZTEiLCJpYXQiOjE3NzE5MTk2MzN9.VsEHzklSEL96jSoPgKcaDdqO8Nu-2-R4UNGF4EqylcE"
 
 {
     "title": "Software Engineer",
