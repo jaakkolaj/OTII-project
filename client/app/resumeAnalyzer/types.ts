@@ -19,6 +19,7 @@ export type ResumeCandidate = {
   topSkills: string[];
   score: number;
   rank: number;
+  pdfUrl: string;
 };
 
 export type AiAnalysis = {
