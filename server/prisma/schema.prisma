@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  url       = env("DATABASE_URL")
 }
 
 datasource db {
@@ -81,6 +80,7 @@ model ApplicationDocument {
   file_size         Int       @default(0)
   extracted_text    String    @db.Text
   created_at        DateTime  @default(now())
+  path              String
 
   candidate         Candidate @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
 }

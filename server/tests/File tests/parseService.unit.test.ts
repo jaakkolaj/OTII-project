@@ -1,4 +1,4 @@
-import { parseDocument } from "../src/services/parser.service";
+import { parseDocument } from "../../src/services/parser.service";
 import { getDocumentProxy, extractText } from "unpdf";
 import mammoth from "mammoth";
 

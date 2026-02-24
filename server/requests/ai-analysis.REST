@@ -2,8 +2,8 @@ POST http://localhost:5001/aiAnalysis
 Content-Type: application/json
 
 {
-  "candidate_id": "bae54c6f-4237-4e32-9fcb-94113813089f",
-  "job_posting_id": "fba7270c-1ae9-4e3d-b9be-a03846e6ec9b",
+  "candidate_id": "d4372fe5-7949-448b-a11a-d6d36a8a7190",
+  "job_posting_id": "b6ed3d6e-8705-4457-8646-82f650c03e4a",
   "skills": {
     "technical": ["JavaScript", "TypeScript", "Node.js", "PostgreSQL", "Docker"],
     "soft": ["Teamwork", "Problem solving", "Communication"]
@@ -21,6 +21,7 @@ Content-Type: application/json
     "Frontti devaus"
   ],
   "summary": "Mid-level backend developer with strong Node.js and database experience. Good match for backend-focused roles but may need support with cloud-native tooling.",
+  "score": 0.82,
   "raw_ai_response": {
     "score": 0.82,
     "notes": "Candidate matches most core technical requirements but lacks advanced cloud experience.",

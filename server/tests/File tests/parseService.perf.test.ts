@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { performance } from "perf_hooks";
-import { parseDocument } from "../src/services/parser.service";
+import { parseDocument } from "../../src/services/parser.service";
+import prisma from "../../src/prisma";
 
 describe("Suorituskykytesti aidoilla tiedostoilla", () => {
   let warnSpy: jest.SpyInstance;
@@ -21,7 +22,7 @@ describe("Suorituskykytesti aidoilla tiedostoilla", () => {
   test("UT-PERF: prosessoi 30 kopiota oikeasta CV:stä", async () => {
     
     // 1. Luetaan aito PDF-tiedosto fixtures-kansiosta
-    const pdfPath = path.resolve(__dirname, "./fixtures/test.pdf");
+    const pdfPath = path.resolve(__dirname, "../fixtures/test.pdf");
     
     if (!fs.existsSync(pdfPath)) {
       throw new Error("Esimerkki-PDF-tiedostoa ei löytynyt polusta: " + pdfPath);
@@ -68,9 +69,10 @@ describe("Suorituskykytesti aidoilla tiedostoilla", () => {
     expect(duration).toBeLessThan(10000);
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     // Palautetaan konsolin normaali toiminta testien jälkeen
     warnSpy.mockRestore();
+    await prisma.$disconnect();
   });
 
 });

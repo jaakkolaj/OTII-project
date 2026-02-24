@@ -1,13 +1,15 @@
 import express, { Request, Response } from 'express';
+
 import signupRouter from './routes/signup.routes';
 import loginRouter from './routes/login.routes';
 import jobPostingsRouter from './routes/jobPostings.routes';
 import logouRouter from './routes/logout.routes';
 import aiAnalysisRouter from './routes/aianalysis.route';
+import resetPasswordRouter from './routes/passwordReset.routes';
+import supaBaseRouter from './routes/supabase.route';
+
 import cors from 'cors';
 import uploadRouter from './routes/upload.routes';
-import { analyzeTextWithAI } from './services/ai.service';
-import { tokenizeText, getTopKeywords } from './services/nlp.services';
 import cookieParser from 'cookie-parser';
 
 const app = express()
@@ -25,25 +27,11 @@ app.use('/job-postings', jobPostingsRouter);
 app.use('/upload', uploadRouter);
 app.use('/logout', logouRouter);
 app.use('/aiAnalysis', aiAnalysisRouter);
+app.use('/reset-password', resetPasswordRouter);
+app.use('/supabase', supaBaseRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })
 })
-
-/* async function main() {
- const mockText = `
- Software developer with 2 years of experience.
- Skills: JavaScript, React, Node.js, SQL.
-   Bachelor's degree in Computer Science.
- `;
-
- console.log("TOKENS:", tokenizeText(mockText));
- console.log("KEYWORDS:", getTopKeywords(mockText));
-
-const aiResult = await analyzeTextWithAI(mockText);
- console.log("AI RESULT:", aiResult);
-}
-
-main(); */
 
 export default app;

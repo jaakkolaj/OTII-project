@@ -27,3 +27,17 @@ npm run dev
 npx prisma migrate dev
 npx prisma generate
 ```
+
+## Docker testikannan käyttöönotto
+- Asenna Docker desktop: https://docs.docker.com/get-started/introduction/get-docker-desktop/
+- Laita .env: DATABASE_URL_TEST=postgresql://prisma:prisma@localhost:5433/tests
+- Docker desktop pitää olla käynnissä testejä ajaessa
+```bash
+docker compose up -d
+docker ps
+npm run db:test:push
+npx prisma generate
+```
+```bash
+npm test
+```
