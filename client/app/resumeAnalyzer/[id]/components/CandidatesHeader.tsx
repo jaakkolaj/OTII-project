@@ -1,14 +1,18 @@
-"use client";
-
+"use client"
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Trash2, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type CandidatesHeaderProps = {
   jobTitle: string;
   total: number;
+  onRunAnalysis: () => void;
+  onDeleteAll?: () => void;
+  isLoading: boolean;
 };
 
-export function CandidatesHeader({ jobTitle, total }: CandidatesHeaderProps) {
+export function CandidatesHeader({ jobTitle, total, isLoading, onRunAnalysis, onDeleteAll }: CandidatesHeaderProps) {
+
   return (
     <header className="space-y-2">
       <Link
@@ -18,7 +22,38 @@ export function CandidatesHeader({ jobTitle, total }: CandidatesHeaderProps) {
         <ChevronLeft className="h-4 w-4" />
         Resume Analyzer
       </Link>
-      <h1 className="text-3xl font-bold">Candidates</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Candidates</h1>
+        <div className="flex gap-2">
+          {onDeleteAll && (
+            <Button
+              onClick={onDeleteAll}
+              disabled={isLoading || total === 0}
+              variant="destructive"
+              className="cursor-pointer"
+            >
+              <Trash2 className="h-4 w-4" />
+              Delete All
+            </Button>
+          )}
+          <Button
+            onClick={onRunAnalysis}   
+            disabled={isLoading}
+            className="cursor-pointer"
+          >
+
+            {isLoading ? (
+              <>
+                <span>Analyzing</span>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                
+              </>
+            ) : (
+              "Run Analysis"
+            )}
+          </Button>
+        </div>
+      </div>
       <p className="max-w-2xl text-muted-foreground">
         {total} applicants ranked for{" "}
         <span className="font-medium text-foreground">{jobTitle}</span> based on

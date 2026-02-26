@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Eye, Mail, Phone, User } from "lucide-react";
+import { Download, Eye, Mail, Phone, User, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,9 +20,28 @@ type CandidateCardProps = {
 
 export function CandidateCard({ candidate }: CandidateCardProps) {
   const [viewDocument, setViewDocument] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // Uusi lataustila
 
-  const viewPDF = () => {
-    setViewDocument(!viewDocument);
+  const viewPDF = async () => {
+    if (pdfUrl) {
+      setViewDocument(!viewDocument);
+      return;
+    }
+
+    setIsLoading(true);
+    setViewDocument(true);
+
+    try {
+      const res = await fetch(candidate.pdfUrl!);
+      const data = await res.json();
+      setPdfUrl(data.url);
+      // HUOM: Emme aseta isLoading(false) tässä,
+      // vaan iframe-elementin onLoad-tapahtumassa!
+    } catch (error) {
+      console.error("PDF:n haku epäonnistui:", error);
+      setIsLoading(false); // Virhetilanteessa poistetaan lataustila
+    }
   };
 
   return (
@@ -60,15 +79,15 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
               </div>
               <div>
                 <span className="font-medium text-foreground">Strengths:</span>{" "}
-                {candidate.strengths.join(", ")}
+                {(candidate.strengths || []).join(", ") || "N/A"}
               </div>
               <div>
                 <span className="font-medium text-foreground">Weaknesses:</span>{" "}
-                {candidate.weaknesses.join(", ")}
+                {(candidate.weaknesses || []).join(", ") || "N/A"}
               </div>
               <div>
                 <span className="font-medium text-foreground">Top skills:</span>{" "}
-                {candidate.topSkills.join(", ")}
+                {(candidate.topSkills || []).join(", ") || "N/A"}
               </div>
             </div>
           </div>
@@ -79,8 +98,12 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
             <Eye className="h-4 w-4" />
             View details
           </Button>
-          <Button onClick={() => viewPDF()} disabled={!candidate.pdfUrl}>
-            View PDF
+          <Button
+            className="cursor-pointer"
+            onClick={() => viewPDF()}
+            disabled={!candidate.pdfUrl || (isLoading && !pdfUrl)}
+          >
+            {isLoading || !viewDocument ? "View PDF" : "Hide PDF"}
           </Button>
           <Button variant="link" className="px-0">
             <Download className="h-4 w-4" />
@@ -88,16 +111,28 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
           </Button>
         </CardFooter>
       </Card>
-      {viewDocument ? (
-        <div className="mt-4 overflow-hidden rounded-2xl border bg-muted/20 p-2 shadow-sm">
-          <iframe
-            src={candidate.pdfUrl}
-            title={`${candidate.name} resume preview`}
-            loading="lazy"
-            className="h-[480px] w-full rounded-xl border bg-background"
-          />
+      {viewDocument && (
+        <div className="mt-4 overflow-hidden rounded-2xl border bg-muted/20 p-2 shadow-sm min-h-[480px] flex items-center justify-center relative">
+          {isLoading && (
+            <div className="flex flex-col items-center gap-3 z-10">
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
+              <p className="text-sm font-medium text-muted-foreground">
+                loading document...
+              </p>
+            </div>
+          )}
+          {pdfUrl && (
+            <iframe
+              src={pdfUrl}
+              title={`${candidate.name} resume preview`}
+              onLoad={() => setIsLoading(false)}
+              className={`h-[480px] w-full rounded-xl border bg-background transition-opacity duration-300 ${
+                isLoading ? "opacity-0 absolute" : "opacity-100 relative"
+              }`}
+            />
+          )}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ export async function uploadFileToSupabase(fileName: string, file: Express.Multe
         .upload(fileName, file.buffer, {
         cacheControl: '3600',
         upsert: true,
+        contentType: file.mimetype,
     });
     
     if(error) {

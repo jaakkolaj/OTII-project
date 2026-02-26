@@ -25,3 +25,16 @@ export const deleteAiAnalysisById = async (analysisId: any) => {
     });
     return response
 };
+
+// Service funktio, joka poistaa kaikki AI analyysit tietylle jobPostingille
+export const deleteAllAiAnalysisByJobPostingId = async (jobPostingId: any) => {
+    const response = await axios.delete(`${baseUrl}/job/${jobPostingId}/all`, {
+        withCredentials: true
+    });
+    return response;
+};
+// Service funktio, joka lähettää pyynnön palvelimelle käynnistääkseen AI analyysin kaikille tietyn jobPostingin ehdokkaille.
+export const runAiAnalysis = async (jobId: string) => {
+    const response = await axios.post(`${baseUrl}/${jobId}`);
+    return response; 
+};
