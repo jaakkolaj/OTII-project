@@ -228,3 +228,32 @@ export const deleteAnalysis = async (req: Request, res: Response) => {
     res.status(400).json({ message: error });
   }
 };
+
+// Poista kaikki analyysit yhdelle jobPostingille
+export const deleteAllAnalysesByJobPostingId = async (req: Request, res: Response) => {
+  const { jobPostingId } = req.params;
+  
+  if (typeof jobPostingId !== "string" || !isUuid(jobPostingId)) {
+    return res.status(400).json({
+      error: "Virheellinen jobPostingId. ID:n on oltava validi UUID-merkkijono.",
+    });
+  }
+
+  try {
+    const result = await prisma.aIAnalysis.deleteMany({
+      where: {
+        job_posting_id: jobPostingId,
+      },
+    });
+
+    res.status(200).json({
+      message: "Kaikki analyysit poistettu",
+      deleted_count: result.count,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Virhe analyysien poistamisessa",
+      details: error instanceof Error ? error.message : "Tuntematon virhe",
+    });
+  }
+};

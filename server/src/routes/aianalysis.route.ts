@@ -4,7 +4,8 @@ import {
   getAnalysisById, 
   deleteAnalysis,
   getAiAnalysesByJobPostingId,
-  createAnalysis
+  createAnalysis,
+  deleteAllAnalysesByJobPostingId
 } from '../controllers/aianalysis.controller';
 const aiAnalysisRouter = Router();
 
@@ -19,6 +20,9 @@ aiAnalysisRouter.get('/job/:jobPostingId', getAiAnalysesByJobPostingId);
 
 // Hakee yhden kandidaatin ja sen ai analyysin
 aiAnalysisRouter.get('/candidate/:analysisId', getAnalysisById);
+
+// Poistaa kaikki analyysit tietystä jobPostingista
+aiAnalysisRouter.delete('/job/:jobPostingId/all', deleteAllAnalysesByJobPostingId);
 
 // Poistaa Ai analyysin ID:n perusteella
 aiAnalysisRouter.delete('/:analysisId', deleteAnalysis); 

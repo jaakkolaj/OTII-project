@@ -3,6 +3,15 @@ import { parseDocument } from "../services/parser.service";
 import prisma from "../prisma";
 import { uploadFileToSupabase } from "../services/supabase.service";
 
+// Tiedostonimen puhdistaja, joka poistaa erikoismerkit ja korvaa ne alaviivalla
+const sanitizeFileName = (fileName: string): string => {
+  return fileName
+    .normalize("NFD")               // Hajotetaan esim. 'ä' -> 'a' + 'pisteet'
+    .replace(/[\u0300-\u036f]/g, "") // Poistetaan ne pisteet (diakriittiset merkit)
+    .replace(/[^a-zA-Z0-9.\-_]/g, "_") // Kaikki muu paitsi kirjaimet, numerot, piste ja viivat -> alaviivaksi
+    .replace(/\s+/g, "_");          // Välilyönnit -> alaviivaksi
+};
+
 // Tiedostojen latauksen käsittelijä
 export const uploadFiles = async (req: Request, res: Response) => {
   try {
@@ -23,15 +32,18 @@ export const uploadFiles = async (req: Request, res: Response) => {
     
     // Tallennetaan käsitellyt tiedot tietokantaan
     const savedCandidates = await Promise.all(
-      parsedResults.map(async (doc, key) => {
+      parsedResults.map(async (doc, index) => {
         // Tallennetaan vain onnistuneet parsimiset tietokantaan
         if(doc.status === "error"){
           console.error(`Error processing file ${doc.fileName}: ${doc.error}`);
           return null;
         }
 
-        // Kutsutaan functionia, joka uploadaa tiedoston Supabaseen ja palauttaa osoitteen.
-        const uploadedFile = await uploadFileToSupabase(files[key].originalname, files[key])!;
+      
+        const originalName = files[index].originalname;
+        // Luodaan turvallinen tiedostonimi, joka sisältää aikaleiman ja puhdistetun alkuperäisen nimen      
+        const safeName = `${Date.now()}-${sanitizeFileName(originalName)}`;
+        const uploadedFile = await uploadFileToSupabase(safeName, files[index]);
 
         // Luodaan uusi ehdokas ja liitetään dokumentti siihen
         return prisma.candidate.create({

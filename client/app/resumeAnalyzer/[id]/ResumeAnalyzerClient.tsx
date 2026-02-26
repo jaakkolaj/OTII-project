@@ -1,0 +1,55 @@
+"use client";
+
+import { useState, useMemo, useTransition } from "react";
+import SidebarLayout from "@/app/SidebarLayout";
+import { CandidatesHeader } from "./components/CandidatesHeader";
+import { CandidatesToolbar } from "./components/CandidatesToolbar";
+import { CandidatesList } from "./components/CandidatesList";
+import { runAnalysisAction, deleteAllAnalysisAction } from "./actions";
+import { toast } from "sonner";
+
+export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidates }: any) {
+  const [query, setQuery] = useState("");
+  const [isPending, startTransition] = useTransition(); // Käytetään uutta transition-tilaa
+
+  const handleRunAnalysis = () => {
+    startTransition(async () => {
+      try {
+        await runAnalysisAction(jobId);
+        toast.success("Analyysi valmis!");
+      } catch (e) {
+        toast.error("Virhe analyysissä");
+      }
+    });
+  };
+
+  const handleDeleteAll = () => {
+    startTransition(async () => {
+      await deleteAllAnalysisAction(jobId);
+      toast.success("Kaikki analyysit on poistettu");
+    });
+  };
+
+  const filteredCandidates = useMemo(() => {
+    const term = query.toLowerCase();
+    return initialCandidates.filter((c: any) => 
+      c.name.toLowerCase().includes(term) || c.email.toLowerCase().includes(term)
+    );
+  }, [initialCandidates, query]);
+
+  return (
+    <SidebarLayout>
+      <main className="container mx-auto flex flex-col gap-8 p-8">
+        <CandidatesHeader 
+          jobTitle={jobTitle} 
+          total={filteredCandidates.length} 
+          onRunAnalysis={handleRunAnalysis} 
+          onDeleteAll={handleDeleteAll} 
+          isLoading={isPending} // isPending on true, kun Action on käynnissä
+        />
+        <CandidatesToolbar query={query} onQueryChange={setQuery} />
+        <CandidatesList candidates={filteredCandidates} />
+      </main>
+    </SidebarLayout>
+  );
+}

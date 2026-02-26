@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Briefcase, Eye, Pencil, Trash2 } from "lucide-react";
+import { Briefcase, Pencil, Plus, Trash2 } from "lucide-react";
 
 import type { JobPosting } from "../types";
 
@@ -40,8 +40,8 @@ export function JobPostingCard({
             href={`/job_postings/${job.id}`}
             className="inline-flex items-center gap-2 font-medium text-muted-foreground transition hover:text-foreground"
           >
-            <Eye className="h-4 w-4" />
-            View best matches
+            <Plus className="h-4 w-4" />
+            Add candidates
           </Link>
           <Link
             href={`/job_postings/${job.id}/edit`}
