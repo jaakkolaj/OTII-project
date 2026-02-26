@@ -10,8 +10,11 @@ import { toast } from "sonner";
 
 export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidates }: any) {
   const [query, setQuery] = useState("");
-  const [isPending, startTransition] = useTransition(); // Käytetään uutta transition-tilaa
 
+  // Käytetään useTransitionia, jotta voimme näyttää välitilan analyysin käskyjen aikana ilman, että koko UI lukkiutuu.
+  const [isPending, startTransition] = useTransition(); 
+
+  // Käsky analyysin käynnistämiseen ja kaikkien analyysien poistamiseen, jotka molemmat revalidatoi datan uudelleen haettaessa.
   const handleRunAnalysis = () => {
     startTransition(async () => {
       try {
@@ -22,14 +25,13 @@ export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidate
       }
     });
   };
-
   const handleDeleteAll = () => {
     startTransition(async () => {
       await deleteAllAnalysisAction(jobId);
       toast.success("Kaikki analyysit on poistettu");
     });
   };
-
+  
   const filteredCandidates = useMemo(() => {
     const term = query.toLowerCase();
     return initialCandidates.filter((c: any) => 
