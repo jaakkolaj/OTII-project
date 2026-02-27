@@ -4,6 +4,14 @@ import request from "supertest";
 import app from "../../src/app";
 import { createUser } from "../helpers/createUser";
 
+jest.mock("../../src/config/mail", () => ({
+  transport: {
+    sendMail: jest.fn((mailOptions, callback) => {
+      callback(null, { response: '250 OK' });
+    }),
+  },
+}));
+
 describe('Password reset routes', () => {
     let email = 'passwordResetRoutes@gmail.com';
     let user_id: string;

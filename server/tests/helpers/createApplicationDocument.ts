@@ -8,7 +8,8 @@ export const createApplicationDocument = async (candidate_id: string) => {
             document_type: "PDF",
             original_filename: "cv.pdf",
             file_type: "pdf",
-            extracted_text: "Test CV content"
+            extracted_text: "Test CV content",
+            path: "temp/test-cv.pdf",
         }
     })
 }

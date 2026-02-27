@@ -3,6 +3,11 @@ import app from "../../src/app";
 
 import * as aiService from "../../src/services/ai.service";
 import prisma from "../../src/prisma";
+import { createCandidate } from "../helpers/createCandidate";
+import { createJobPosting } from "../helpers/createJobPosting";
+import { createUser } from "../helpers/createUser";
+import { createApplicationDocument } from "../helpers/createApplicationDocument";
+import { createAiAnalysis } from "../helpers/createAianalysis";
 
 jest.mock("../../src/services/ai.service");
 
@@ -13,34 +18,18 @@ describe("AI Analysis Controller - Integration Tests", () => {
 
   beforeAll(async () => {
     // 1. Luodaan testi-käyttäjä
-    const user = await prisma.user.create({
-      data: {
-        email: `test_${Date.now()}@test.com`,
-        password: "password123",
-      },
-    });
+    const user = await createUser("Testikäyttäjä@gmail.com");
 
     // 2. Luodaan työpaikkailmoitus 
-    const job = await prisma.jobPosting.create({
-      data: {
-        title: "Node.js Developer",
-        description: "Etsimme osaajaa",
-        location: "Helsinki",
-        employmentType: "Full-time",
-        seniority: "Senior",
-        department: "Engineering",
-        requirements: "Node.js, TypeScript, PostgreSQL",
-        salaryRange: "5000-6000",
-        closingDate: "2026-12-31",
-        user_id: user.id,
-      },
-    });
-    globalJobPostingId = job.id;
+    const jobPosting = await createJobPosting(user.id);
+    globalJobPostingId = jobPosting.id;
   });
 
   beforeEach(async () => {
     jest.clearAllMocks();
     await prisma.aIAnalysis.deleteMany();
+    await prisma.applicationDocument.deleteMany();
+    await prisma.candidate.deleteMany();
   });
 
   afterAll(async () => {
@@ -69,26 +58,14 @@ describe("AI Analysis Controller - Integration Tests", () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Ei uusia analysoitavia ehdokkaita.");
   });
+
   // 3. Onnistuu analysoimaan ehdokas ja tallentamaan tulokset tietokantaan 
   test("IT-03: Should successfully analyze real candidate from DB", async () => {
-    // 1. Luodaan ehdokas ja liitetään siihen dokumentti (CV)
-    const candidate = await prisma.candidate.create({
-      data: {
-        job_posting_id: globalJobPostingId,
-        name: "Matti Meikäläinen",
-        email: "matti@test.com",
-        documents: {
-          create: {
-            document_type: "CV", 
-            original_filename: "cv.pdf",
-            file_type: "pdf",
-            file_size: 1024,
-            extracted_text: "Osaan Node.js ja TypeScriptiä hyvin.",
-          },
-        },
-      },
-    });
 
+    // 1. Luodaan ehdokas ja liitetään siihen dokumentti (CV)
+    const candidate = await createCandidate(globalJobPostingId);
+    await createApplicationDocument(candidate.id);
+    
     const mockAiResult = {
       score: 90,
       summary: "Erinomainen ehdokas",
@@ -119,5 +96,54 @@ describe("AI Analysis Controller - Integration Tests", () => {
     expect(analysisInDb).toBeDefined();
     expect(analysisInDb?.score).toBe(90);
     expect(analysisInDb?.education_level).toBe("master");
+  });
+
+  // 4. Ehdokas on jo analysoitu (Skip-logiikka)
+  test("IT-04: Should skip candidate if AI analysis already exists", async () => {
+    // 1. Luodaan ehdokas ja dokumentti
+    const candidate = await createCandidate(globalJobPostingId);
+    await createApplicationDocument(candidate.id);
+
+    // 2. Luodaan valmis analyysi kantaan tälle ehdokkaalle
+    await createAiAnalysis(candidate.id, globalJobPostingId);
+
+    // Puhdistetaan mockien laskurit (jotta aiemmat testit eivät vaikuta tähän)
+    jest.clearAllMocks();
+
+    // 3. Kutsutaan reittiä
+    const response = await request(app)
+      .post(`${BASE_URL}/${globalJobPostingId}`)
+      .send();
+
+    // 4. Varmistetaan tulokset
+    expect(response.status).toBe(200);
+    expect(aiService.analyzeTextWithAI).not.toHaveBeenCalled(); 
+    
+    expect(response.body.message).toBe("Ei uusia analysoitavia ehdokkaita.");
+  });
+
+  // 5. AI-palvelu kaatuu tai palauttaa virheen (Error handling)
+  test("IT-05: Should handle AI service error gracefully", async () => {
+    // 1. Luodaan uusi ehdokas ja dokumentti
+    const candidate = await createCandidate(globalJobPostingId);
+    await createApplicationDocument(candidate.id);
+
+    // 2. Pakotetaan AI-palvelu (mock) heittämään virhe (esim. API alhaalla tai rate limit)
+    (aiService.analyzeTextWithAI as jest.Mock).mockRejectedValueOnce(
+      new Error("OpenAI API is down or rate limited")
+    );
+    // 3. Kutsutaan reittiä
+    const response = await request(app)
+      .post(`${BASE_URL}/${globalJobPostingId}`)
+      .send();
+
+    // 4. Varmistetaan, että API käsittelee virheen (eikä sovellus kaadu)
+    expect(response.status).toBe(200); 
+
+    // 5. Varmistetaan, ettei tietokantaan vahingossa tallennettu tyhjää/viallista analyysia
+    const analysisInDb = await prisma.aIAnalysis.findFirst({
+      where: { candidate_id: candidate.id },
+    });
+    expect(analysisInDb).toBeNull();
   });
 });
