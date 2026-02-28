@@ -32,6 +32,9 @@ jobs:
             DATABASE_URL_TEST: postgresql://prisma:prisma@localhost:5433/tests
             DATABASE_URL: postgresql://prisma:prisma@localhost:5433/tests
             NODE_ENV: test
+            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+            SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+            SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
             npx prisma generate
             npm run db:test:push
