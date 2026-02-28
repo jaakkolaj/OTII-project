@@ -82,7 +82,7 @@ export const resetPasswordWithToken = async(req: Request, res: Response) => {
         }
 
         // Etsii käyttäjän tokenin perusteella
-        const user = prisma.user.findUnique({ where: { id: decoded.user_id } });
+        const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) {
             return res.status(404).json({ error: "User with token was not found" });
         }
