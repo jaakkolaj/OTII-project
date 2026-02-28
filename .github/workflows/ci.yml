@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+            node-version: "22.13.1"
+            cache: "npm"
+            cache-dependency-path: server/package-lock.json
+
+      - name: Start Postgres (docker compose)
+        working-directory: server
+        run: docker compose up -d
+    
+      - name: Install deps
+        working-directory: server
+        run: npm ci
+
+      - name: DB push + tests
+        working-directory: server
+        env:
+            DATABASE_URL_TEST: postgresql://prisma:prisma@localhost:5433/tests
+            DATABASE_URL: postgresql://prisma:prisma@localhost:5433/tests
+            NODE_ENV: test
+            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+            SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+            SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+            npx prisma generate
+            npm run db:test:push
+            npm test
+
+      - name: Cleanup
+        if: always()
+        working-directory: server
+        run: docker compose down -v

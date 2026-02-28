@@ -16,6 +16,12 @@ jest.mock("../../src/services/parser.service", () => ({
   ),
 }));
 
+jest.mock("../../src/services/supabase.service", () => ({
+  uploadFileToSupabase: jest.fn().mockResolvedValue({
+    path: "mocked/path/test.pdf",
+  }),
+}));
+
 describe("POST /upload (integration)", () => {
   let userId: string;
   let jobPostingId: string;
