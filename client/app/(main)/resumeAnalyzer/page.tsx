@@ -7,12 +7,10 @@ import { JobPostingsList } from "./components/JobPostingsList";
 import type { JobPosting } from "../job_postings/types";
 import { getJobPostings } from "@/app/services/jobPostingService";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 export default function ResumeAnalyzerPage() {
   const [query, setQuery] = useState("");
   const [jobs, setJobs] = useState<JobPosting[]>([]);
-  const router = useRouter();
 
   // Ladataan kaikki jobPostingit
   useEffect(() => {
@@ -30,11 +28,6 @@ export default function ResumeAnalyzerPage() {
                 : [];
         setJobs(data);
       } catch (err: unknown) {
-        if (axios.isAxiosError(err) && err.response?.status === 401) {
-          console.log("Not Authenticated!");
-          router.push("/login"); // client-side redirect jos tokenia ei löydy cookiesta
-          return;
-        }
       }
     }
     loadJobPostings();

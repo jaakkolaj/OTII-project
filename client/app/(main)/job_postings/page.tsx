@@ -6,7 +6,6 @@ import { JobPostingsToolbar } from "./components/JobPostingsToolbar";
 import { JobPostingsList } from "./components/JobPostingsList";
 import type { JobPosting } from "./types";
 import { getJobPostings } from "../../services/jobPostingService";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { deleteJobPosting } from "../../services/jobPostingService";
 
@@ -16,8 +15,6 @@ export default function JobPostingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const router = useRouter();
 
   useEffect(() => {
     let isMounted = true;
@@ -39,12 +36,6 @@ export default function JobPostingsPage() {
           setJobs(data);
         }
       } catch (err: unknown) {
-        if (axios.isAxiosError(err) && err.response?.status === 401) {
-          setError("Not Authenticated!");
-          router.push("/login"); // ✅ client-side redirect
-          return;
-        }
-
         const message =
           err instanceof Error ? err.message : "Something went wrong";
         setError(message);
