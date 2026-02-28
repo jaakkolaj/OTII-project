@@ -17,13 +17,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button"
-import SidebarLayout from "../SidebarLayout";
 
 import { ModeToggle } from "@/components/layout/ModeToggle";
 
 export default function SettingsPage() {
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <header className="flex flex-col gap-2">
           <h1 className="text-3xl font-semibold tracking-tight">Settings</h1>
@@ -110,6 +108,5 @@ export default function SettingsPage() {
           </Card>
         </section>
       </main>
-    </SidebarLayout>
   )
 }

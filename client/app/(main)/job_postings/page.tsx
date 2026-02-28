@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import SidebarLayout from "@/app/SidebarLayout";
 import { JobPostingsHeader } from "./components/JobPostingsHeader";
 import { JobPostingsToolbar } from "./components/JobPostingsToolbar";
 import { JobPostingsList } from "./components/JobPostingsList";
 import type { JobPosting } from "./types";
-import { getJobPostings } from "../services/jobPostingService";
+import { getJobPostings } from "../../services/jobPostingService";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { deleteJobPosting } from "../services/jobPostingService";
+import { deleteJobPosting } from "../../services/jobPostingService";
 
 export default function JobPostingsPage() {
   const [jobs, setJobs] = useState<JobPosting[]>([]);
@@ -83,7 +82,6 @@ export default function JobPostingsPage() {
   };
 
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <JobPostingsHeader />
         <JobPostingsToolbar query={query} onQueryChange={setQuery} />
@@ -95,6 +93,5 @@ export default function JobPostingsPage() {
           onDelete={handleDelete}
         />
       </main>
-    </SidebarLayout>
   );
 }

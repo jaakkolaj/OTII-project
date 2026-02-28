@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
-
+import {Menu, X } from "lucide-react"
+import Link from "next/link"
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -33,9 +33,11 @@ export function Navbar() {
           <Button variant="ghost" size="sm" className="text-sm text-muted-foreground hover:text-foreground">
             Book a Demo
           </Button>
-          <Button size="sm" className="rounded-full bg-foreground px-5 text-sm text-background hover:bg-foreground/90">
-            Get Early Access
+          <Link href="/login">
+          <Button  size="sm" className="rounded-full bg-foreground px-5 text-sm text-background hover:bg-foreground/90">
+            Login
           </Button>
+          </Link>
         </div>
 
         <button
@@ -67,7 +69,7 @@ export function Navbar() {
                 Book a Demo
               </Button>
               <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90">
-                Get Early Access
+                login
               </Button>
             </div>
           </div>

@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import SidebarLayout from "@/app/SidebarLayout";
 import { ResumeAnalyzerHeader } from "./components/ResumeAnalyzerHeader";
 import { ResumeAnalyzerToolbar } from "./components/ResumeAnalyzerToolbar";
 import { JobPostingsList } from "./components/JobPostingsList";
 import type { JobPosting } from "../job_postings/types";
-import { getJobPostings } from "../services/jobPostingService";
+import { getJobPostings } from "@/app/services/jobPostingService";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -55,7 +54,6 @@ export default function ResumeAnalyzerPage() {
   }, [query, jobs]);
 
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <ResumeAnalyzerHeader />
         <ResumeAnalyzerToolbar
@@ -65,6 +63,5 @@ export default function ResumeAnalyzerPage() {
         />
         <JobPostingsList postings={filteredPostings} />
       </main>
-    </SidebarLayout>
   );
 }

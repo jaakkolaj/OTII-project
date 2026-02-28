@@ -1,6 +1,5 @@
 "use client";
 
-import SidebarLayout from "@/app/SidebarLayout";
 import { AccountSettings } from "./components/AccountSettings";
 import { NotificationSettings } from "./components/NotificationSettings";
 import { ProfileHeader } from "./components/ProfileHeader";
@@ -10,7 +9,6 @@ import { SecuritySettings } from "./components/SecuritySettings";
 
 export default function ProfilePage() {
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <ProfileHeader />
         <section className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
@@ -23,6 +21,5 @@ export default function ProfilePage() {
         </section>
         <NotificationSettings />
       </main>
-    </SidebarLayout>
   );
 }

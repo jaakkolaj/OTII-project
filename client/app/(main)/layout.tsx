@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Header from "@/components/layout/Header";
+import "../globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/layout/AppSidebar"
 
@@ -26,11 +25,9 @@ export default function SidebarLayout({
   children: React.ReactNode;
 }>) {
   return (
-
     <SidebarProvider>
       <AppSidebar />
       <main className="flex-1">{children}</main>
     </SidebarProvider>
-
   );
 }

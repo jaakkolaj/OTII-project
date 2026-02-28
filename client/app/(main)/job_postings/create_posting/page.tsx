@@ -5,7 +5,6 @@ import type { ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import { ArrowLeft, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
-import SidebarLayout from "@/app/SidebarLayout";
 import { createJobPosting } from "@/app/services/jobPostingService";
 
 // Job-postauksen lomaketiedot
@@ -82,7 +81,6 @@ export default function CreateJobPostingPage() {
   };
 
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <header className="space-y-3">
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -264,6 +262,5 @@ export default function CreateJobPostingPage() {
           </div>
         </form>
       </main>
-    </SidebarLayout>
   );
 }

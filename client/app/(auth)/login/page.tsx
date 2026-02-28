@@ -24,7 +24,7 @@ export default function Page() {
         description: 'Redirecting you to the dashboard...',
       });
 
-      setTimeout(() => router.push('/'), 1000);
+      setTimeout(() => router.push('/home'), 1000);
 
     } catch (error) {
       // Axios error — kaiva backendisi palauttama message suoraan

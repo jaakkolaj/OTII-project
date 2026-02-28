@@ -1,4 +1,3 @@
-import SidebarLayout from "../SidebarLayout";
 import { ActivityInsightsSection } from "./components/ActivityInsightsSection";
 import { HiringHealthSection } from "./components/HiringHealthSection";
 import { HomeHeader } from "./components/HomeHeader";
@@ -7,7 +6,6 @@ import { StatsOverview } from "./components/StatsOverview";
 
 export default function Home() {
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <HomeHeader />
         <StatsOverview />
@@ -15,6 +13,5 @@ export default function Home() {
         <ActivityInsightsSection />
         <HiringHealthSection />
       </main>
-    </SidebarLayout>
   );
 }

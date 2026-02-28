@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useTransition } from "react";
-import SidebarLayout from "@/app/SidebarLayout";
 import { CandidatesHeader } from "./components/CandidatesHeader";
 import { CandidatesToolbar } from "./components/CandidatesToolbar";
 import { CandidatesList } from "./components/CandidatesList";
@@ -40,7 +39,6 @@ export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidate
   }, [initialCandidates, query]);
 
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <CandidatesHeader 
           jobTitle={jobTitle} 
@@ -52,6 +50,5 @@ export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidate
         <CandidatesToolbar query={query} onQueryChange={setQuery} />
         <CandidatesList candidates={filteredCandidates} />
       </main>
-    </SidebarLayout>
   );
 }

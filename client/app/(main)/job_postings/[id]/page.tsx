@@ -3,7 +3,6 @@
 import { useMemo, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, KeyboardEvent } from "react";
 import { useParams } from "next/navigation";
-import SidebarLayout from "@/app/SidebarLayout";
 import { JobPostingDetailHeader } from "./components/JobPostingDetailHeader";
 import { UploadDetails } from "./components/UploadDetails";
 import { UploadDropzone } from "./components/UploadDropzone";
@@ -144,7 +143,6 @@ export default function JobPostingDetail() {
   };
 
   return (
-    <SidebarLayout>
       <main className="container mx-auto flex flex-col gap-8 p-8">
         <JobPostingDetailHeader jobId={jobId} />
 
@@ -172,6 +170,5 @@ export default function JobPostingDetail() {
           />
         </section>
       </main>
-    </SidebarLayout>
   );
 }
