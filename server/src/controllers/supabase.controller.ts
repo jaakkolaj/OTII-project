@@ -1,10 +1,11 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import prisma from "../prisma";
 import { supabase } from "../config/supabaseClient";
 
 export const getDocument = async (
   req: Request<{ candidate: string }>,
   res: Response,
+  next: NextFunction
 ) => {
   try {
     // 1. Haetaan candidate

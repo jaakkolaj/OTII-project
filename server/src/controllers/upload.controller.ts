@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { parseDocument } from "../services/parser.service";
 import prisma from "../prisma";
 import { uploadFileToSupabase } from "../services/supabase.service";
@@ -13,7 +13,7 @@ const sanitizeFileName = (fileName: string): string => {
 };
 
 // Tiedostojen latauksen käsittelijä
-export const uploadFiles = async (req: Request, res: Response) => {
+export const uploadFiles = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Haetaan ladatut tiedostot pyynnöstä
     const files = req.files as Express.Multer.File[];

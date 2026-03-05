@@ -1,6 +1,6 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 
-export const logoutUser =  (req: Request, res: Response) => {
+export const logoutUser =  (req: Request, res: Response, next: NextFunction) => {
     res.cookie("access_token", "", {
         httpOnly: true,
         secure: false,        // vain HTTPS

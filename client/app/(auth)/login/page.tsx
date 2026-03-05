@@ -49,6 +49,7 @@ export default function Page() {
           onEmailChange={setEmail}
           onPasswordChange={setPassword}
           onSubmit={onSubmit}
+          isLoading={isLoading}
         />
       </div>
     </div>

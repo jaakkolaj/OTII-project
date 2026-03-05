@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { transport } from "../config/mail";
 import prisma from "../prisma";
 import jwt, {JwtPayload} from 'jsonwebtoken';
@@ -9,7 +9,7 @@ const MAIL_USER = process.env.MAIL_USER;
 const JWT_SECRET = "kosodpskop";
 
 // Routti lähettää sähköposti viestin ja linkin salasanan palautusta varten.
-export const sendPasswordResetEmail = async(req: Request, res: Response) => {
+export const sendPasswordResetEmail = async(req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
 
     // Etsii käyttäjän emailin perusteella
@@ -59,7 +59,7 @@ export const sendPasswordResetEmail = async(req: Request, res: Response) => {
 };
 
 // Routti resetoi salasanan tokenin avulla
-export const resetPasswordWithToken = async(req: Request, res: Response) => {
+export const resetPasswordWithToken = async(req: Request, res: Response, next: NextFunction) => {
     const tokenParam = req.params.token ?? req.query.token;
     const token = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
 

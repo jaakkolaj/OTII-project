@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import prisma from "../prisma";
 import { Prisma } from "@prisma/client";
 
 // Hakee kaikki kirjautuneen käyttäjän jobPostingit.
-export const getJobPostings = async (req: Request, res: Response) => {
+export const getJobPostings = async (req: Request, res: Response, next: NextFunction) => {
     // Käyttäjän autentikointi
     if (!req.user) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -39,7 +39,7 @@ export const getJobPostingById = async (req: Request<{ id: string }>, res: Respo
 };
 
 // Luo uuden jobPostingin kirjautuneelle käyttäjälle
-export const createJobPosting = async (req: Request, res: Response) => {
+export const createJobPosting = async (req: Request, res: Response, next: NextFunction) => {
     const { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate } = req.body ?? {};
 
     // Title ja description ovat pakolliset kentät jobPostingissa.
@@ -118,7 +118,7 @@ export const editJobPostingById = async (req: Request<{ id: string }>, res: Resp
 };
 
 // Poistetaan kirjautuneen käyttäjän jobPosting annetun ID:n perusteella.
-export const deleteJobPostingById = async (req: Request<{ id: string }>, res: Response) => {
+export const deleteJobPostingById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     if (!req.user) {
         return res.status(401).json({ error: "Unauthorized" });
     }
