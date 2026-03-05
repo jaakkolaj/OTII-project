@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 interface LoginFormProps extends Omit<React.ComponentProps<"div">, 'onSubmit'> {
   email: string;
   password: string;
+  isLoading?: boolean;
   onEmailChange?: (email: string) => void;
   onPasswordChange?: (password: string) => void;
   onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -27,6 +28,7 @@ export function LoginForm({
   className,
   email,
   password,
+  isLoading,
   onEmailChange,
   onPasswordChange,
   onSubmit,
@@ -76,7 +78,9 @@ export function LoginForm({
                 />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? 'Logging in...' : 'Login'}
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="register">Sign up</a>
                 </FieldDescription>
