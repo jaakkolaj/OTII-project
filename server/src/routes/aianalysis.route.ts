@@ -11,7 +11,7 @@ import { AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware } from '../middl
 const aiAnalysisRouter = Router();
 
 //Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-aiAnalysisRouter.post('/:jobPostingId', aianalysis, AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware);
+aiAnalysisRouter.post('/:jobPostingId', AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware, aianalysis);
 
 //Testi routti aiAnalyysien luontiin
 aiAnalysisRouter.post('/', createAnalysis);

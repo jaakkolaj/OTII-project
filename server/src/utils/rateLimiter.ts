@@ -14,10 +14,10 @@ export const standardLimiter = (keyPrefix: string) => {
   return new RateLimiterRedis({
     storeClient: redis,
     keyPrefix: keyPrefix,
-    points: 1,
+    points: 5,
     duration: 30
-  })
-}
+  });
+};
 
 // AI: 5 pyyntöä / 60s
 export const aiLimiter = new RateLimiterRedis({

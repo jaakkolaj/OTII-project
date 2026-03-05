@@ -1,4 +1,9 @@
 import request from "supertest";
+jest.mock("../../src/middleware/rateLimiter", () => ({
+    standardRateLimiter: () => (req: any, res: any, next: any) => next(),
+    AiAnalysisRateLimitMiddleware: (req: any, res: any, next: any) => next(),
+    aiConcurrencyMiddleware: (req: any, res: any, next: any) => next(),
+}));
 import app from "../../src/app";
 
 import * as aiService from "../../src/services/ai.service";
@@ -8,6 +13,7 @@ import { createJobPosting } from "../helpers/createJobPosting";
 import { createUser } from "../helpers/createUser";
 import { createApplicationDocument } from "../helpers/createApplicationDocument";
 import { createAiAnalysis } from "../helpers/createAianalysis";
+import { redis } from "../../src/config/redis";
 
 jest.mock("../../src/services/ai.service");
 
@@ -34,6 +40,7 @@ describe("AI Analysis Controller - Integration Tests", () => {
 
   afterAll(async () => {
     // Siivous käänteisessä järjestyksessä riippuvuuksien vuoksi
+    await redis.flushall();
     await prisma.aIAnalysis.deleteMany();
     await prisma.applicationDocument.deleteMany();
     await prisma.candidate.deleteMany();
