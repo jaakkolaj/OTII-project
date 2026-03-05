@@ -28,16 +28,38 @@ export default function Page() {
 
     } catch (error) {
       // Axios error — kaiva backendisi palauttama message suoraan
-      const message = axios.isAxiosError(error)
-        ? error.response?.data?.message ?? error.response?.data?.error ?? 'Login failed. Please try again.'
-        : 'An unexpected error occurred.';
+      if (axios.isAxiosError(error)) {
 
-      toast.error('Login failed', { description: message });
-      setPassword('');
+        const status = error.response?.status;
+        const message = error.response?.data?.message;
 
-    } finally {
-      setIsLoading(false);
+        switch (status) {
+          case 400:
+                toast.error('Invalid input', { description: message ?? 'Please check your details.' });
+                break;
+            case 401:
+                toast.error('Login failed', { description: message ?? 'Invalid email or password.' });
+                break;
+            case 403:
+                toast.error('Access denied', { description: message ?? 'You do not have permission.' });
+                break;
+            case 404:
+                toast.error('Not found', { description: message ?? 'Resource not found.' });
+                break;
+            case 409:
+                toast.error('Conflict', { description: message ?? 'This resource already exists.' });
+                break;
+            default:
+                toast.error('Something went wrong', { description: 'Please try again later.' });
+                break;
+
+         }
+    } else {
+        toast.error('Unexpected error', { description: 'Please try again later.' });
     }
+
+    setPassword('');
+}
   };
 
   return (
