@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Briefcase, Pencil, Plus, Trash2 } from "lucide-react";
 
-import type { JobPosting } from "../types";
+import type { JobPosting } from "@/app/types/jobPosting";
 
 type JobPostingCardProps = {
   job: JobPosting;
@@ -57,7 +57,7 @@ export function JobPostingCard({
             className="inline-flex items-center gap-2 font-medium text-destructive transition hover:text-destructive/80 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Trash2 className="h-4 w-4" />
-            {isDeleting ? "Deleting..." : "Delete"}
+             {isDeleting ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>

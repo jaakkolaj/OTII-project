@@ -1,5 +1,5 @@
 "use client"
-import { LoginForm } from "@/app/(auth)/login/components/login-form"
+import { LoginForm } from "@/app/(auth)/login/_components/login-form"
 import { useState } from "react";
 import { loginUser } from "@/app/services/userService";
 import { useRouter } from "next/navigation";

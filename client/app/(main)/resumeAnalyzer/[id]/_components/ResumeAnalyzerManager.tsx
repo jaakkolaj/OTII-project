@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo, useTransition } from "react";
-import { CandidatesHeader } from "./components/CandidatesHeader";
-import { CandidatesToolbar } from "./components/CandidatesToolbar";
-import { CandidatesList } from "./components/CandidatesList";
-import { runAnalysisAction, deleteAllAnalysisAction } from "./actions";
+import { CandidatesHeader } from "./CandidatesHeader";
+import { CandidatesToolbar } from "./CandidatesToolbar";
+import { CandidatesList } from "./CandidatesList";
+import { runAnalysisAction, deleteAllAnalysisAction } from "../actions";
 import { toast } from "sonner";
 
 export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidates }: any) {

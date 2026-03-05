@@ -12,10 +12,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { ResumeJobPosting } from "../types";
+import type { JobPosting } from "@/app/types/jobPosting";
 
 type JobPostingCardProps = {
-  posting: ResumeJobPosting;
+  posting: JobPosting;
 };
 
 export function JobPostingCard({ posting }: JobPostingCardProps) {

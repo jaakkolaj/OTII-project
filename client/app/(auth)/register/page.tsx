@@ -1,5 +1,5 @@
 "use client"
-import { SignupForm } from "@/app/(auth)/register/components/signup-form"
+import { SignupForm } from "@/app/(auth)/register/_components/signup-form"
 import { useState } from "react"
 import { createUser } from "@/app/services/userService"
 import { toast } from "sonner"

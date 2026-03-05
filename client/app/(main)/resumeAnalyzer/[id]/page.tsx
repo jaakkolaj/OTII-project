@@ -1,6 +1,6 @@
 import { getAiAnalysisByJobPostingId } from "@/app/services/aiAnalysisService";
 import { getSignedURL } from "@/app/services/supaBaseService";
-import ResumeAnalyzerClient from "./ResumeAnalyzerClient";
+import ResumeAnalyzerClient from "./_components/ResumeAnalyzerManager";
 
 // Aputoiminto datan hakemiseen palvelimella
 async function getMappedCandidates(jobId: string, jobTitle: string) {

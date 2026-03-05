@@ -3,9 +3,9 @@
 import { useMemo, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, KeyboardEvent } from "react";
 import { useParams } from "next/navigation";
-import { JobPostingDetailHeader } from "./components/JobPostingDetailHeader";
-import { UploadDetails } from "./components/UploadDetails";
-import { UploadDropzone } from "./components/UploadDropzone";
+import { JobPostingDetailHeader } from "./_components/JobPostingDetailHeader";
+import { UploadDetails } from "./_components/UploadDetails";
+import { UploadDropzone } from "./_components/UploadDropzone";
 import {
   ACCEPTED_EXTENSIONS,
   ACCEPTED_MIME_TYPES,

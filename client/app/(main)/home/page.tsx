@@ -1,8 +1,8 @@
-import { ActivityInsightsSection } from "./components/ActivityInsightsSection";
-import { HiringHealthSection } from "./components/HiringHealthSection";
-import { HomeHeader } from "./components/HomeHeader";
-import { PipelineFocusSection } from "./components/PipelineFocusSection";
-import { StatsOverview } from "./components/StatsOverview";
+import { ActivityInsightsSection } from "./_components/ActivityInsightsSection";
+import { HiringHealthSection } from "./_components/HiringHealthSection";
+import { HomeHeader } from "./_components/HomeHeader";
+import { PipelineFocusSection } from "./_components/PipelineFocusSection";
+import { StatsOverview } from "./_components/StatsOverview";
 
 export default function Home() {
   return (

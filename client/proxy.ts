@@ -6,7 +6,6 @@ import type { NextRequest } from "next/server";
 // pyyntö saa jatkaa normaalisti. Jos tokenia ei löydy tai se on vanhentunut, käyttäjä uudelleenohjataan login-sivulle.
 export function proxy(request: NextRequest) {
   const autenticationToken = request.cookies.get("access_token")?.value;
-
   // Jos tokenia ei löydy, uudelleenohjataan käyttäjä login-sivulle
   if (!autenticationToken) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -17,8 +16,8 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/home/:path*",
-    "/resumeAnalyzer/:path*",
-    "/job_postings/:path*",
+    //"/resumeAnalyzer/:path*",
+    "/job_postings/:path*", 
     "/profile/:path*",
     "/settings/:path*",
   ],

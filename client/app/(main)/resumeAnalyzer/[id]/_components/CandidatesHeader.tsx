@@ -1,4 +1,4 @@
-"use client"
+
 import Link from "next/link";
 import { ChevronLeft, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

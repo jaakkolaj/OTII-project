@@ -14,6 +14,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import FormSubmitButton from "@/components/ui-build/formSubmitButton"
 
 interface LoginFormProps extends Omit<React.ComponentProps<"div">, 'onSubmit'> {
   email: string;
@@ -76,7 +77,7 @@ export function LoginForm({
                 />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <FormSubmitButton text="Login" loadingText="Logging in"/>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="register">Sign up</a>
                 </FieldDescription>

@@ -1,12 +1,11 @@
 "use client";
 
-import type { ResumeJobPosting } from "../types";
 import { JobPostingCard } from "./JobPostingCard";
+import type { JobPosting } from "@/app/types/jobPosting";
 
 type JobPostingsListProps = {
-  postings: ResumeJobPosting[];
+  postings: JobPosting[];
 };
-
 export function JobPostingsList({ postings }: JobPostingsListProps) {
   if (postings.length === 0) {
     return (

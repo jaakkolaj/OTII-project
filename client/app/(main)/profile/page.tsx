@@ -1,11 +1,11 @@
-"use client";
 
-import { AccountSettings } from "./components/AccountSettings";
-import { NotificationSettings } from "./components/NotificationSettings";
-import { ProfileHeader } from "./components/ProfileHeader";
-import { ProfileOverview } from "./components/ProfileOverview";
-import { RoleAccessCard } from "./components/RoleAccessCard";
-import { SecuritySettings } from "./components/SecuritySettings";
+
+import { AccountSettings } from "./_components/AccountSettings";
+import { NotificationSettings } from "./_components/NotificationSettings";
+import { ProfileHeader } from "./_components/ProfileHeader";
+import { ProfileOverview } from "./_components/ProfileOverview";
+import { RoleAccessCard } from "./_components/RoleAccessCard";
+import { SecuritySettings } from "./_components/SecuritySettings";
 
 export default function ProfilePage() {
   return (

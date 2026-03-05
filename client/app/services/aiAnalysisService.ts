@@ -1,40 +1,62 @@
-import axios from "axios";
+import "server-only";
 
 const baseUrl = "http://localhost:5001/aiAnalysis";
+import { authFetch } from "@/lib/authFetch";
 
 // Service funktio, joka hakee yhden kandidaatin ja sen analyysin ID:n perusteella.
-export const getAiAnalysisById = async(analysisId: any) => {
-    const response = await axios.get(`${baseUrl}/candidate/${analysisId}`, {
-        withCredentials: true
-    });
-    return response;
+export const getAiAnalysisById = async (analysisId: string) => {
+  const response = await authFetch(`${baseUrl}/candidate/${analysisId}`, {
+    method: "GET",
+  });
+  if (!response.ok) throw new Error(`Haku epäonnistui: ${response.status}`);
+
+  return response.json();
 };
 
-// Service funktio, joka lähettää pyynnön palvelimelle hakeakseen kaikki analyysit yhdestä jobPostingista.
-export const getAiAnalysisByJobPostingId = async (jobId: any) => {
-    const response = await axios.get(`${baseUrl}/job/${jobId}`, {
-        withCredentials: true
-    });
-    return response;
+// Service funktio, joka hakee kaikki analyysit yhdestä jobPostingista.
+export const getAiAnalysisByJobPostingId = async (jobId: string) => {
+  const response = await authFetch(`${baseUrl}/job/${jobId}`, {
+    method: "GET",
+  });
+
+  if (!response.ok) throw new Error(`Haku epäonnistui: ${response.status}`);
+
+  return response.json();
 };
 
-// Service funktio, joka lähettää pyynnön yhden Ai analyysin poistamista varten palvelimelle ID:n perusteella.
-export const deleteAiAnalysisById = async (analysisId: any) => {
-    const response = await axios.delete(`${baseUrl}/${analysisId}`, {
-        withCredentials: true
-    });
-    return response
+// Service funktio, joka poistaa yhden Ai analyysin ID:n perusteella.
+export const deleteAiAnalysisById = async (analysisId: string) => {
+  const response = await authFetch(`${baseUrl}/${analysisId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) throw new Error(`Poisto epäonnistui: ${response.status}`);
+
+  return response.json();
 };
 
-// Service funktio, joka poistaa kaikki AI analyysit tietylle jobPostingille
-export const deleteAllAiAnalysisByJobPostingId = async (jobPostingId: any) => {
-    const response = await axios.delete(`${baseUrl}/job/${jobPostingId}/all`, {
-        withCredentials: true
-    });
-    return response;
+// Service funktio, joka poistaa kaikki AI analyysit tietylle jobPostingille.
+export const deleteAllAiAnalysisByJobPostingId = async (
+  jobPostingId: string,
+) => {
+  const response = await authFetch(`${baseUrl}/job/${jobPostingId}/all`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok)
+    throw new Error(`Kaikkien poisto epäonnistui: ${response.status}`);
+
+  return response.json();
 };
-// Service funktio, joka lähettää pyynnön palvelimelle käynnistääkseen AI analyysin kaikille tietyn jobPostingin ehdokkaille.
+
+// Service funktio, joka käynnistää AI analyysin kaikille tietyn jobPostingin ehdokkaille.
 export const runAiAnalysis = async (jobId: string) => {
-    const response = await axios.post(`${baseUrl}/${jobId}`);
-    return response; 
+  const response = await authFetch(`${baseUrl}/${jobId}`, {
+    method: "POST",
+  });
+
+  if (!response.ok)
+    throw new Error(`Analyysin käynnistys epäonnistui: ${response.status}`);
+
+  return response.json();
 };
