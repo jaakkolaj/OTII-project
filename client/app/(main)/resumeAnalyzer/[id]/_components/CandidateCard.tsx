@@ -20,11 +20,13 @@ type CandidateCardProps = {
 
 export function CandidateCard({ candidate }: CandidateCardProps) {
   const [viewDocument, setViewDocument] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  // const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [iframeSrc, setIframeSrc] = useState<string | null>(null); // Uusi tila iframe-src:lle
   const [isLoading, setIsLoading] = useState(false); // Uusi lataustila
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
-  const viewPDF = async () => {
-    if (pdfUrl) {
+  const viewFile = async () => {
+    if (iframeSrc) {
       setViewDocument(!viewDocument);
       return;
     }
@@ -35,13 +37,52 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
     try {
       const res = await fetch(candidate.pdfUrl!);
       const data = await res.json();
-      setPdfUrl(data.url);
-      // HUOM: Emme aseta isLoading(false) tässä,
-      // vaan iframe-elementin onLoad-tapahtumassa!
+      const url: string = data.url;
+
+      // Tunnista tiedostotyyppi URL:n polusta
+      const ext = url.split("?")[0].split(".").pop()?.toLowerCase();
+
+      if (ext === "docx" || ext === "doc") {
+        // Microsoft Office Online viewer DOCX:lle
+        setIframeSrc(
+          `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`
+        );
+      } else {
+        // PDF suoraan
+        setIframeSrc(url);
+        setDownloadUrl(url); //Tallennetaan alkuperäinen URL latausta varten
+      }
     } catch (error) {
-      console.error("PDF:n haku epäonnistui:", error);
-      setIsLoading(false); // Virhetilanteessa poistetaan lataustila
+      console.error("Tiedoston haku epäonnistui:", error);
+      setIsLoading(false);
     }
+  };
+
+  const handleDownload = async () => {
+
+    // Jos URL on jo haettu, käytä sitä suoraan, muuten haetaan uusi
+    let url = downloadUrl;
+
+    if (!url) {
+      try {
+        const res = await fetch(candidate.pdfUrl!);
+        const data = await res.json();
+        url = data.url;
+        setDownloadUrl(url); // Tallennetaan URL latausta varten
+      } catch (error) {
+        console.error("Tiedoston haku epäonnistui:", error);
+        return;
+      }
+    }
+    // Blob-lataus toimii cross-origin URL:ien kanssa
+    const response = await fetch(url!);
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = `${candidate.name}_CV`;
+    a.click();
+    URL.revokeObjectURL(objectUrl);
   };
 
   return (
@@ -100,12 +141,12 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
           </Button>
           <Button
             className="cursor-pointer"
-            onClick={() => viewPDF()}
-            disabled={!candidate.pdfUrl || (isLoading && !pdfUrl)}
+            onClick={() => viewFile()}
+            disabled={!candidate.pdfUrl || (isLoading && !iframeSrc)}
           >
-            {isLoading || !viewDocument ? "View PDF" : "Hide PDF"}
+            {isLoading && !iframeSrc ? "Loading..." : viewDocument ? "Hide file" : "View file"}
           </Button>
-          <Button variant="link" className="px-0">
+          <Button variant="link" className="px-0" onClick={handleDownload}>
             <Download className="h-4 w-4" />
             Download
           </Button>
@@ -121,9 +162,9 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
               </p>
             </div>
           )}
-          {pdfUrl && (
+          {iframeSrc && (
             <iframe
-              src={pdfUrl}
+              src={iframeSrc}
               title={`${candidate.name} resume preview`}
               onLoad={() => setIsLoading(false)}
               className={`h-[480px] w-full rounded-xl border bg-background transition-opacity duration-300 ${
