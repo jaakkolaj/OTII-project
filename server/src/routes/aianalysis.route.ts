@@ -7,10 +7,11 @@ import {
   createAnalysis,
   deleteAllAnalysesByJobPostingId
 } from '../controllers/aianalysis.controller';
+import { AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware } from '../middleware/rateLimiter';
 const aiAnalysisRouter = Router();
 
 //Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-aiAnalysisRouter.post('/:jobPostingId', aianalysis);
+aiAnalysisRouter.post('/:jobPostingId', aianalysis, AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware);
 
 //Testi routti aiAnalyysien luontiin
 aiAnalysisRouter.post('/', createAnalysis);
