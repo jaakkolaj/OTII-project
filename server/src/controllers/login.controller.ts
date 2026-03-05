@@ -5,20 +5,18 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-    console.log('1. Controller reached, body:', req.body); // 🧪
+
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({
         where: { email }
     });
-    console.log('2. User found:', user ? 'yes' : 'no'); // 🧪
+    
 
     const passwordCorrect = user ? await bcrypt.compare(password, user.password) : false;
 
-    console.log('3. Password correct:', passwordCorrect);
 
     if(!user || !passwordCorrect) {
-        console.log('4. Sending 401 error');
         const err: any = new Error('Invalid email or password');
         err.code = '401';
         next(err);
