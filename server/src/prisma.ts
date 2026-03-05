@@ -9,6 +9,9 @@ const url = isTest ? process.env.DATABASE_URL_TEST : process.env.DATABASE_URL;
 
 if (!url) throw new Error("DATABASE_URL missing");
 
+// Testiympäristössä käytetään PostgreSQL:ää Docker-kontissa, joten luodaan yhteys poolin kautta.
+// Kehitysympäristössä käytetään Acceleratea, joka hoitaa yhteyden ilman erillistä poolia
+// Tämä ratkaisu mahdollistaa molempien ympäristöjen tehokkaan hyödyntämisen: nopea ja kevyt Accelerate kehityksessä, sekä realistinen PostgreSQL-testaus Docker-kontissa.
 export const pool = isTest ? new pg.Pool({ connectionString: url }) : null;
 
 let prisma: PrismaClient;

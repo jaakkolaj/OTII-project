@@ -1,5 +1,5 @@
 "use client"
-import { LoginForm } from "@/app/(auth)/login/components/login-form"
+import { LoginForm } from "@/app/(auth)/login/_components/login-form"
 import { useState } from "react";
 import { loginUser } from "@/app/services/userService";
 import { useRouter } from "next/navigation";
@@ -24,7 +24,7 @@ export default function Page() {
         description: 'Redirecting you to the dashboard...',
       });
 
-      setTimeout(() => router.push('/'), 1000);
+      setTimeout(() => router.push('/home'), 1000);
 
     } catch (error) {
       // Axios error — kaiva backendisi palauttama message suoraan

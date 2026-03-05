@@ -1,4 +1,4 @@
-import { NewPasswordForm } from "../components/new-password-form"
+import { NewPasswordForm } from "../_components/new-password-form"
 
 interface PageProps {
   params: {
