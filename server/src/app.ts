@@ -11,7 +11,6 @@ import supaBaseRouter from './routes/supabase.route';
 import cors from 'cors';
 import uploadRouter from './routes/upload.routes';
 import cookieParser from 'cookie-parser';
-import './workers/aiAnalysis.worker';
 
 const app = express()
 app.use(express.json())
