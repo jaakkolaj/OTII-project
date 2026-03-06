@@ -8,6 +8,14 @@ export type ResumeJobPosting = {
   lastUpdated?: string;
 };
 
+export type CandidateStatus =
+  | "NEW"
+  | "SCREENING"
+  | "INTERVIEW"
+  | "OFFER"
+  | "ACCEPTED"
+  | "REJECTED";
+
 export type ResumeCandidate = {
   id: string;
   name: string;
@@ -20,6 +28,7 @@ export type ResumeCandidate = {
   score: number;
   rank: number;
   pdfUrl: string;
+  status: CandidateStatus;
 };
 
 export type AiAnalysis = {

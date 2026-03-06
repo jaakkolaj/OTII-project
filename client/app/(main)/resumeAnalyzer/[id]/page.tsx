@@ -21,7 +21,7 @@ async function getMappedCandidates(jobId: string, jobTitle: string) {
         );
       }
       return {
-        id: analysis.id || analysis.candidate_id || String(index),
+        id: analysis.candidate_id || String(index),
         name: analysis.name,
         email: analysis.email,
         position: jobTitle,
@@ -31,6 +31,7 @@ async function getMappedCandidates(jobId: string, jobTitle: string) {
         topSkills: analysis.skills || [],
         pdfUrl: pdfUrl,
         rank: index + 1,
+        status: analysis.status ?? "NEW",
       };
     }),
   );

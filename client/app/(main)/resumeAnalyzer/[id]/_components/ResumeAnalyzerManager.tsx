@@ -48,7 +48,7 @@ export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidate
           isLoading={isPending} // isPending on true, kun Action on käynnissä
         />
         <CandidatesToolbar query={query} onQueryChange={setQuery} />
-        <CandidatesList candidates={filteredCandidates} />
+        <CandidatesList candidates={filteredCandidates} jobId={jobId} />
       </main>
   );
 }
