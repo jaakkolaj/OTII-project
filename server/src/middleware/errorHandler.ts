@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError, NotFoundError, ServerError } from '../utils/errors';
+import { Prisma } from '@prisma/client';
+
 
 export const asyncHandler = (fn: (req: Request, res: Response) => Promise<void>): ((req: Request, res: Response, next: NextFunction) => void) => {
     return (req: Request, res: Response, next: NextFunction): void => {
@@ -14,40 +16,33 @@ interface ErrorResponse {
     stack?: string;
 }
 
-export const errorHandler = (err: Error | AppError, req: Request, res: Response, next: NextFunction): void => {
-    let error = err;
-
-    // Handle Prisma errors
-    if ((err as any).code === 'P2002') {
-        // Unique constraint violation
-        const field = (err as any).meta?.target?.[0] || 'field';
-        error = new AppError(409, `${field} already exists`, true);
-    } else if ((err as any).code === 'P2025') {
-        // Record not found
-        error = new AppError(404, 'Resource not found', true);
-    } else if (!(error instanceof AppError)) {
-        // Unexpected error
-        error = new ServerError('Internal server error');
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+// Prisma unique constraint -virhe → 409
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+        return res.status(409).json({
+            status: "error",
+            message: "Resource already exists",
+        });
     }
 
-    const appError = error as AppError;
-    const statusCode = appError.statusCode || 500;
-
-    const response: ErrorResponse = {
-        status: 'error',
-        statusCode,
-        message: appError.message,
-    };
-
-    // Include stack trace in development
-    if (process.env.NODE_ENV === 'development') {
-        response.stack = appError.stack;
+    // Prisma not found → 404
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2025") {
+        return res.status(404).json({
+            status: "error",
+            message: "Resource not found",
+        });
     }
 
-    res.status(statusCode).json(response);
-};
-
-export const notFoundHandler = (req: Request, res: Response, next: NextFunction): void => {
-    const error = new NotFoundError(`Route ${req.originalUrl} not found`);
-    next(error);
+    // Tuntematon virhe → 500
+    console.error("Unhandled error:", err);
+    return res.status(500).json({
+        status: "error",
+        message: "Internal server error",
+    });
 };

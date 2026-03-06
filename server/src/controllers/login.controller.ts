@@ -1,10 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import prisma from "../prisma";
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { AuthenticationError } from "../utils/errors";
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({
@@ -14,7 +15,7 @@ export const loginUser = async (req: Request, res: Response) => {
     const passwordCorrect = user === null ? false : await bcrypt.compare(password, user.password)
 
     if(!(user && passwordCorrect)) {
-        return res.status(400).json({ error: "Invalid email or password!" });
+        throw new AuthenticationError("Invalid email or password");
     }
 
     const userForToken = {

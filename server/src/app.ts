@@ -11,6 +11,8 @@ import supaBaseRouter from './routes/supabase.route';
 import cors from 'cors';
 import uploadRouter from './routes/upload.routes';
 import cookieParser from 'cookie-parser';
+import { error } from 'node:console';
+import { errorHandler } from './middleware/Errorhandler';
 
 const app = express()
 app.use(express.json())
@@ -33,5 +35,7 @@ app.use('/supabase', supaBaseRouter);
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })
 })
+
+app.use(errorHandler)
 
 export default app;
