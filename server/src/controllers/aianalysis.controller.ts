@@ -7,6 +7,10 @@ const isUuid = (id: string) =>
 
 export const aianalysis = async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const { jobPostingId } = req.params;
 
     // Varmistetaan, että jobPostingId on validi UUID-merkkijono
@@ -104,6 +108,10 @@ export const getAiAnalysesByJobPostingId = async (
   res: Response,
 ) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const { jobPostingId } = req.params;
     if (typeof jobPostingId !== "string") {
       return res.status(400).json({
@@ -143,47 +151,12 @@ export const getAiAnalysesByJobPostingId = async (
   }
 };
 
-// Testi routti analyysin luontiin
-export const createAnalysis = async (req: Request, res: Response) => {
-  // Testauksessa postmaniin syötetään manuaalisesti job_posting_id ja candidate_id
-  const {
-    candidate_id,
-    job_posting_id,
-    skills,
-    years_experience,
-    education_level,
-    keyword_matches,
-    strengths,
-    weaknesses,
-    summary,
-    score,
-    raw_ai_response,
-  } = req.body;
-
-  try {
-    const aiAnalysis = await prisma.aIAnalysis.create({
-      data: {
-        candidate_id,
-        job_posting_id,
-        skills,
-        years_experience,
-        education_level,
-        keyword_matches,
-        strengths,
-        weaknesses,
-        summary,
-        score,
-        raw_ai_response,
-      },
-    });
-    res.status(200).json({ message: aiAnalysis });
-  } catch (error) {
-    res.status(400).json({ message: error });
-  }
-};
-
 // Hae analyysi ehdokkaan ID:n perusteella
 export const getAnalysisById = async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const { analysisId } = req.params;
   if (typeof analysisId !== "string") {
     return res.status(400).json({
@@ -206,6 +179,9 @@ export const getAnalysisById = async (req: Request, res: Response) => {
 
 // Poista analyysin ID:n perusteella
 export const deleteAnalysis = async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   const { analysisId } = req.params;
   if (typeof analysisId !== "string") {
     return res.status(400).json({ message: "Virheellinen AI Analyysin ID" });
@@ -231,6 +207,10 @@ export const deleteAnalysis = async (req: Request, res: Response) => {
 
 // Poista kaikki analyysit yhdelle jobPostingille
 export const deleteAllAnalysesByJobPostingId = async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const { jobPostingId } = req.params;
   
   if (typeof jobPostingId !== "string" || !isUuid(jobPostingId)) {

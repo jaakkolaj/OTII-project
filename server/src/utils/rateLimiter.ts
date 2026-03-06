@@ -24,5 +24,5 @@ export const aiLimiter = new RateLimiterRedis({
   storeClient: redis,
   keyPrefix: "ai_limit",
   points: 5,
-  duration: 60,
+  duration: 120,
 });
