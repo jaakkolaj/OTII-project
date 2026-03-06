@@ -19,7 +19,7 @@ describe("Suorituskykytesti aidoilla tiedostoilla", () => {
     });
   });
   
-  test("UT-PERF: prosessoi 30 kopiota oikeasta CV:stä", async () => {
+  test("UT-PERF: prosessoi 100 kopiota oikeasta CV:stä", async () => {
     
     // 1. Luetaan aito PDF-tiedosto fixtures-kansiosta
     const pdfPath = path.resolve(__dirname, "../fixtures/test.pdf");
@@ -31,7 +31,7 @@ describe("Suorituskykytesti aidoilla tiedostoilla", () => {
     const realPdfBuffer = fs.readFileSync(pdfPath);
 
     // 2. Luodaan 30 tiedoston taulukko (kopioidaan bufferia)
-    const mockFiles: Express.Multer.File[] = Array.from({ length: 30 }, (_, i) => ({
+    const mockFiles: Express.Multer.File[] = Array.from({ length: 100 }, (_, i) => ({
       originalname: `cv-kopio-${i + 1}.pdf`,
       buffer: realPdfBuffer,
       fieldname: "files",
@@ -50,11 +50,11 @@ describe("Suorituskykytesti aidoilla tiedostoilla", () => {
     const end = performance.now();
 
     const duration = end - start;
-    console.log(`--- 30 aidon PDF-tiedoston parsiminen kesti: ${duration.toFixed(2)} ms ---`);
+    console.log(`--- 100 aidon PDF-tiedoston parsiminen kesti: ${duration.toFixed(2)} ms ---`);
 
     // 4. Tarkistukset
-    expect(results).toHaveLength(30);
-    
+    expect(results).toHaveLength(100);
+
     // Varmistetaan että jokainen tiedosto onnistui (status: success)
     results.forEach((res, index) => {
       if (res.status === "error") {
