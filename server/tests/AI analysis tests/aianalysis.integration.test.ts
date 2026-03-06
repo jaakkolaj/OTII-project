@@ -1,9 +1,4 @@
 import request from "supertest";
-jest.mock("../../src/middleware/rateLimiter", () => ({
-    standardRateLimiter: () => (req: any, res: any, next: any) => next(),
-    AiAnalysisRateLimitMiddleware: (req: any, res: any, next: any) => next(),
-    aiConcurrencyMiddleware: (req: any, res: any, next: any) => next(),
-}));
 import app from "../../src/app";
 
 import * as aiService from "../../src/services/ai.service";
@@ -16,6 +11,11 @@ import { createAiAnalysis } from "../helpers/createAianalysis";
 import { redis } from "../../src/config/redis";
 
 jest.mock("../../src/services/ai.service");
+jest.mock("../../src/middleware/rateLimiter", () => ({
+    standardRateLimiter: () => (req: any, res: any, next: any) => next(),
+    AiAnalysisRateLimitMiddleware: (req: any, res: any, next: any) => next(),
+    aiConcurrencyMiddleware: (req: any, res: any, next: any) => next(),
+}));
 
 describe("AI Analysis Controller - Integration Tests", () => {
   const BASE_URL = "/aiAnalysis";

@@ -10,8 +10,11 @@ import {
 import { AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware } from '../middleware/rateLimiter';
 const aiAnalysisRouter = Router();
 
+// HUOM! aianalyysi routtien ratelimitterit vaativat routissa user id:n käsittelyn.
+// aiConcurrencyMiddleware vaatii user.id, voisiko vaihtaa req.ip?
+
 //Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-aiAnalysisRouter.post('/:jobPostingId', AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware, aianalysis);
+aiAnalysisRouter.post('/:jobPostingId', aianalysis);
 
 //Testi routti aiAnalyysien luontiin
 aiAnalysisRouter.post('/', createAnalysis);
