@@ -4,27 +4,25 @@ import {
   getAnalysisById, 
   deleteAnalysis,
   getAiAnalysesByJobPostingId,
-  createAnalysis,
   deleteAllAnalysesByJobPostingId
 } from '../controllers/aianalysis.controller';
+import { AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware } from '../middleware/rateLimiter';
+import { authentication } from '../middleware/authentication';
 const aiAnalysisRouter = Router();
 
 //Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-aiAnalysisRouter.post('/:jobPostingId', aianalysis);
-
-//Testi routti aiAnalyysien luontiin
-aiAnalysisRouter.post('/', createAnalysis);
+aiAnalysisRouter.post('/:jobPostingId', authentication, AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware, aianalysis);
 
 //Reitti hakee kaikki kandidaatit ja niiden analyysit yhdessä jobPostingissa
-aiAnalysisRouter.get('/job/:jobPostingId', getAiAnalysesByJobPostingId);
+aiAnalysisRouter.get('/job/:jobPostingId', authentication, getAiAnalysesByJobPostingId);
 
 // Hakee yhden kandidaatin ja sen ai analyysin
-aiAnalysisRouter.get('/candidate/:analysisId', getAnalysisById);
+aiAnalysisRouter.get('/candidate/:analysisId', authentication, getAnalysisById);
 
 // Poistaa kaikki analyysit tietystä jobPostingista
-aiAnalysisRouter.delete('/job/:jobPostingId/all', deleteAllAnalysesByJobPostingId);
+aiAnalysisRouter.delete('/job/:jobPostingId/all', authentication, AiAnalysisRateLimitMiddleware, deleteAllAnalysesByJobPostingId);
 
 // Poistaa Ai analyysin ID:n perusteella
-aiAnalysisRouter.delete('/:analysisId', deleteAnalysis); 
+aiAnalysisRouter.delete('/:analysisId', authentication, AiAnalysisRateLimitMiddleware, deleteAnalysis); 
 
 export default aiAnalysisRouter;
