@@ -1,54 +1,132 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { CandidatesHeader } from "./CandidatesHeader";
 import { CandidatesToolbar } from "./CandidatesToolbar";
 import { CandidatesList } from "./CandidatesList";
 import { runAnalysisAction, deleteAllAnalysisAction } from "../actions";
-import { toast } from "sonner";
 
-export default function ResumeAnalyzerClient({ jobId, jobTitle, initialCandidates }: any) {
+type AnalysisStatus = {
+  status: "processing" | "completed";
+  totalCandidates: number;
+  analyzedCandidates: number;
+};
+
+export default function ResumeAnalyzerClient({
+  jobId,
+  jobTitle,
+  initialCandidates,
+}: any) {
   const [query, setQuery] = useState("");
+  const [analysisStatus, setAnalysisStatus] =
+    useState<AnalysisStatus | null>(null);
+  const [isPolling, setIsPolling] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  // Käytetään useTransitionia, jotta voimme näyttää välitilan analyysin käskyjen aikana ilman, että koko UI lukkiutuu.
-  const [isPending, startTransition] = useTransition(); 
+  const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const requestInFlightRef = useRef(false);
+  const router = useRouter();
 
-  // Käsky analyysin käynnistämiseen ja kaikkien analyysien poistamiseen, jotka molemmat revalidatoi datan uudelleen haettaessa.
+  const isLoading = isPending || isPolling;
+
+  const stopPolling = () => {
+    if (pollTimerRef.current) {
+      clearInterval(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+    setIsPolling(false);
+    requestInFlightRef.current = false;
+  };
+
+  const fetchStatus = async () => {
+    if (requestInFlightRef.current) return;
+    requestInFlightRef.current = true;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5001/aiAnalysis/jobPostings/${jobId}/ai-analysis`,
+        { method: "POST" },
+      );
+
+      if (!response.ok) {
+        throw new Error(`Status fetch failed: ${response.status}`);
+      }
+
+      const data: AnalysisStatus = await response.json();
+      setAnalysisStatus(data);
+
+      if (data.status === "completed") {
+        stopPolling();
+        toast.success("Analysis ready!");
+        router.refresh();
+      }
+    } catch {
+      stopPolling();
+      toast.error("Failed to fetch status of analysis");
+    } finally {
+      requestInFlightRef.current = false;
+    }
+  };
+
+  const startPolling = () => {
+    if (pollTimerRef.current) return;
+    setIsPolling(true);
+    void fetchStatus();
+    pollTimerRef.current = setInterval(() => {
+      void fetchStatus();
+    }, 3000);
+  };
+
+  useEffect(() => {
+    return () => stopPolling();
+  }, []);
+
   const handleRunAnalysis = () => {
     startTransition(async () => {
       try {
         await runAnalysisAction(jobId);
-        toast.success("Analyysi valmis!");
-      } catch (e) {
-        toast.error("Virhe analyysissä");
+        toast.message("Analysis in progress...");
+        startPolling();
+      } catch {
+        toast.error("Error in analysis");
       }
     });
   };
+
   const handleDeleteAll = () => {
     startTransition(async () => {
       await deleteAllAnalysisAction(jobId);
-      toast.success("Kaikki analyysit on poistettu");
+      toast.success("Every analysis have been removed!");
     });
   };
-  
+
   const filteredCandidates = useMemo(() => {
     const term = query.toLowerCase();
-    return initialCandidates.filter((c: any) => 
-      c.name.toLowerCase().includes(term) || c.email.toLowerCase().includes(term)
+    return initialCandidates.filter(
+      (candidate: any) =>
+        candidate.name.toLowerCase().includes(term) ||
+        candidate.email.toLowerCase().includes(term),
     );
   }, [initialCandidates, query]);
 
   return (
-      <main className="container mx-auto flex flex-col gap-8 p-8">
-        <CandidatesHeader 
-          jobTitle={jobTitle} 
-          total={filteredCandidates.length} 
-          onRunAnalysis={handleRunAnalysis} 
-          onDeleteAll={handleDeleteAll} 
-          isLoading={isPending} // isPending on true, kun Action on käynnissä
-        />
-        <CandidatesToolbar query={query} onQueryChange={setQuery} />
-        <CandidatesList candidates={filteredCandidates} />
-      </main>
+    <main className="container mx-auto flex flex-col gap-8 p-8">
+      <CandidatesHeader
+        jobTitle={jobTitle}
+        total={filteredCandidates.length}
+        onRunAnalysis={handleRunAnalysis}
+        onDeleteAll={handleDeleteAll}
+        isLoading={isLoading}
+        analysisStatusText={
+          analysisStatus?.status === "processing"
+            ? `${analysisStatus.analyzedCandidates}/${analysisStatus.totalCandidates} analysoitu`
+            : undefined
+        }
+      />
+      <CandidatesToolbar query={query} onQueryChange={setQuery} />
+      <CandidatesList candidates={filteredCandidates} />
+    </main>
   );
 }

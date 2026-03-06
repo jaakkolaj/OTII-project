@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { analyzeTextWithAI } from "../services/ai.service";
+import { aiAnalysisQueue } from "../queues/aiAnalysis.queue";
 
 const isUuid = (id: string) => 
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
@@ -20,85 +21,51 @@ export const aianalysis = async (req: Request, res: Response) => {
       });
     }
 
-    //Haetaan kaikki ehdokkaat, joilla ei ole vielä analyysia tässä työpaikassa
-    const candidates = await prisma.candidate.findMany({
-      where: {
-        job_posting_id: jobPostingId,
-        ai_analyses: { none: {} },
-      },
-      include: {
-        documents: true,
-        job_posting: true,
-      },
-    });
-    
-    if (candidates.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "Ei uusia analysoitavia ehdokkaita." });
-    }
-
-    const results = [];
-
-    //Käydään läpi jokainen kandidaatti sen cv ja kutsutaan AI service
-    //TODO: for looppauksen sijasta voi olla parempi hyödyntä jonoa
-    for (const candidate of candidates) {
-      const cvText = candidate.documents[0]?.extracted_text;
-      const jobRequirements = candidate.job_posting.requirements;
-
-      //Jos cv teksti ei ole tyhjä
-      if (cvText) {
-        try {
-          const aiResult = await analyzeTextWithAI(cvText, jobRequirements);
-
-          // Varmistetaan, että score on aina välillä 0 - 100
-          const safeScore = Math.min(Math.max(aiResult.score, 0), 100);
-          
-      
-          //päivitetään tietokantaan kandidaatin tiedot ja luodaan aiAnalyysi
-          await prisma.$transaction([
-            prisma.candidate.update({
-              where: { id: candidate.id },
-              data: { name: aiResult.name, email: aiResult.email },
-            }),
-            prisma.aIAnalysis.create({
-              data: {
-                candidate_id: candidate.id,
-                job_posting_id: candidate.job_posting_id,
-                skills: aiResult.skills,
-                years_experience: aiResult.years_experience,
-                education_level: aiResult.education_level,
-                keyword_matches: aiResult.keyword_matches,
-                strengths: aiResult.strengths,
-                weaknesses: aiResult.weaknesses,
-                summary: aiResult.summary,
-                score: safeScore,
-                raw_ai_response: aiResult as any,
-              },
-            }),
-          ]);
-          results.push({ id: candidate.id, status: "success" });
-        } catch (error: any) {
-          console.error(
-            `Analyysi epäonnistui ehdokkaalle ${candidate.id}:`,
-            error.message,
-          );
-          results.push({
-            id: candidate.id,
-            status: "error",
-            error: error.message,
-          });
-        }
-      }
-    }
-    res.status(200).json({
-      message: "Analyysiprosessi valmis",
-      processed_count: results.length,
-      details: results,
+    const job = await aiAnalysisQueue.add(
+      "analyze-job-posting",
+      { jobPostingId },
+      { jobId: `ai-analysis-${jobPostingId}-${Date.now()}` }
+    );
+    console.log("Job lisätty jonoon: ", job.id);
+    return res.status(200).json({
+      message: "Analyysi käynnistetty",
+      jobId: job.id
     });
   } catch (error: any) {
     console.error("Virhe analyysiä tehdessä", error.message);
     res.status(500).json({ error: "Palvelinvirhe analyysin alustuksessa" });
+  }
+};
+
+export const getAiAnalysisStatus = async (req: Request, res: Response) => {
+  try {
+    const { jobPostingId } = req.params;
+
+    if (typeof jobPostingId !== "string") {
+      return res.status(400).json({ error: "Virheellinen jobPostingId" });
+    }
+
+    const totalCandidates = await prisma.candidate.count({
+      where: { job_posting_id: jobPostingId },
+    });
+
+    const analyzedCandidates = await prisma.aIAnalysis.count({
+      where: { job_posting_id: jobPostingId },
+    });
+
+    const status =
+      totalCandidates > 0 && analyzedCandidates >= totalCandidates
+        ? "completed"
+        : "processing";
+
+    return res.json({
+      status,
+      totalCandidates,
+      analyzedCandidates,
+    });
+  } catch (error: any) {
+    console.error("Status haku epäonnistui:", error.message);
+    return res.status(500).json({ error: "Sisäinen palvelinvirhe" });
   }
 };
 
