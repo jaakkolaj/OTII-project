@@ -21,12 +21,13 @@ export const aianalysis = async (req: Request, res: Response) => {
       });
     }
 
+    // Lisätään redis queueen
     const job = await aiAnalysisQueue.add(
       "analyze-job-posting",
       { jobPostingId },
       { jobId: `ai-analysis-${jobPostingId}-${Date.now()}` }
     );
-    console.log("Job lisätty jonoon: ", job.id);
+
     return res.status(200).json({
       message: "Analyysi käynnistetty",
       jobId: job.id

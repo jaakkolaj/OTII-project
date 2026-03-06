@@ -19,6 +19,7 @@ export default function ResumeAnalyzerClient({
   jobTitle,
   initialCandidates,
 }: any) {
+  const storageKey = `ai-analysis-running-${jobId}`;
   const [query, setQuery] = useState("");
   const [analysisStatus, setAnalysisStatus] =
     useState<AnalysisStatus | null>(null);
@@ -32,6 +33,18 @@ export default function ResumeAnalyzerClient({
   const isLoading = isPending || isPolling;
 
   const stopPolling = () => {
+    if (pollTimerRef.current) {
+      clearInterval(pollTimerRef.current);
+      pollTimerRef.current = null;
+    }
+    setIsPolling(false);
+    requestInFlightRef.current = false;
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem(storageKey);
+    }
+  };
+
+  const stopPollingForUnmount = () => {
     if (pollTimerRef.current) {
       clearInterval(pollTimerRef.current);
       pollTimerRef.current = null;
@@ -73,6 +86,9 @@ export default function ResumeAnalyzerClient({
   const startPolling = () => {
     if (pollTimerRef.current) return;
     setIsPolling(true);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(storageKey, "1");
+    }
     void fetchStatus();
     pollTimerRef.current = setInterval(() => {
       void fetchStatus();
@@ -80,8 +96,15 @@ export default function ResumeAnalyzerClient({
   };
 
   useEffect(() => {
-    return () => stopPolling();
-  }, []);
+    if (typeof window !== "undefined") {
+      const wasRunning = sessionStorage.getItem(storageKey) === "1";
+      if (wasRunning) {
+        startPolling();
+      }
+    }
+
+    return () => stopPollingForUnmount();
+  }, [storageKey]);
 
   const handleRunAnalysis = () => {
     startTransition(async () => {
