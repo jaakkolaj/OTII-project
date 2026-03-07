@@ -1,13 +1,15 @@
 import Link from "next/link";
-import { ChevronLeft, Trash2, Loader2 } from "lucide-react";
+import { ChevronLeft, Trash2, Loader2, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type CandidatesHeaderProps = {
   jobTitle: string;
   total: number;
   onRunAnalysis: () => void;
+  onCancelAnalysis?: () => void;
   onDeleteAll?: () => void;
   isLoading: boolean;
+  isPolling: boolean;
   analysisStatusText?: string;
 };
 
@@ -15,7 +17,9 @@ export function CandidatesHeader({
   jobTitle,
   total,
   isLoading,
+  isPolling,
   onRunAnalysis,
+  onCancelAnalysis,
   onDeleteAll,
   analysisStatusText,
 }: CandidatesHeaderProps) {
@@ -40,6 +44,17 @@ export function CandidatesHeader({
             >
               <Trash2 className="h-4 w-4" />
               Delete All
+            </Button>
+          )}
+          {onCancelAnalysis && (
+            <Button
+              onClick={onCancelAnalysis}
+              disabled={!isPolling}
+              variant="outline"
+              className="cursor-pointer"
+            >
+              <Square className="h-4 w-4" />
+              Cancel Analysis
             </Button>
           )}
           <Button

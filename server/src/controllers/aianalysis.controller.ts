@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
-import { analyzeTextWithAI } from "../services/ai.service";
 import { aiAnalysisQueue } from "../queues/aiAnalysis.queue";
+import { redis } from "../config/redis";
 
 const isUuid = (id: string) => 
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
@@ -35,6 +35,38 @@ export const aianalysis = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error("Virhe analyysiä tehdessä", error.message);
     res.status(500).json({ error: "Palvelinvirhe analyysin alustuksessa" });
+  }
+};
+
+export const cancelAiAnalysis = async (req: Request, res: Response) => {
+  const { jobPostingId } = req.params;
+
+  if (typeof jobPostingId !== "string" || !isUuid(jobPostingId)) {
+    return res.status(400).json({ error: "Virheellinen jobPostingId" });
+  }
+
+  try {
+    // Worker lukee tämän flagin jokaisen kandidaatin välissä ja keskeyttää prosessin.
+    await redis.set(`cancel-analysis:${jobPostingId}`, "true", "EX", 3600);
+
+    // Poistetaan myös jonossa odottavat tämän jobPostingin analyysityöt.
+    const jobs = await aiAnalysisQueue.getJobs([
+      "waiting",
+      "delayed",
+      "prioritized",
+      "paused",
+    ]);
+
+    for (const job of jobs) {
+      if (job.data?.jobPostingId === jobPostingId) {
+        await job.remove();
+      }
+    }
+
+    return res.json({ message: "Analysis cancellation requested" });
+  } catch (error: any) {
+    console.error("Cancel analysis failed:", error?.message);
+    return res.status(500).json({ error: "Error in closing analysis" });
   }
 };
 
