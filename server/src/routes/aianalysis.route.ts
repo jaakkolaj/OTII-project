@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { 
   aianalysis, 
+  cancelAiAnalysis,
+  getAiAnalysisStatus,
   getAnalysisById, 
   deleteAnalysis,
   getAiAnalysesByJobPostingId,
@@ -10,8 +12,14 @@ import { AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware } from '../middl
 import { authentication } from '../middleware/authentication';
 const aiAnalysisRouter = Router();
 
-//Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
+// Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
 aiAnalysisRouter.post('/:jobPostingId', authentication, AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware, aianalysis);
+
+// Hakee statuksen onko analyysi tehty ja palauttaa sen
+aiAnalysisRouter.post('/jobPostings/:jobPostingId/ai-analysis', getAiAnalysisStatus);
+
+// Pysäyttää analysointi prosessin
+aiAnalysisRouter.post('/jobPostings/:jobPostingId/ai-analysis/cancel', cancelAiAnalysis)
 
 //Reitti hakee kaikki kandidaatit ja niiden analyysit yhdessä jobPostingissa
 aiAnalysisRouter.get('/job/:jobPostingId', authentication, getAiAnalysesByJobPostingId);

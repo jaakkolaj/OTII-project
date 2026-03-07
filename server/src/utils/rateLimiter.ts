@@ -23,6 +23,6 @@ export const standardLimiter = (keyPrefix: string) => {
 export const aiLimiter = new RateLimiterRedis({
   storeClient: redis,
   keyPrefix: "ai_limit",
-  points: 5,
+  points: 100,
   duration: 120,
 });
