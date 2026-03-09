@@ -185,7 +185,7 @@ export default function ResumeAnalyzerClient({
         onRunAnalysis={handleRunAnalysis}
         onCancelAnalysis={handleCancelAnalysis}
         onDeleteAll={handleDeleteAll}
-        isLoading={isLoading}
+        isLoading={isLoading} // isPending
         isPolling={isPolling}
         analysisStatusText={
           analysisStatus?.status === "processing"
@@ -194,7 +194,7 @@ export default function ResumeAnalyzerClient({
         }
       />
       <CandidatesToolbar query={query} onQueryChange={setQuery} />
-      <CandidatesList candidates={filteredCandidates} />
+      <CandidatesList candidates={filteredCandidates} jobId={jobId} />
     </main>
   );
 }

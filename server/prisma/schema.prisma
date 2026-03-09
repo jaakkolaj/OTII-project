@@ -64,11 +64,21 @@ model Candidate {
   job_posting_id String
   name           String
   email          String
+  status         CandidateStatus       @default(NEW)
   createdAt      DateTime              @default(now())
 
   job_posting    JobPosting            @relation(fields: [job_posting_id], references: [id], onDelete: Cascade)
   documents      ApplicationDocument[]
   ai_analyses    AIAnalysis[]
+}
+
+enum CandidateStatus {
+  NEW
+  SCREENING
+  INTERVIEW
+  OFFER
+  ACCEPTED
+  REJECTED
 }
 
 model ApplicationDocument {

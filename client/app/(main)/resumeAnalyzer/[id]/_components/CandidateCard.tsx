@@ -10,20 +10,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { ResumeCandidate } from "../../types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { CandidateStatus, ResumeCandidate } from "../../types";
 import { ScoreRing } from "./ScoreRing";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { updateCandidateStatusAction } from "../actions";
+
+const STATUS_LABELS: Record<CandidateStatus, string> = {
+  NEW: "Uusi",
+  SCREENING: "Esikarsinta",
+  INTERVIEW: "Haastattelu",
+  OFFER: "Tarjous",
+  ACCEPTED: "Hyväksytty",
+  REJECTED: "Hylätty",
+};
 
 type CandidateCardProps = {
   candidate: ResumeCandidate;
+  jobId: string;
 };
 
-export function CandidateCard({ candidate }: CandidateCardProps) {
+export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
   const [viewDocument, setViewDocument] = useState(false);
-  // const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [iframeSrc, setIframeSrc] = useState<string | null>(null); // Uusi tila iframe-src:lle
-  const [isLoading, setIsLoading] = useState(false); // Uusi lataustila
+  const [iframeSrc, setIframeSrc] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  const handleStatusChange = (status: CandidateStatus) => {
+    startTransition(async () => {
+      await updateCandidateStatusAction(candidate.id, status, jobId);
+    });
+  };
 
   const viewFile = async () => {
     if (iframeSrc) {
@@ -90,8 +114,26 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
       <Card className="rounded-2xl">
         <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0">
           <CardTitle className="text-base">Rank #{candidate.rank}</CardTitle>
-          <div className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
-            AI score {candidate.score}%
+          <div className="flex items-center gap-3">
+            <Select
+              value={candidate.status}
+              onValueChange={(v) => handleStatusChange(v as CandidateStatus)}
+              disabled={isPending}
+            >
+              <SelectTrigger className="h-7 w-36 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(STATUS_LABELS) as CandidateStatus[]).map((s) => (
+                  <SelectItem key={s} value={s} className="text-xs">
+                    {STATUS_LABELS[s]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
+              AI score {candidate.score}%
+            </div>
           </div>
         </CardHeader>
         <CardContent className="grid gap-6 lg:grid-cols-[2fr_auto]">

@@ -7,6 +7,7 @@ import logouRouter from './routes/logout.routes';
 import aiAnalysisRouter from './routes/aianalysis.route';
 import resetPasswordRouter from './routes/passwordReset.routes';
 import supaBaseRouter from './routes/supabase.route';
+import candidatesRouter from './routes/candidates.routes';
 
 import cors from 'cors';
 import uploadRouter from './routes/upload.routes';
@@ -29,6 +30,7 @@ app.use('/logout', logouRouter);
 app.use('/aiAnalysis', aiAnalysisRouter);
 app.use('/reset-password', resetPasswordRouter);
 app.use('/supabase', supaBaseRouter);
+app.use('/candidates', candidatesRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })

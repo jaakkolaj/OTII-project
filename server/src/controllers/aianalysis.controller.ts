@@ -141,6 +141,7 @@ export const getAiAnalysesByJobPostingId = async (
           ...analysis,
           name: candidate?.name ?? null,
           email: candidate?.email ?? null,
+          status: candidate?.status ?? "NEW",
         };
       }),
     );

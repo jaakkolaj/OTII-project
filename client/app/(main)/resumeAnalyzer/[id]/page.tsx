@@ -8,6 +8,7 @@ export default async function Page({
 }) {
   const { id: jobId } = await params;
   const jobTitle = "Selected role";
+    //status: analysis.status ?? "NEW" data.ts tiedostoon
 
   const initialCandidates = await getMappedCandidates(jobId, jobTitle);
   return (
