@@ -12,6 +12,13 @@ jest.mock("../../src/config/mail", () => ({
   },
 }));
 
+jest.mock("../../src/middleware/rateLimiter", () => ({
+    standardRateLimiter: () => (req: any, res: any, next: any) => next(),
+    AiAnalysisRateLimitMiddleware: (req: any, res: any, next: any) => next(),
+    aiConcurrencyMiddleware: (req: any, res: any, next: any) => next(),
+    uploadRateLimitMiddleware: (req: any, res: any, next: any) => next()
+}));
+
 describe('Password reset routes', () => {
     let email = 'passwordResetRoutes@gmail.com';
     let user_id: string;

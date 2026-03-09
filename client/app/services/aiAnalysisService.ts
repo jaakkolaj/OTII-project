@@ -60,3 +60,18 @@ export const runAiAnalysis = async (jobId: string) => {
 
   return response.json();
 };
+
+// Service funktio, joka pyytää analyysin keskeytystä tietylle jobPostingille.
+export const cancelAiAnalysis = async (jobId: string) => {
+  const response = await authFetch(
+    `${baseUrl}/jobPostings/${jobId}/ai-analysis/cancel`,
+    {
+      method: "POST",
+    },
+  );
+
+  if (!response.ok)
+    throw new Error(`Analyysin keskeytys epÃ¤onnistui: ${response.status}`);
+
+  return response.json();
+};
