@@ -22,7 +22,8 @@ export async function getMappedCandidates(
       }
 
       return {
-        id: analysis.id || analysis.candidate_id || String(index),
+        // Status update API expects the Candidate.id in /candidates/:id/status.
+        id: analysis.candidate_id || analysis.id || String(index),
         name: analysis.name || "Unknown",
         email: analysis.email || "",
         phone: analysis.phone || "",
@@ -33,6 +34,7 @@ export async function getMappedCandidates(
         topSkills: analysis.skills || [],
         pdfUrl,
         rank: index + 1,
+        status: analysis.status ?? "NEW",
       };
     }),
   );
