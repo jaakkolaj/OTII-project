@@ -10,11 +10,11 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         const { email, password } = req.body;
         // Password must be greater than 5 characters
         if (password.length < 5) {
-            throw new ValidationError("Password must be greater than 5 characters");
+            return next(new ValidationError("Password must be greater than 5 characters"));
         }
         const isEmailCorrect = validateEmail(email);
         if (!isEmailCorrect) {
-            throw new ValidationError("Email is invalid!");
+            return next(new ValidationError("Invalid email format"));
         }
 
         const user = await prisma.user.findUnique({
@@ -24,10 +24,10 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         });
 
         if (user) {
-            throw new ConflictError("This email is already in use");
+            return next(new ConflictError("This email is already in use"));
         }
 
-        // Tässä pitäisi hashata salasana ennen kuin tallennetaan tietokantaan!!!!!
+        // Tässä pitäisi hashata salasana ennen kuin tallennetaan tietokantaan?
 
         const saltRounds = 10;
         const passwordHash = await bcrypt.hash(password, saltRounds);

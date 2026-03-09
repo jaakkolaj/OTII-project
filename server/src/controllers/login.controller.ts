@@ -15,7 +15,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     const passwordCorrect = user === null ? false : await bcrypt.compare(password, user.password)
 
     if(!(user && passwordCorrect)) {
-        throw new AuthenticationError("Invalid email or password");
+        return next(new AuthenticationError("Invalid email or password"));
     }
 
     const userForToken = {
