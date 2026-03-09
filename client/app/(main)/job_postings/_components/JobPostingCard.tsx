@@ -2,20 +2,43 @@
 
 import Link from "next/link";
 import { Briefcase, Pencil, Plus, Trash2 } from "lucide-react";
-
+import { useActionState, useEffect, startTransition } from "react";
+import { toast } from "sonner";
 import type { JobPosting } from "@/app/types/jobPosting";
+import { deleteJobPostingAction } from "../actions";
+import type { DeleteState } from "../actions";
+import { showConfirmToast } from "@/lib/confirm-toast";
 
 type JobPostingCardProps = {
   job: JobPosting;
-  onDelete: (jobId: string) => void;
-  isDeleting: boolean;
 };
 
-export function JobPostingCard({
-  job,
-  onDelete,
-  isDeleting,
-}: JobPostingCardProps) {
+export function JobPostingCard({ job }: JobPostingCardProps) {
+  const [state, deleteAction, isPending] = useActionState<DeleteState, string>(
+    deleteJobPostingAction,
+    { success: false, message: "" },
+  );
+
+  const handleDelete = () => {
+    showConfirmToast({
+      title: "Haluatko varmasti poistaa ilmoituksen?",
+      description: `Tämä poistaa ilmoituksen: ${job.title}`,
+      actionLabel: "Kyllä, poista",
+      onConfirm: () => {
+        startTransition(() => deleteAction(job.id));
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (!state.message) return;
+    if (state.success) {
+      toast.success(state.message);
+    } else {
+      toast.error(state.message);
+    }
+  }, [state]);
+
   return (
     <article className="rounded-2xl border bg-card px-6 py-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -50,14 +73,15 @@ export function JobPostingCard({
             <Pencil className="h-4 w-4" />
             Edit
           </Link>
+
           <button
             type="button"
-            onClick={() => onDelete(job.id)}
-            disabled={isDeleting}
-            className="inline-flex items-center gap-2 font-medium text-destructive transition hover:text-destructive/80 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={isPending}
+            className="inline-flex items-center gap-2 font-medium text-destructive transition hover:text-destructive/70 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+            onClick={handleDelete}
           >
             <Trash2 className="h-4 w-4" />
-             {isDeleting ? "Deleting..." : "Delete"}
+            {isPending ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>

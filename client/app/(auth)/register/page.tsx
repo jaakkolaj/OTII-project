@@ -23,9 +23,7 @@ export default function Page() {
       })
       return
     }
-
     setIsLoading(true)
-
     try {
       const user = { email, password }
       await createUser(user)
