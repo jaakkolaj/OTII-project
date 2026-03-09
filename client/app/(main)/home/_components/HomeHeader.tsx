@@ -11,8 +11,7 @@ export async function HomeHeader() {
         </p>
         <h1 className="text-3xl font-bold">Recruiting command center</h1>
         <p className="max-w-2xl text-muted-foreground">
-          Track open roles, candidate flow, and the next steps across every
-          pipeline from one focused workspace.
+          Monitor open roles, review candidates, and drive hiring decisions from one command center.
         </p>
       </div>
 

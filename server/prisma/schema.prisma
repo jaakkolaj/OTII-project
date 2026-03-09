@@ -17,6 +17,7 @@ model User {
   email               String      @unique
   password            String
   job_postings        JobPosting[]
+  tasks               Task[]
 }
 
 model JobPosting {
@@ -95,3 +96,9 @@ model ApplicationDocument {
   candidate         Candidate @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
 }
 
+model Task {
+  id                String   @id @default(uuid())
+  task_text         String
+  user_id           String
+  user              User     @relation(fields: [user_id], references: [id])
+}

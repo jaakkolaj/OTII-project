@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,40 +14,15 @@ import {
   ArrowUpRight,
   Briefcase,
   FileText,
+  User
 } from "lucide-react";
+import { requireAuth } from "@/lib/require-auth";
+import { getTasks } from "@/app/services/homePageService";
+import { TaskListManager } from "./TaskListManager";
 
-const pipelines = [
-  {
-    role: "Senior Full-Stack Engineer",
-    stage: "Onsite interviews",
-    candidates: 5,
-    owner: "Mia T.",
-    sla: "Decision due in 2 days",
-  },
-  {
-    role: "Product Designer",
-    stage: "Portfolio review",
-    candidates: 11,
-    owner: "Leo K.",
-    sla: "Hiring manager feedback today",
-  },
-  {
-    role: "Data Analyst",
-    stage: "Offer prep",
-    candidates: 2,
-    owner: "Ava R.",
-    sla: "Offer letter in progress",
-  },
-];
+export async function PipelineFocusSection() {
+  const tasks = await requireAuth(() => getTasks());
 
-const focusItems = [
-  "Send interview packs for tomorrow's sessions.",
-  "Approve the new sourcing budget for Q2.",
-  "Review the top 3 candidates for Growth PM.",
-  "Close the feedback loop on frontend assessments.",
-];
-
-export function PipelineFocusSection() {
   return (
     <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
       <Card className="rounded-2xl">
@@ -57,21 +31,8 @@ export function PipelineFocusSection() {
           <CardDescription>Prioritized recruiter tasks.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {focusItems.map((item) => (
-            <div key={item} className="flex gap-3 text-sm">
-              <span className="mt-1 h-2 w-2 rounded-full bg-primary/80" />
-              <p className="text-muted-foreground">{item}</p>
-            </div>
-          ))}
+          <TaskListManager initialTasks={tasks} />
         </CardContent>
-        <CardFooter className="justify-between border-t">
-          <Button variant="outline" size="sm">
-            Add task
-          </Button>
-          <Button variant="ghost" size="sm">
-            View all
-          </Button>
-        </CardFooter>
       </Card>
       <Card className="rounded-2xl">
         <CardHeader>
@@ -89,7 +50,7 @@ export function PipelineFocusSection() {
             </Link>
           </Button>
           <Button asChild variant="outline" className="justify-between">
-            <Link href="/dashboard">
+            <Link href="/resumeAnalyzer">
               <span className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Resume analyzer
@@ -97,12 +58,14 @@ export function PipelineFocusSection() {
               <ArrowUpRight className="h-4 w-4" />
             </Link>
           </Button>
-          <Button variant="outline" className="justify-between">
-            <span className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Pipeline report
-            </span>
-            <ArrowUpRight className="h-4 w-4" />
+          <Button asChild variant="outline" className="justify-between">
+            <Link href="/profile">
+              <span className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Profile
+              </span>
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
           </Button>
         </CardContent>
       </Card>
