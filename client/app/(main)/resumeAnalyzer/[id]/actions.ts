@@ -1,9 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { runAiAnalysis, deleteAllAiAnalysisByJobPostingId } from "@/app/services/aiAnalysisService";
 import { updateCandidateStatus } from "@/app/services/candidateService";
-import { requireAuth } from "@/lib/require-auth";
 import type { CandidateStatus } from "../types";
 import {
   runAiAnalysis,
