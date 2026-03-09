@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError, NotFoundError, ServerError, AuthenticationError, AuthorizationError } from '../utils/errors';
 import { Prisma } from '@prisma/client';
-import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 
 export const asyncHandler = (fn: (req: Request, res: Response) => Promise<void>): ((req: Request, res: Response, next: NextFunction) => void) => {
@@ -42,7 +42,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 
 
     // JWT-virheet → 400
-    if (err instanceof JsonWebTokenError || err instanceof TokenExpiredError) {
+    if (err instanceof jwt.JsonWebTokenError || err instanceof jwt.TokenExpiredError) {
     return res.status(400).json({
         status: "error",
         message: "Invalid or expired token"
