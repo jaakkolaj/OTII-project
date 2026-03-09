@@ -11,7 +11,7 @@ import supaBaseRouter from './routes/supabase.route';
 import cors from 'cors';
 import uploadRouter from './routes/upload.routes';
 import cookieParser from 'cookie-parser';
-import { errorHandler, notFoundHandler } from './middleware/ErrorHandler';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 const app = express()
 app.use(express.json())
