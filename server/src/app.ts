@@ -13,6 +13,7 @@ import taskRouter from './routes/task.routes';
 import cors from 'cors';
 import uploadRouter from './routes/upload.routes';
 import cookieParser from 'cookie-parser';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 const app = express()
 app.use(express.json())
@@ -37,5 +38,7 @@ app.use('/tasks', taskRouter);
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Test' })
 })
+app.use(notFoundHandler)
+app.use(errorHandler)
 
 export default app;

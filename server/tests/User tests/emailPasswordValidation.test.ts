@@ -43,7 +43,7 @@ describe('email and password validation', () => {
             });
         
         expect(response.status).toBe(400);
-        expect(response.body.error).toBeDefined();
+        expect(response.body.message).toBeDefined();
     });
     it('fails when password is too short', async () => {
         const response = await request(app)
@@ -53,7 +53,7 @@ describe('email and password validation', () => {
                 password: "123"
             });
             expect(response.status).toBe(400);
-            expect(response.body.error).toBeDefined()
+            expect(response.body.message).toBeDefined()
     });
 
     it('fails if email is not unique', async() => {
@@ -64,7 +64,7 @@ describe('email and password validation', () => {
                 password: "123456"
             });
             // Expect status 400, email is not unique.
-            expect(response.status).toBe(400)
-            expect(response.body.error).toBeDefined();
+            expect(response.status).toBe(409);
+            expect(response.body.message).toBeDefined();
     });
 });
