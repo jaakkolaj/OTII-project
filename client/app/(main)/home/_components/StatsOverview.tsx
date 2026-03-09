@@ -8,34 +8,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const stats = [
-  {
-    label: "Open roles",
-    value: "12",
-    detail: "2 new roles created this week",
-    icon: Briefcase,
-  },
-  {
-    label: "Candidates in review",
-    value: "48",
-    detail: "9 waiting for recruiter feedback",
-    icon: Users,
-  },
-  {
-    label: "Interviews scheduled",
-    value: "7",
-    detail: "Next interview in 3 hours",
-    icon: Calendar,
-  },
-  {
-    label: "Average time to hire",
-    value: "21 days",
-    detail: "Down 3 days vs. last month",
-    icon: Clock,
-  },
-];
+import { requireAuth } from "@/lib/require-auth";
+import { getJobPostings } from "@/app/services/jobPostingService";
+import { getCandidatesInReview } from "@/app/services/homePageService";
 
-export function StatsOverview() {
+export async function StatsOverview() {
+  const jobpostings = await requireAuth(() => getJobPostings());
+  const candidatesInReview = await requireAuth(() => getCandidatesInReview());
+
+  const stats = [
+    {
+      label: "Open roles",
+      value: jobpostings.length,
+      icon: Briefcase,
+    },
+    {
+      label: "Candidates in review",
+      value: candidatesInReview.filter((x: any) => x.status === "NEW").length,
+      icon: Users,
+    },
+    {
+      label: "Interviews scheduled",
+      value: candidatesInReview.filter((x: any) => x.status === "INTERVIEW").length,
+      icon: Calendar,
+    },
+  ];
+
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {stats.map((stat) => (
@@ -49,9 +47,6 @@ export function StatsOverview() {
               <stat.icon className="h-5 w-5 text-muted-foreground" />
             </span>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">{stat.detail}</p>
-          </CardContent>
         </Card>
       ))}
     </section>

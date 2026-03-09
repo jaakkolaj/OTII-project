@@ -10,6 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import {
+  Activity,
+  ArrowUpRight,
+  Briefcase,
+  FileText,
+} from "lucide-react";
+
 const pipelines = [
   {
     role: "Senior Full-Stack Engineer",
@@ -46,45 +53,6 @@ export function PipelineFocusSection() {
     <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
       <Card className="rounded-2xl">
         <CardHeader>
-          <CardTitle className="text-lg">Priority pipelines</CardTitle>
-          <CardDescription>Roles that need attention this week.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {pipelines.map((item) => (
-            <div
-              key={item.role}
-              className="flex flex-col gap-3 rounded-xl border border-border/60 p-4 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="space-y-1">
-                <p className="text-sm font-semibold">{item.role}</p>
-                <p className="text-sm text-muted-foreground">
-                  Owner: {item.owner}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                  {item.stage}
-                </span>
-                <span className="text-muted-foreground">
-                  {item.candidates} candidates
-                </span>
-                <span className="text-muted-foreground">{item.sla}</span>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-        <CardFooter className="justify-between border-t">
-          <p className="text-sm text-muted-foreground">
-            Keep momentum by refreshing stages daily.
-          </p>
-          <Button asChild variant="link">
-            <Link href="/job_postings">Review pipelines</Link>
-          </Button>
-        </CardFooter>
-      </Card>
-
-      <Card className="rounded-2xl">
-        <CardHeader>
           <CardTitle className="text-lg">Today&apos;s focus</CardTitle>
           <CardDescription>Prioritized recruiter tasks.</CardDescription>
         </CardHeader>
@@ -104,6 +72,39 @@ export function PipelineFocusSection() {
             View all
           </Button>
         </CardFooter>
+      </Card>
+      <Card className="rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-lg">Quick actions</CardTitle>
+          <CardDescription>Jump straight to core ATS work.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3">
+          <Button asChild variant="secondary" className="justify-between">
+            <Link href="/job_postings">
+              <span className="flex items-center gap-2">
+                <Briefcase className="h-4 w-4" />
+                Open job postings
+              </span>
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="justify-between">
+            <Link href="/dashboard">
+              <span className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Resume analyzer
+              </span>
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button variant="outline" className="justify-between">
+            <span className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Pipeline report
+            </span>
+            <ArrowUpRight className="h-4 w-4" />
+          </Button>
+        </CardContent>
       </Card>
     </section>
   );

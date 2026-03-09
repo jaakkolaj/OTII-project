@@ -44,3 +44,28 @@ export const updateCandidateStatus = async (
     return res.status(500).json({ error: "Statuksen päivitys epäonnistui." });
   }
 };
+
+export const getCandidates = async (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized!" });
+  }
+
+  try {
+    const jobPostings = await prisma.jobPosting.findMany({
+      where: { user_id: req.user.id },
+      select: { id: true },
+    });
+
+    const jobPostingIds = jobPostings.map((job) => job.id);
+
+    const candidates = await prisma.candidate.findMany({
+      where: {
+        job_posting_id: { in: jobPostingIds }
+      },
+    });
+
+    return res.status(200).json(candidates);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
