@@ -1,49 +1,30 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createJobPosting } from "@/app/services/jobPostingService";
-import type { CreateJobPostingInput } from "@/app/types/jobPosting";
 import { requireAuth } from "@/lib/require-auth";
-import { UnauthorizedError } from "@/lib/errors";
 import { z } from "zod";
+import { FormState } from "@/lib/form-utils";
+import { CreateJobPostingInput } from "@/app/types/jobPosting";
+import { JobPostingSchema } from "@/schemas/jobposting";
 
-//TODO 
-// - Lisää validointi zodilla
-// - Lisää error handling ja näytä virheilmoitus UI:ssa
 
-export type CreatePostingFormState = {
-  error: string;
-} | null;
-
-const getFieldValue = (formData: FormData, key: string): string => {
-  const value = formData.get(key);
-  return typeof value === "string" ? value.trim() : "";
-};
+// Server action to handle the creation of a new job posting. It validates the form data,
+// creates the job posting if the user is authenticated, and revalidates the job postings page.
 export async function createJobPostingAction(
-  _prevState: CreatePostingFormState,
+  _prevState: FormState<CreateJobPostingInput>,
   formData: FormData,
-): Promise<CreatePostingFormState> {
+): Promise<FormState<CreateJobPostingInput>> {
+  // Convert FormData to a plain object and validate it against the schema.
+  const unValidatedData = Object.fromEntries(formData);
+  const validated = JobPostingSchema.safeParse(unValidatedData);
 
-  return requireAuth(async () => {
-    const payload: CreateJobPostingInput = {
-      title: getFieldValue(formData, "title"),
-      department: getFieldValue(formData, "department"),
-      location: getFieldValue(formData, "location"),
-      employmentType: getFieldValue(formData, "employmentType") || "full-time",
-      seniority: getFieldValue(formData, "seniority") || "mid",
-      description: getFieldValue(formData, "description"),
-      requirements: getFieldValue(formData, "requirements"),
-      salaryRange: getFieldValue(formData, "salaryRange"),
-      closingDate: getFieldValue(formData, "closingDate"),
-    };
-
-    if (!payload.title || !payload.description) {
-      return { error: "Title and description are required." };
-    }
-    
-    await createJobPosting(payload);
-
-    revalidatePath("/job_postings");
-    redirect("/job_postings");
-  });
+  // If validation fails, flatten the errors and return them to be displayed in the UI.
+  if (!validated.success) {
+    const { fieldErrors } = z.flattenError(validated.error);
+    return { errors: fieldErrors, success: false, fields: unValidatedData };
+  }
+  // Call the service to create the job posting, ensuring the user is authenticated.
+  await requireAuth(() => createJobPosting(validated.data));
+  revalidatePath("/job_postings");
+  return { success: true };
 }

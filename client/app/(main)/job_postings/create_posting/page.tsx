@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import CreatePostingForm from "./_components/createPostingForm";
 
+
 export default function CreateJobPostingPage() {
   return (
     <main className="container mx-auto flex flex-col gap-8 p-8">
@@ -25,7 +26,7 @@ export default function CreateJobPostingPage() {
           applicant criteria once it is saved.
         </p>
       </header>
-      <CreatePostingForm />
+        <CreatePostingForm />
     </main>
   );
 }

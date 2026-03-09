@@ -1,14 +1,14 @@
 export interface JobPosting {
   id: string;
   title: string;
-  department: string;
-  location: string;
-  employmentType: string;
-  seniority: string;
-  salaryRange: string;
+  department?: string;
+  location?: string;
+  employmentType?: string;
+  seniority?: string;
+  salaryRange?: string;
   description: string;
-  requirements: string;
-  closingDate: string;
+  requirements?: string;
+  closingDate?: string;
 
   //Mahdolliset kentät mitä lisätään (mitä oli frontissa, mutta ei tietokannassa)
   status?: "Open" | "Paused" | "Closed"; 

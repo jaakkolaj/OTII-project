@@ -1,54 +1,28 @@
 "use server";
-
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { editJobPostingById } from "@/app/services/jobPostingService";
-import type { CreateJobPostingInput } from "@/app/types/jobPosting";
 import { requireAuth } from "@/lib/require-auth";
-import { UnauthorizedError } from "@/lib/errors";
+import { z } from "zod";
+import { FormState } from "@/lib/form-utils";
+import { CreateJobPostingInput } from "@/app/types/jobPosting";
+import { JobPostingSchema } from "@/schemas/jobposting";
+import { editJobPostingById } from "@/app/services/jobPostingService";
 
-export type EditPostingFormState = {
-  error: string;
-} | null;
-
-const getFieldValue = (formData: FormData, key: string): string => {
-  const value = formData.get(key);
-  return typeof value === "string" ? value.trim() : "";
-};
-
-export async function updateJobPostingAction(
-  _prevState: EditPostingFormState,
+// Server action to handle editing an existing job posting.
+export async function editJobPostingAction(
+  jobId: string,
+  _prevState: FormState<CreateJobPostingInput>,
   formData: FormData,
-): Promise<EditPostingFormState> {
+): Promise<FormState<CreateJobPostingInput>> {
   
-  return requireAuth(async () => {
-    const jobId = getFieldValue(formData, "id");
+  const unValidatedData = Object.fromEntries(formData);
+  const validated = JobPostingSchema.safeParse(unValidatedData);
 
-    if (!jobId) {
-      return { error: "Missing job posting id." };
-    }
+  if (!validated.success) {
+    const { fieldErrors } = z.flattenError(validated.error);
+    return { errors: fieldErrors, success: false, fields: unValidatedData };
+  }
 
-    const payload: CreateJobPostingInput = {
-      title: getFieldValue(formData, "title"),
-      department: getFieldValue(formData, "department"),
-      location: getFieldValue(formData, "location"),
-      employmentType: getFieldValue(formData, "employmentType") || "full-time",
-      seniority: getFieldValue(formData, "seniority") || "mid",
-      description: getFieldValue(formData, "description"),
-      requirements: getFieldValue(formData, "requirements"),
-      salaryRange: getFieldValue(formData, "salaryRange"),
-      closingDate: getFieldValue(formData, "closingDate"),
-    };
-
-    if (!payload.title || !payload.description) {
-      return { error: "Title and description are required." };
-    }
-
-    await editJobPostingById(jobId, payload);
-    
-
-    revalidatePath("/job_postings");
-    revalidatePath(`/job_postings/${jobId}`);
-    redirect("/job_postings");
-  });
+  await requireAuth(() => editJobPostingById(jobId, validated.data));
+  revalidatePath("/job_postings");
+  return { success: true };
 }
