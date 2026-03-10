@@ -1,6 +1,7 @@
 "use client";
 
 import { LockKeyhole } from "lucide-react";
+import { FormEvent, useRef, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,9 +14,34 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { changePasswordAction } from "@/app/(main)/profile/actions";
+import { toast } from "sonner";
 
 export function SecuritySettings() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = useTransition();
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    startTransition(async () => {
+      const result = await changePasswordAction(formData);
+
+      if (!result.success) {
+        toast.error("Password change failed", {
+          description: result.message,
+        });
+        return;
+      }
+
+      toast.success("Password updated", {
+        description: result.message,
+      });
+      formRef.current?.reset();
+    });
+  };
+
   return (
     <Card className="rounded-2xl">
       <CardHeader>
@@ -29,37 +55,43 @@ export function SecuritySettings() {
           Update your password and keep account access secure.
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <Field>
-          <FieldLabel htmlFor="current-password">Current password</FieldLabel>
-          <Input id="current-password" type="password" autoComplete="off" />
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="new-password">New password</FieldLabel>
-          <Input id="new-password" type="password" autoComplete="off" />
-          <FieldDescription>Use at least 12 characters.</FieldDescription>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="confirm-password">Confirm password</FieldLabel>
-          <Input id="confirm-password" type="password" autoComplete="off" />
-        </Field>
-
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border bg-muted/30 p-4">
-          <div className="space-y-1">
-            <p className="text-sm font-medium">Two-factor authentication</p>
-            <p className="text-sm text-muted-foreground">
-              Require a one-time code when signing in.
-            </p>
-          </div>
-          <Switch id="two-factor" defaultChecked />
-        </div>
-      </CardContent>
-      <CardFooter className="justify-end gap-2 border-t">
-        <Button variant="outline" size="sm">
-          Reset backup codes
-        </Button>
-        <Button size="sm">Update password</Button>
-      </CardFooter>
+      <form ref={formRef} onSubmit={onSubmit}>
+        <CardContent className="space-y-4">
+          <Field>
+            <FieldLabel htmlFor="current-password">Current password</FieldLabel>
+            <Input
+              id="current-password"
+              name="currentPassword"
+              type="password"
+              autoComplete="current-password"
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="new-password">New password</FieldLabel>
+            <Input
+              id="new-password"
+              name="newPassword"
+              type="password"
+              autoComplete="new-password"
+            />
+            <FieldDescription>Use at least 6 characters.</FieldDescription>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="confirm-password">Confirm password</FieldLabel>
+            <Input
+              id="confirm-password"
+              name="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+            />
+          </Field>
+        </CardContent>
+        <CardFooter className="justify-end gap-2 border-t">
+          <Button type="submit" size="sm" disabled={isPending}>
+            {isPending ? "Updating..." : "Update password"}
+          </Button>
+        </CardFooter>
+      </form>
     </Card>
   );
 }
