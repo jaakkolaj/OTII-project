@@ -41,3 +41,7 @@ npx prisma generate
 ```bash
 npm test
 ```
+
+## Redis
+- Jos Unhandled error event: AggregateError niin seuraava komento OTII-project/server terminaaliin ennen serverin käynnistystä
+docker compose up -d
