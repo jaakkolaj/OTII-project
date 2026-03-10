@@ -70,8 +70,9 @@ export const cancelAiAnalysis = async (jobId: string) => {
     },
   );
 
-  if (!response.ok)
+  if (!response.ok) {
     throw new Error(`Analyysin keskeytys epÃ¤onnistui: ${response.status}`);
+  }
 
   return response.json();
 };

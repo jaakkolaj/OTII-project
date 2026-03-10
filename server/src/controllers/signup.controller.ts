@@ -37,8 +37,8 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
             password: passwordHash
         }
 
-            await prisma.user.create({ data })
-            res.status(200).json(data);
+        await prisma.user.create({ data })
+        res.status(200).json(data);
     } catch (error) {
         next(error);
     }
