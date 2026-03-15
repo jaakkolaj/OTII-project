@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { getJobPostings } from "@/app/services/jobPostingService";
 import { getCandidatesInReview } from "@/app/services/homePageService";
 

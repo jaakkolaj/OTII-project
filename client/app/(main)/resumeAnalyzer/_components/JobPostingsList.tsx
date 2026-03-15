@@ -1,7 +1,7 @@
 "use client";
 
 import { JobPostingCard } from "./JobPostingCard";
-import type { JobPosting } from "@/app/types/jobPosting";
+import type { JobPosting } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 
 type JobPostingsListProps = {
   postings: JobPosting[];

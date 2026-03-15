@@ -1,7 +1,7 @@
 import "server-only";
 
-import type { JobPosting, CreateJobPostingInput } from "@/app/types/jobPosting";
-import { authFetch } from "@/lib/authFetch";
+import type { JobPosting, CreateJobPostingInput } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
+import { authFetch } from "@/lib/auth/authFetch";
 
 const baseUrl = "http://localhost:5001";
 

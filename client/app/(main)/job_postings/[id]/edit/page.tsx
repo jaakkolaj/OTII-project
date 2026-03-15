@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getJobPostingById } from "@/app/services/jobPostingService";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import EditPostingForm from "./_components/EditPostingForm";
 
 export default async function EditJobPostingPage({

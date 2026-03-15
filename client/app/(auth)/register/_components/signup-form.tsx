@@ -1,43 +1,28 @@
-import { Button } from "@/components/ui/button"
+"use client";
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import FormSubmitButton from "@/components/ui-build/formSubmitButton";
+import { useActionState } from "react";
+import { registerAction } from "@/app/(auth)/register/actions";
 
-interface SignupFormProps extends Omit<React.ComponentProps<"div">, 'onSubmit'> {
-  email: string;
-  password: string;
-  passwordRepeat: string;
-  error?: string;
-  onEmailChange?: (email: string) => void;
-  onPasswordChange?: (password: string) => void;
-  onPasswordRepeatChange?: (passwordRepeat: string) => void;
-  onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void;
-}
-
-export function SignupForm({ 
-  email,
-  password,
-  passwordRepeat,
-  error,
-  onEmailChange,
-  onPasswordChange,
-  onPasswordRepeatChange,
-  onSubmit,
-  ...props
-}: SignupFormProps) {
+export function SignupForm() {
+  const [state, formAction] = useActionState(registerAction, null);
   return (
-    <Card {...props}>
+    <Card>
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>
@@ -45,67 +30,54 @@ export function SignupForm({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit}>
+        <form action={formAction} className="space-y-4" noValidate>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
-                required
-                value={email}
-                onChange={(e) => onEmailChange?.(e.target.value)}
+                defaultValue={state?.fields?.email}
               />
               <FieldDescription>
                 We&apos;ll use this to contact you. We will not share your email
                 with anyone else.
               </FieldDescription>
+              <FieldError>{state?.errors?.email}</FieldError>
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input 
-              id="password" 
-              type="password" 
-              placeholder="Password"
-              required 
-              value={password}
-              onChange={(e) => onPasswordChange?.(e.target.value)}
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Password"
               />
-              <FieldDescription>
-                Must be at least 8 characters long.
-              </FieldDescription>
+    
+              <FieldError>{state?.errors?.password}</FieldError>
             </Field>
             <Field>
-              <FieldLabel htmlFor="confirm-password">
-                Confirm Password
-              </FieldLabel>
-              <Input 
-              id="confirm-password" 
-              type="password" 
-              placeholder="confirm-password"
-              required 
-              value={passwordRepeat}
-              onChange={(e) => onPasswordRepeatChange?.(e.target.value)}
+              <FieldLabel htmlFor="passwordRepeat">Confirm Password</FieldLabel>
+              <Input
+                id="passwordRepeat"
+                name="passwordRepeat"
+                type="password"
+                placeholder="Confirm password"
               />
-              <FieldDescription>Please confirm your password.</FieldDescription>
+              <FieldError>{state?.errors?.passwordRepeat}</FieldError>
             </Field>
-            <FieldGroup>
-              {error && (
-                <div id="errorMsg" className="text-red-600 text-sm mb-2 text-center">
-                  {error}
-                </div>
-              )}
-              <Field>
-                <Button type="submit">Create Account</Button>
-                <FieldDescription className="px-6 text-center">
-                  Already have an account? <a href="/login">Sign in</a>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
+            <Field>
+              <FieldError>{state?.message}</FieldError>
+              <FormSubmitButton text="Create Account" loadingText="Creating account" />
+              <FieldDescription className="px-6 text-center">
+                Already have an account? <a href="/login">Sign in</a>
+              </FieldDescription>
+            </Field>
           </FieldGroup>
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

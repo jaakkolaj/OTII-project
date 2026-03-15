@@ -23,6 +23,10 @@ export const loginUser = async (user: User) => {
     },
     withCredentials: true
   });
+  
+  if (!response.data?.token) {
+    throw new Error("UnAuthorized");
+  }
   return response.data;
 };
 

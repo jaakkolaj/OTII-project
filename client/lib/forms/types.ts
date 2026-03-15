@@ -6,6 +6,6 @@ export type FormErrors<T> = {
 export type FormState<T> = {
   errors?: FormErrors<T>;
   success?: boolean;
-  fields?: Partial<T>;
+  fields?: Partial<T> ;
   message?: string | null;
 } | null;

@@ -16,7 +16,7 @@ import {
   FileText,
   User
 } from "lucide-react";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { getTasks } from "@/app/services/homePageService";
 import { TaskListManager } from "./TaskListManager";
 

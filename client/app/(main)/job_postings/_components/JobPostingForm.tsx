@@ -30,8 +30,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { FormErrors, FormState } from "@/lib/form-utils";
-import { CreateJobPostingInput } from "@/app/types/jobPosting";
+import { FormErrors, FormState } from "@/lib/forms/types";
+import type { CreateJobPostingInput } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 
 type JobPostingFormProps = {
   action: (
