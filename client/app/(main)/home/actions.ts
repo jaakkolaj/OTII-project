@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { createTask, deleteTask } from "@/app/services/homePageService";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 export async function addTaskAction(taskText: string) {
   const value = taskText.trim();

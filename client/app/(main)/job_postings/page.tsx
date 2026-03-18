@@ -1,7 +1,7 @@
 import { getJobPostings } from "../../services/jobPostingService";
 import { JobPostingsManager } from "./_components/JobPostingManager";
 import { JobPostingsHeader } from "./_components/JobPostingsHeader";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 export default async function JobPostingsPage() {
   const jobpostings = await requireAuth(() => getJobPostings());

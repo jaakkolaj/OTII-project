@@ -4,7 +4,7 @@
 import { useState, useMemo } from "react";
 import { JobPostingsToolbar } from "./JobPostingsToolbar";
 import { JobPostingsList } from "./JobPostingsList";
-import { JobPosting } from "@/app/types/jobPosting";
+import type { JobPosting } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 
 export function JobPostingsManager({ initialJobs }: { initialJobs: JobPosting[] }) {
   const [query, setQuery] = useState("");

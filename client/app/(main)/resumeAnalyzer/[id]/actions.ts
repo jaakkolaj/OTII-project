@@ -8,7 +8,7 @@ import {
   deleteAllAiAnalysisByJobPostingId,
   cancelAiAnalysis,
 } from "@/app/services/aiAnalysisService";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { getMappedCandidates } from "./data";
 
 // Server action to trigger AI analysis for all candidates of a specific job posting.

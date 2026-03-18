@@ -1,5 +1,5 @@
 import { getJobPostings } from "@/app/services/jobPostingService";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import ResumeAnalyzerListClient from "./_components/ResumeAnalyzerListManager";
 
 export default async function ResumeAnalyzerPage() {

@@ -1,21 +1,11 @@
-"use client"
-
-import { ResetPasswordForm } from "@/app/(auth)/password-reset/_components/password-reset-form"
+import { ResetPasswordForm } from "@/app/(auth)/password-reset/_components/password-reset-form";
 
 export default function ResetPasswordPage() {
-  
-  const handleReset = async (email: string) => {
-    
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    if (!email.includes("@")) {
-      throw new Error("Invalid email")
-    }
-  }
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      <ResetPasswordForm onSubmit={handleReset} />
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <ResetPasswordForm />
+      </div>
     </div>
-  )
+  );
 }

@@ -1,17 +1,17 @@
-import { NewPasswordForm } from "../_components/new-password-form"
+import { NewPasswordForm } from "@/app/(auth)/password-reset/_components/new-password-form";
 
-interface PageProps {
+type PageProps = {
   params: {
-    token: string
-  }
-}
+    token: string;
+  };
+};
 
-export default function NewPasswordPage({ params }: PageProps) {
-  const { token } = params
-
+export default function Page({ params }: PageProps) {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      <NewPasswordForm token={token} />
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <NewPasswordForm token={params.token} />
+      </div>
     </div>
-  )
+  );
 }

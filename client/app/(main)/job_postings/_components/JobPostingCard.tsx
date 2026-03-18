@@ -4,10 +4,10 @@ import Link from "next/link";
 import { Briefcase, Pencil, Plus, Trash2 } from "lucide-react";
 import { useActionState, useEffect, startTransition } from "react";
 import { toast } from "sonner";
-import type { JobPosting } from "@/app/types/jobPosting";
+import type { JobPosting } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 import { deleteJobPostingAction } from "../actions";
 import type { DeleteState } from "../actions";
-import { showConfirmToast } from "@/lib/confirm-toast";
+import { showConfirmToast } from "@/lib/toasts/confirm-toast";
 
 type JobPostingCardProps = {
   job: JobPosting;

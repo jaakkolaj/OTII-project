@@ -1,7 +1,7 @@
 "use client";
 
 import { editJobPostingAction } from "../actions";
-import { JobPosting } from "@/app/types/jobPosting";
+import type { JobPosting } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 import JobPostingForm from "../../../_components/JobPostingForm";
 
 type EditPostingFormProps = {

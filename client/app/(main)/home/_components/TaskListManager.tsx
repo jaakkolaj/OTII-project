@@ -23,6 +23,7 @@ export function TaskListManager({ initialTasks }: TaskListManagerProps) {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+
   const addTask = () => {
     const nextTask = taskText.trim();
     if (!nextTask) return;

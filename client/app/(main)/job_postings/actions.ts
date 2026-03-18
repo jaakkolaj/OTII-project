@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { deleteJobPosting } from "@/app/services/jobPostingService";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { success } from "zod";
 
 // Server action, joka poistaa työpaikkailmoituksen ja uudelleenrevalidatoi kyseisen polun,

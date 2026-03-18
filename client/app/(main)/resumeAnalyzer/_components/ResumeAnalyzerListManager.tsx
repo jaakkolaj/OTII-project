@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { JobPosting } from "@/app/types/jobPosting";
+import type { JobPosting } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 import { ResumeAnalyzerHeader } from "./ResumeAnalyzerHeader";
 import { ResumeAnalyzerToolbar } from "./ResumeAnalyzerToolbar";
 import { JobPostingsList } from "./JobPostingsList";
