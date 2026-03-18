@@ -38,6 +38,8 @@ model JobPosting {
 
   candidates      Candidate[]
   ai_analyses     AIAnalysis[]
+
+  @@index([user_id])
 }
 
 model AIAnalysis {
@@ -58,6 +60,11 @@ model AIAnalysis {
 
   candidate        Candidate   @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
   job_posting      JobPosting @relation(fields: [job_posting_id], references: [id], onDelete: Cascade)
+  
+
+  @@index([candidate_id])
+  @@index([job_posting_id]) 
+  @@index([score])      // haku + järjestys scoren mukaan
 }
 
 model Candidate {
@@ -71,6 +78,9 @@ model Candidate {
   job_posting    JobPosting            @relation(fields: [job_posting_id], references: [id], onDelete: Cascade)
   documents      ApplicationDocument[]
   ai_analyses    AIAnalysis[]
+  
+  @@index([job_posting_id])
+  @@index([job_posting_id, status]) // haku + statusfiltterointi
 }
 
 enum CandidateStatus {
@@ -94,6 +104,8 @@ model ApplicationDocument {
   path              String
 
   candidate         Candidate @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
+
+  @@index([candidate_id])
 }
 
 model Task {
@@ -101,4 +113,6 @@ model Task {
   task_text         String
   user_id           String
   user              User     @relation(fields: [user_id], references: [id])
+
+  @@index ([user_id])
 }
