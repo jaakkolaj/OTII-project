@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Download, Eye, Mail, Phone, User, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -177,9 +178,11 @@ export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
           <ScoreRing score={candidate.score} />
         </CardContent>
         <CardFooter className="justify-between border-t">
-          <Button variant="link" className="px-0">
-            <Eye className="h-4 w-4" />
-            View details
+          <Button variant="link" className="px-0" asChild>
+            <Link href={`/candidates/${candidate.id}`}>
+              <Eye className="h-4 w-4" />
+              View details
+            </Link>
           </Button>
           <Button
             className="cursor-pointer"

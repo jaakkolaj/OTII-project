@@ -9,6 +9,7 @@ import {
   Settings,
   User,
   PanelLeft,
+  KanbanSquare,
 } from "lucide-react"
 
 import { LogOut } from "lucide-react"
@@ -32,6 +33,7 @@ const mainItems = [
   { title: "Home", href: "/home", icon: Home },
   { title: "Job Postings", href: "/job_postings", icon: Briefcase },
   { title: "Resume Analyzer", href: "/resumeAnalyzer", icon: LayoutDashboard },
+  { title: "Pipeline", href: "/pipeline", icon: KanbanSquare },
   { title: "Analytics", href: "#", icon: BarChart },
   { title: "Contact", href: "#", icon: Mail },
 ]

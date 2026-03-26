@@ -78,7 +78,8 @@ model Candidate {
   job_posting    JobPosting            @relation(fields: [job_posting_id], references: [id], onDelete: Cascade)
   documents      ApplicationDocument[]
   ai_analyses    AIAnalysis[]
-  
+  notes          CandidateNote[]
+
   @@index([job_posting_id])
   @@index([job_posting_id, status]) // haku + statusfiltterointi
 }
@@ -104,6 +105,17 @@ model ApplicationDocument {
   path              String
 
   candidate         Candidate @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
+
+  @@index([candidate_id])
+}
+
+model CandidateNote {
+  id           String    @id @default(uuid())
+  candidate_id String
+  content      String    @db.Text
+  created_at   DateTime  @default(now())
+
+  candidate    Candidate @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
 
   @@index([candidate_id])
 }
