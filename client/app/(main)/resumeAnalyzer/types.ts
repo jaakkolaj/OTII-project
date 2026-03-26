@@ -23,6 +23,7 @@ export type KanbanCandidate = {
   score?: number;
   topSkills?: string[];
   status: CandidateStatus;
+  job_posting_id?: string;
 };
 
 export type ResumeCandidate = KanbanCandidate & {
