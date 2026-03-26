@@ -10,20 +10,14 @@ import { SocialProof } from '@/app/(landing)/_components/social-proof'
 import { FinalCTA } from '@/app/(landing)/_components/final-cta'
 import { Footer } from '@/app/(landing)/_components/footer'
 import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 
-export default function LandingPage() {
-    const searchParams = useSearchParams()
-    const section = searchParams.get('section')
-
+export default function SolutionPage() {
     useEffect(() => {
-        if (section) {
-            const element = document.getElementById(section)
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' })
-            }
+        const element = document.getElementById('solution')
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' })
         }
-    }, [section])
+    }, [])
 
     return (
         <div className="flex flex-col min-h-screen">
