@@ -1,4 +1,4 @@
-// src/hooks/use-form-error.ts
+/* // src/hooks/use-form-error.ts
 import { useState, useCallback } from 'react';
 import { ApiError } from '@/lib/api';
 
@@ -10,7 +10,7 @@ export function useFormError() {
   const [generalError, setGeneralError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldError>({});
 
-  const setError = useCallback((error: ApiError) => {
+   const setError = useCallback((error: ApiError) => {
     // Jos on kentän kohtaiset virheet
     if (error.errors && error.errors.length > 0) {
       const errors: FieldError = {};
@@ -24,7 +24,7 @@ export function useFormError() {
       setGeneralError(error.message);
       setFieldErrors({});
     }
-  }, []);
+  }, []); 
 
   const clearError = useCallback(() => {
     setGeneralError(null);
@@ -53,4 +53,4 @@ export function useFormError() {
     getFieldError,
     hasErrors: generalError !== null || Object.keys(fieldErrors).length > 0,
   };
-}
+} */

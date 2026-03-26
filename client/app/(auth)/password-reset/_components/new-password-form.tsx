@@ -1,120 +1,75 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useActionState } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
+  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import FormSubmitButton from "@/components/ui-build/formSubmitButton";
+import { resetPasswordAction } from "../actions";
 
 interface NewPasswordFormProps {
-  token: string
-  onSubmit?: (token: string, password: string) => Promise<void>
+  token: string;
 }
 
-export function NewPasswordForm({ token, onSubmit }: NewPasswordFormProps) {
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState("")
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-    setSuccess(false)
-
-    try {
-      if (password.length < 6) {
-        throw new Error("Password must be at least 6 characters")
-      }
-
-      if (password !== confirmPassword) {
-        throw new Error("Passwords do not match")
-      }
-
-      if (onSubmit) {
-        await onSubmit(token, password)
-      } else {
-        // Fake delay (frontend only)
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-      }
-
-      setSuccess(true)
-    } catch (err: any) {
-      setError(err.message || "Something went wrong")
-    } finally {
-      setLoading(false)
-    }
-  }
+export function NewPasswordForm({ token }: NewPasswordFormProps) {
+  const [state, formAction] = useActionState(resetPasswordAction, null);
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Create new password</CardTitle>
-        <CardDescription>
-          Enter your new password below.
-        </CardDescription>
+        <CardDescription>Enter your new password below.</CardDescription>
       </CardHeader>
       <CardContent>
-        {success ? (
-          <p className="text-green-600 text-center">
-            Your password has been successfully reset.
-          </p>
+        {state?.success ? (
+          <div className="space-y-3 text-center">
+            <p className="text-green-600">{state?.message}</p>
+            <FieldDescription>
+              Return to <a href="/login">sign in</a>.
+            </FieldDescription>
+          </div>
         ) : (
-          <form onSubmit={handleSubmit}>
+          <form action={formAction} className="space-y-4" noValidate>
+            <input type="hidden" name="token" value={token} />
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="password">New Password</FieldLabel>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <Input id="password" name="password" type="password" />
+                <FieldError errors={state?.errors?.password} />
               </Field>
-
               <Field>
-                <FieldLabel htmlFor="confirmPassword">
-                  Confirm Password
-                </FieldLabel>
+                <FieldLabel htmlFor="passwordRepeat">Confirm Password</FieldLabel>
                 <Input
-                  id="confirmPassword"
+                  id="passwordRepeat"
+                  name="passwordRepeat"
                   type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
+                <FieldError errors={state?.errors?.passwordRepeat} />
               </Field>
-
-              {error && (
-                <p className="text-red-600 text-sm mt-1">{error}</p>
-              )}
-
               <Field>
-                <Button
-                  type="submit"
+                <FieldError>{state?.message}</FieldError>
+                <FormSubmitButton
+                  text="Reset Password"
+                  loadingText="Resetting"
                   className="w-full"
-                  disabled={loading}
-                >
-                  {loading ? "Resetting..." : "Reset Password"}
-                </Button>
+                />
               </Field>
             </FieldGroup>
           </form>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

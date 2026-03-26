@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-
+// Define the Zod schema for validating job posting data.
 export const JobPostingSchema = z.object({
   title: z.string().min(1, "Job title is required"),
   department: z.string().optional(),
@@ -16,3 +16,12 @@ export const JobPostingSchema = z.object({
   requirements: z.string().optional(),
   closingDate: z.string().optional(),
 });
+
+export type CreateJobPostingInput = z.infer<typeof JobPostingSchema>;
+
+export type JobPosting = CreateJobPostingInput & {
+  id: string;
+  status?: "Open" | "Paused" | "Closed";
+  applicants?: number;
+  lastUpdated?: string;
+};

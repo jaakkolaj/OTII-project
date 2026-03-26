@@ -1,7 +1,7 @@
 import "server-only";
 
 const baseUrl = "http://localhost:5001/aiAnalysis";
-import { authFetch } from "@/lib/authFetch";
+import { authFetch } from "@/lib/auth/authFetch";
 
 // Service funktio, joka hakee yhden kandidaatin ja sen analyysin ID:n perusteella.
 export const getAiAnalysisById = async (analysisId: string) => {

@@ -1,10 +1,9 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { z } from "zod";
-import { FormState } from "@/lib/form-utils";
-import { CreateJobPostingInput } from "@/app/types/jobPosting";
-import { JobPostingSchema } from "@/schemas/jobposting";
+import { FormState } from "@/lib/forms/types";
+import { JobPostingSchema, type CreateJobPostingInput } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 import { editJobPostingById } from "@/app/services/jobPostingService";
 
 // Server action to handle editing an existing job posting.

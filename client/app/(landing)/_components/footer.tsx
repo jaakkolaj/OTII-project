@@ -14,7 +14,7 @@ export function Footer() {
           <a href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Pricing
           </a>
-          <a href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <a href="/contact" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Contact
           </a>
           <a href="#" className="text-sm text-muted-foreground transition-colors hover:text-foreground">

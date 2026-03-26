@@ -1,11 +1,10 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { createJobPosting } from "@/app/services/jobPostingService";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { z } from "zod";
-import { FormState } from "@/lib/form-utils";
-import { CreateJobPostingInput } from "@/app/types/jobPosting";
-import { JobPostingSchema } from "@/schemas/jobposting";
+import { FormState } from "@/lib/forms/types";
+import { JobPostingSchema, type CreateJobPostingInput } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
 
 
 // Server action to handle the creation of a new job posting. It validates the form data,
