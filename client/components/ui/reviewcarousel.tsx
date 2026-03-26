@@ -23,22 +23,24 @@ const reviews = [
 
 export function ReviewsCarousel() {
   return (
-    <div className="w-full overflow-hidden">
-      <div className="flex animate-scroll gap-4" style={{ width: "max-content" }}>
-        {[...reviews, ...reviews].map((review, i) => (
-          <div key={i} className="glass-card rounded-lg px-4 py-3 w-[240px] flex-shrink-0 select-none">
-            <div className="flex gap-0.5 mb-2">
-              {Array.from({ length: review.rating }).map((_, j) => (
-                <Star key={j} className="w-3 h-3 fill-primary text-primary" />
-              ))}
+    <div className="relative h-[210px] w-full overflow-hidden">
+      <div className="absolute inset-0 flex items-center">
+        <div className="flex animate-scroll gap-4" style={{ minWidth: "200%" }}>
+          {[...reviews, ...reviews].map((review, i) => (
+            <div key={i} className="glass-card rounded-lg px-4 py-3 w-[240px] flex-shrink-0 select-none">
+              <div className="flex gap-0.5 mb-2">
+                {Array.from({ length: review.rating }).map((_, j) => (
+                  <Star key={j} className="w-3 h-3 fill-primary text-primary" />
+                ))}
+              </div>
+              <p className="text-xs text-foreground/80 leading-relaxed mb-2">"{review.text}"</p>
+              <div>
+                <span className="text-xs font-semibold text-foreground">{review.name}</span>
+                <span className="text-[10px] text-muted-foreground ml-1.5">{review.role}</span>
+              </div>
             </div>
-            <p className="text-xs text-foreground/80 leading-relaxed mb-2">"{review.text}"</p>
-            <div>
-              <span className="text-xs font-semibold text-foreground">{review.name}</span>
-              <span className="text-[10px] text-muted-foreground ml-1.5">{review.role}</span>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

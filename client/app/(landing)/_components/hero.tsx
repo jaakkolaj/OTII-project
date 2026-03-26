@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 
@@ -102,6 +103,7 @@ export function Hero() {
               Get Early Access
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
+            <Link href="/book-demo">
             <Button
               variant="outline"
               size="lg"
@@ -109,6 +111,7 @@ export function Hero() {
             >
               Book a Demo
             </Button>
+          </Link>
           </div>
         </div>
 

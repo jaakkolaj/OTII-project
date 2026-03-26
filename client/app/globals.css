@@ -154,7 +154,7 @@
   50% { box-shadow: 0 0 40px -5px hsl(0 72% 55% / 0.5); }
 }
 glass-card {
-  background: hsl(var(--card) / 0.6);
+  background: hsl(var(--card) / 0.8);
   border: 1px solid hsl(var(--border));
   backdrop-filter: blur(12px);
 }
@@ -169,8 +169,15 @@ glass-card {
 }
 
 .animate-scroll {
-  animation: scroll 40s linear infinite;
+  animation: scroll 80s linear infinite;
+  will-change: transform;
 }
 .animate-scroll:hover {
   animation-play-state: paused;
 }
+
+.review-carousel-panel {
+  mix-blend-mode: normal;
+  filter: blur(0px) brightness(105%);
+}
+
