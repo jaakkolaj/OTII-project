@@ -16,19 +16,24 @@ export type CandidateStatus =
   | "ACCEPTED"
   | "REJECTED";
 
-export type ResumeCandidate = {
+export type KanbanCandidate = {
   id: string;
   name: string;
   email: string;
+  score?: number;
+  topSkills?: string[];
+  status: CandidateStatus;
+};
+
+export type ResumeCandidate = KanbanCandidate & {
   phone: string;
   position: string;
   strengths: string[];
   weaknesses: string[];
-  topSkills: string[];
   score: number;
+  topSkills: string[];
   rank: number;
   pdfUrl: string;
-  status: CandidateStatus;
 };
 
 export type AiAnalysis = {

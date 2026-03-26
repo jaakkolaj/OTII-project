@@ -1,14 +1,26 @@
 import { Router } from "express";
 import { authentication } from "../middleware/authentication";
-import { updateCandidateStatus } from "../controllers/candidates.controller";
-import { getCandidates } from "../controllers/candidates.controller";
+import {
+  updateCandidateStatus,
+  getCandidates,
+  getCandidateById,
+  createCandidateNote,
+  deleteCandidateNote,
+} from "../controllers/candidates.controller";
 
 const candidatesRouter = Router();
+
+// Hakee kaikki käyttäjän kandidaatit
+candidatesRouter.get("/user", authentication, getCandidates);
+
+// Hakee yksittäisen kandidaatin täydet tiedot
+candidatesRouter.get("/:id", authentication, getCandidateById);
 
 // Päivittää kandidaatin statuksen
 candidatesRouter.patch("/:id/status", authentication, updateCandidateStatus);
 
-// Hakee kaikki käyttäjän kandidaatit home page dataa varten
-candidatesRouter.get('/user', authentication, getCandidates);
+// Muistiinpanot
+candidatesRouter.post("/:id/notes", authentication, createCandidateNote);
+candidatesRouter.delete("/:id/notes/:noteId", authentication, deleteCandidateNote);
 
 export default candidatesRouter;
