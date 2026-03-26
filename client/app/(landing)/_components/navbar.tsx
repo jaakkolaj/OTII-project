@@ -10,9 +10,9 @@ export function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#" className="font-display text-xl font-bold tracking-tight text-foreground">
-          RankWise AI
-        </a>
+        <Link href="/" className="font-display text-xl font-bold tracking-tight text-foreground">
+          RankIt
+        </Link>
 
         <div className="hidden items-center gap-8 md:flex">
           <a href="#problem" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
@@ -25,7 +25,7 @@ export function Navbar() {
             How It Works
           </a>
           <a href="#comparison" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Why RankWise
+            Why RankIt
           </a>
         </div>
 
@@ -68,9 +68,11 @@ export function Navbar() {
               <Button variant="outline" size="sm" className="w-full">
                 Book a Demo
               </Button>
-              <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90">
-                login
-              </Button>
+              <Link href="/login" className="w-full">
+                <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90">
+                  Login
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
