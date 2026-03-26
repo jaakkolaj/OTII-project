@@ -1,23 +1,23 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import prisma from "../prisma";
 import { CandidateStatus } from "@prisma/client";
+import { AuthorizationError, ValidationError, NotFoundError } from "../utils/errors";
 
 const VALID_STATUSES = Object.values(CandidateStatus);
 
 export const updateCandidateStatus = async (
   req: Request<{ id: string }>,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return next(new AuthorizationError("Unauthorized"));
   }
 
   const { status } = req.body;
 
   if (!VALID_STATUSES.includes(status)) {
-    return res.status(400).json({
-      error: `Virheellinen status. Sallitut arvot: ${VALID_STATUSES.join(", ")}`,
-    });
+    return next(new ValidationError("Invalid status value"));
   }
 
   const candidate = await prisma.candidate.findUnique({
@@ -26,12 +26,12 @@ export const updateCandidateStatus = async (
   });
 
   if (!candidate) {
-    return res.status(404).json({ error: "Kandidaattia ei löydy." });
+    return next(new NotFoundError("Candidate not found"));
   }
 
   // Varmistetaan että kandidaatti kuuluu kirjautuneelle käyttäjälle
   if (candidate.job_posting.user_id !== req.user.id) {
-    return res.status(403).json({ error: "Forbidden" });
+    return next(new AuthorizationError("Forbidden"));
   }
 
   try {
@@ -41,13 +41,13 @@ export const updateCandidateStatus = async (
     });
     return res.status(200).json(updated);
   } catch (error) {
-    return res.status(500).json({ error: "Statuksen päivitys epäonnistui." });
+    return next(error);
   }
 };
 
-export const getCandidates = async (req: Request, res: Response) => {
+export const getCandidates = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized!" });
+    return next(new AuthorizationError("Unauthorized"));
   }
 
   try {
@@ -66,6 +66,6 @@ export const getCandidates = async (req: Request, res: Response) => {
 
     return res.status(200).json(candidates);
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    return next(error);
   }
 };
