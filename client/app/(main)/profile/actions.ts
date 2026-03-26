@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { changeEmail, changePassword } from "@/app/services/userSettingsService";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 export type ChangePasswordActionResult = {
   success: boolean;
