@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import { useLanguage } from "@/lib/language-provider"
 
 function HeroIllustration() {
   return (
@@ -45,6 +46,7 @@ function HeroIllustration() {
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
+  const { t } = useLanguage()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -73,7 +75,7 @@ export function Hero() {
         <div className="flex flex-col gap-8">
           <div data-animate className="animate-fade-in-up">
             <span className="inline-block rounded-full border border-border px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              AI-Powered Screening
+              {t('hero.badge')}
             </span>
           </div>
 
@@ -81,14 +83,14 @@ export function Hero() {
             data-animate
             className="animate-fade-in-up animation-delay-100 font-display text-5xl font-bold leading-tight tracking-tight text-foreground md:text-6xl lg:text-7xl"
           >
-            <span className="text-balance">Too Many CVs. Not Enough Time.</span>
+            <span className="text-balance">{t('hero.title')}</span>
           </h1>
 
           <p
             data-animate
             className="animate-fade-in-up animation-delay-200 max-w-lg text-lg leading-relaxed text-muted-foreground"
           >
-            RankWise AI screens and ranks job applicants instantly — so you can focus on hiring, not reading.
+            {t('hero.description')}
           </p>
 
           <div
@@ -99,7 +101,7 @@ export function Hero() {
               size="lg"
               className="rounded-full bg-foreground px-8 text-base text-background hover:bg-foreground/90"
             >
-              Get Early Access
+              {t('hero.earlyAccess')}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <Button
@@ -107,7 +109,7 @@ export function Hero() {
               size="lg"
               className="rounded-full border-border px-8 text-base text-foreground hover:bg-accent"
             >
-              Book a Demo
+              {t('hero.bookDemo')}
             </Button>
           </div>
         </div>

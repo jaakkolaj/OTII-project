@@ -18,22 +18,25 @@ import { Input } from "@/components/ui/input";
 import FormSubmitButton from "@/components/ui-build/formSubmitButton";
 import { useActionState } from "react";
 import { registerAction } from "@/app/(auth)/register/actions";
+import { useLanguage } from "@/lib/language-provider";
 
 export function SignupForm() {
   const [state, formAction] = useActionState(registerAction, null);
+  const { t } = useLanguage();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
+        <CardTitle>{t('auth.register.title')}</CardTitle>
         <CardDescription>
-          Enter your information below to create your account
+          {t('auth.register.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-4" noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email">{t('auth.register.email')}</FieldLabel>
               <Input
                 id="email"
                 name="email"
@@ -42,37 +45,36 @@ export function SignupForm() {
                 defaultValue={state?.fields?.email}
               />
               <FieldDescription>
-                We&apos;ll use this to contact you. We will not share your email
-                with anyone else.
+                {t('auth.register.emailDescription')}
               </FieldDescription>
               <FieldError>{state?.errors?.email}</FieldError>
             </Field>
             <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <FieldLabel htmlFor="password">{t('auth.register.password')}</FieldLabel>
               <Input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder={t('auth.register.passwordPlaceholder')}
               />
-    
+
               <FieldError>{state?.errors?.password}</FieldError>
             </Field>
             <Field>
-              <FieldLabel htmlFor="passwordRepeat">Confirm Password</FieldLabel>
+              <FieldLabel htmlFor="passwordRepeat">{t('auth.register.confirmPassword')}</FieldLabel>
               <Input
                 id="passwordRepeat"
                 name="passwordRepeat"
                 type="password"
-                placeholder="Confirm password"
+                placeholder={t('auth.register.confirmPasswordPlaceholder')}
               />
               <FieldError>{state?.errors?.passwordRepeat}</FieldError>
             </Field>
             <Field>
               <FieldError>{state?.message}</FieldError>
-              <FormSubmitButton text="Create Account" loadingText="Creating account" />
+              <FormSubmitButton text={t('auth.register.submit')} loadingText={t('auth.register.loading')} />
               <FieldDescription className="px-6 text-center">
-                Already have an account? <a href="/login">Sign in</a>
+                {t('auth.register.haveAccount')} <a href="/login">{t('auth.register.signIn')}</a>
               </FieldDescription>
             </Field>
           </FieldGroup>

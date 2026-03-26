@@ -1,27 +1,32 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-
-const steps = [
-  {
-    number: "01",
-    title: "Add Your Job Description",
-    description: "Paste or upload the role requirements you need to fill.",
-  },
-  {
-    number: "02",
-    title: "Let AI Analyze Applicants",
-    description: "RankWise AI processes every application against your criteria.",
-  },
-  {
-    number: "03",
-    title: "Review Your Ranked Shortlist",
-    description: "Get a scored, explainable list of your top candidates.",
-  },
-]
+import { useLanguage } from "@/lib/language-provider"
 
 export function HowItWorks() {
   const sectionRef = useRef<HTMLElement>(null)
+  const { t } = useLanguage()
+
+  const steps = [
+    {
+      number: t('howItWorks.items.step1.number'),
+      key: 'step1',
+      title: t('howItWorks.items.step1.title'),
+      description: t('howItWorks.items.step1.description'),
+    },
+    {
+      number: t('howItWorks.items.step2.number'),
+      key: 'step2',
+      title: t('howItWorks.items.step2.title'),
+      description: t('howItWorks.items.step2.description'),
+    },
+    {
+      number: t('howItWorks.items.step3.number'),
+      key: 'step3',
+      title: t('howItWorks.items.step3.title'),
+      description: t('howItWorks.items.step3.description'),
+    },
+  ]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -49,20 +54,20 @@ export function HowItWorks() {
             data-animate
             className="animate-fade-in-up mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground"
           >
-            How It Works
+            {t('howItWorks.label')}
           </p>
           <h2
             data-animate
             className="animate-fade-in-up animation-delay-100 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl"
           >
-            Simple. Fast. Accurate.
+            {t('howItWorks.title')}
           </h2>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((step, index) => (
             <div
-              key={step.number}
+              key={step.key}
               data-animate
               className={`animate-fade-in-up animation-delay-${(index + 2) * 100} relative`}
             >

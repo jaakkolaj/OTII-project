@@ -4,8 +4,12 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {Menu, X } from "lucide-react"
 import Link from "next/link"
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher"
+import { useLanguage } from "@/lib/language-provider"
+
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { t } = useLanguage()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -16,26 +20,27 @@ export function Navbar() {
 
         <div className="hidden items-center gap-8 md:flex">
           <a href="#problem" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Problem
+            {t('nav.problem')}
           </a>
           <a href="#solution" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Solution
+            {t('nav.solution')}
           </a>
           <a href="#how-it-works" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            How It Works
+            {t('nav.howItWorks')}
           </a>
           <a href="#comparison" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Why RankWise
+            {t('nav.why')}
           </a>
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher />
           <Button variant="ghost" size="sm" className="text-sm text-muted-foreground hover:text-foreground">
-            Book a Demo
+            {t('nav.bookDemo')}
           </Button>
           <Link href="/login">
           <Button  size="sm" className="rounded-full bg-foreground px-5 text-sm text-background hover:bg-foreground/90">
-            Login
+            {t('nav.login')}
           </Button>
           </Link>
         </div>
@@ -53,23 +58,26 @@ export function Navbar() {
         <div className="border-t border-border bg-background px-6 pb-6 pt-4 md:hidden">
           <div className="flex flex-col gap-4">
             <a href="#problem" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
-              Problem
+              {t('nav.problem')}
             </a>
             <a href="#solution" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
-              Solution
+              {t('nav.solution')}
             </a>
             <a href="#how-it-works" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
-              How It Works
+              {t('nav.howItWorks')}
             </a>
             <a href="#comparison" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
-              Why RankWise
+              {t('nav.why')}
             </a>
-            <div className="flex flex-col gap-3 pt-4">
+            <div className="border-t border-border pt-4">
+              <LanguageSwitcher />
+            </div>
+            <div className="flex flex-col gap-3">
               <Button variant="outline" size="sm" className="w-full">
-                Book a Demo
+                {t('nav.bookDemo')}
               </Button>
               <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90">
-                login
+                {t('nav.login')}
               </Button>
             </div>
           </div>

@@ -27,6 +27,7 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher"
 import { useRouter } from "next/navigation"
 
 const mainItems = [
@@ -103,6 +104,13 @@ export function AppSidebar() {
       {/* FOOTER (BOTTOM) */}
       <SidebarFooter className="pb-16">
         <SidebarMenu className="gap-4">
+          {/* Language Switcher */}
+          <SidebarMenuItem>
+            <div className="px-3 py-2">
+              <LanguageSwitcher />
+            </div>
+          </SidebarMenuItem>
+
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild className="py-2 px-3 text-sm">
