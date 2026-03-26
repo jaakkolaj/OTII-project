@@ -1,30 +1,36 @@
 import { Router } from 'express';
 import { 
   aianalysis, 
+  cancelAiAnalysis,
+  getAiAnalysisStatus,
   getAnalysisById, 
   deleteAnalysis,
   getAiAnalysesByJobPostingId,
-  createAnalysis,
   deleteAllAnalysesByJobPostingId
 } from '../controllers/aianalysis.controller';
+import { AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware } from '../middleware/rateLimiter';
+import { authentication } from '../middleware/authentication';
 const aiAnalysisRouter = Router();
 
-//Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
-aiAnalysisRouter.post('/:jobPostingId', aianalysis);
+// Käynnistää analyysin kaikille tietyn työpaikan ehdokkaille
+aiAnalysisRouter.post('/:jobPostingId', authentication, AiAnalysisRateLimitMiddleware, aiConcurrencyMiddleware, aianalysis);
 
-//Testi routti aiAnalyysien luontiin
-aiAnalysisRouter.post('/', createAnalysis);
+// Hakee statuksen onko analyysi tehty ja palauttaa sen
+aiAnalysisRouter.post('/jobPostings/:jobPostingId/ai-analysis', getAiAnalysisStatus);
+
+// Pysäyttää analysointi prosessin
+aiAnalysisRouter.post('/jobPostings/:jobPostingId/ai-analysis/cancel', cancelAiAnalysis)
 
 //Reitti hakee kaikki kandidaatit ja niiden analyysit yhdessä jobPostingissa
-aiAnalysisRouter.get('/job/:jobPostingId', getAiAnalysesByJobPostingId);
+aiAnalysisRouter.get('/job/:jobPostingId', authentication, getAiAnalysesByJobPostingId);
 
 // Hakee yhden kandidaatin ja sen ai analyysin
-aiAnalysisRouter.get('/candidate/:analysisId', getAnalysisById);
+aiAnalysisRouter.get('/candidate/:analysisId', authentication, getAnalysisById);
 
 // Poistaa kaikki analyysit tietystä jobPostingista
-aiAnalysisRouter.delete('/job/:jobPostingId/all', deleteAllAnalysesByJobPostingId);
+aiAnalysisRouter.delete('/job/:jobPostingId/all', authentication, AiAnalysisRateLimitMiddleware, deleteAllAnalysesByJobPostingId);
 
 // Poistaa Ai analyysin ID:n perusteella
-aiAnalysisRouter.delete('/:analysisId', deleteAnalysis); 
+aiAnalysisRouter.delete('/:analysisId', authentication, AiAnalysisRateLimitMiddleware, deleteAnalysis); 
 
 export default aiAnalysisRouter;

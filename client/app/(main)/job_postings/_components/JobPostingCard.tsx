@@ -1,0 +1,90 @@
+"use client";
+
+import Link from "next/link";
+import { Briefcase, Pencil, Plus, Trash2 } from "lucide-react";
+import { useActionState, useEffect, startTransition } from "react";
+import { toast } from "sonner";
+import type { JobPosting } from "@/app/types/jobPosting";
+import { deleteJobPostingAction } from "../actions";
+import type { DeleteState } from "../actions";
+import { showConfirmToast } from "@/lib/confirm-toast";
+
+type JobPostingCardProps = {
+  job: JobPosting;
+};
+
+export function JobPostingCard({ job }: JobPostingCardProps) {
+  const [state, deleteAction, isPending] = useActionState<DeleteState, string>(
+    deleteJobPostingAction,
+    { success: false, message: "" },
+  );
+
+  const handleDelete = () => {
+    showConfirmToast({
+      title: "Haluatko varmasti poistaa ilmoituksen?",
+      description: `Tämä poistaa ilmoituksen: ${job.title}`,
+      actionLabel: "Kyllä, poista",
+      onConfirm: () => {
+        startTransition(() => deleteAction(job.id));
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (!state.message) return;
+    if (state.success) {
+      toast.success(state.message);
+    } else {
+      toast.error(state.message);
+    }
+  }, [state]);
+
+  return (
+    <article className="rounded-2xl border bg-card px-6 py-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <span className="mt-1 flex h-9 w-9 items-center justify-center rounded-full border bg-muted">
+            <Briefcase className="h-4 w-4 text-muted-foreground" />
+          </span>
+          <div className="space-y-1">
+            <h2 className="text-base font-semibold">
+              <Link
+                href={`/job_postings/${job.id}`}
+                className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                {job.title}
+              </Link>
+            </h2>
+            <p className="text-sm text-muted-foreground">{job.description}</p>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <Link
+            href={`/job_postings/${job.id}`}
+            className="inline-flex items-center gap-2 font-medium text-muted-foreground transition hover:text-foreground"
+          >
+            <Plus className="h-4 w-4" />
+            Add candidates
+          </Link>
+          <Link
+            href={`/job_postings/${job.id}/edit`}
+            className="inline-flex items-center gap-2 font-medium text-muted-foreground transition hover:text-foreground"
+          >
+            <Pencil className="h-4 w-4" />
+            Edit
+          </Link>
+
+          <button
+            type="button"
+            disabled={isPending}
+            className="inline-flex items-center gap-2 font-medium text-destructive transition hover:text-destructive/70 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+            onClick={handleDelete}
+          >
+            <Trash2 className="h-4 w-4" />
+            {isPending ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}

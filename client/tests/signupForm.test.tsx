@@ -1,4 +1,4 @@
-import { SignupForm } from "@/app/(auth)/register/components/signup-form";
+import { SignupForm } from "@/app/(auth)/register/_components/signup-form";
 import { render, screen } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';

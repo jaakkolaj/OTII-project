@@ -29,7 +29,7 @@ import {
 import { useRouter } from "next/navigation"
 
 const mainItems = [
-  { title: "Home", href: "/", icon: Home },
+  { title: "Home", href: "/home", icon: Home },
   { title: "Job Postings", href: "/job_postings", icon: Briefcase },
   { title: "Resume Analyzer", href: "/resumeAnalyzer", icon: LayoutDashboard },
   { title: "Analytics", href: "#", icon: BarChart },

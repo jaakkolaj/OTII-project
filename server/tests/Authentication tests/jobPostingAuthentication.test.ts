@@ -4,6 +4,13 @@ import app from "../../src/app";
 import request from "supertest";
 import jwt from "jsonwebtoken";
 
+jest.mock("../../src/middleware/rateLimiter", () => ({
+    standardRateLimiter: () => (req: any, res: any, next: any) => next(),
+    AiAnalysisRateLimitMiddleware: (req: any, res: any, next: any) => next(),
+    aiConcurrencyMiddleware: (req: any, res: any, next: any) => next(),
+    uploadRateLimitMiddleware: (req: any, res: any, next: any) => next()
+}));
+
 describe('Authentication', () => {
     let user_id: string;
     let userEmail: string;

@@ -1,7 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction} from "express";
 import { parseDocument } from "../services/parser.service";
 import prisma from "../prisma";
 import { uploadFileToSupabase } from "../services/supabase.service";
+import { ValidationError } from "../utils/errors";
 
 // Tiedostonimen puhdistaja, joka poistaa erikoismerkit ja korvaa ne alaviivalla
 const sanitizeFileName = (fileName: string): string => {
@@ -21,11 +22,10 @@ export const uploadFiles = async (req: Request, res: Response, next: NextFunctio
     const jobPostingId = req.body?.jobPostingId;
     
     if (!files || files.length === 0) {
-      res.status(400).json({ error: "Tiedostoja ei löytynyt" });
-      return;
+      return next(new ValidationError("Tiedostoja ei löytynyt"));
     }
     if (!jobPostingId) {
-      return res.status(400).json({ error: "jobPostingId puuttuu pyynnöstä" });
+      return next(new ValidationError("jobPostingId puuttuu pyynnöstä"));
     }
     // Kutsutaan parser-palvelua tiedostojen käsittelyyn
     const parsedResults = await parseDocument(files);
@@ -75,9 +75,6 @@ export const uploadFiles = async (req: Request, res: Response, next: NextFunctio
     });
     // Virheen käsittely
   } catch (error: any) {
-    res.status(500).json({
-      error: "Virhe tiedostojen käsittelyssä",
-      details: error.message,
-    });
+    next(error);
+    };
   }
-};

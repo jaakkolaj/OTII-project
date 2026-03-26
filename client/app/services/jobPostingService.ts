@@ -1,62 +1,68 @@
-import axios from 'axios';
+import "server-only";
 
-const baseUrl = 'http://localhost:5001';
+import type { JobPosting, CreateJobPostingInput } from "@/app/types/jobPosting";
+import { authFetch } from "@/lib/authFetch";
 
-// Define the JobPosting interface
-interface JobPosting {
-    title: string;
-    department: string;
-    location: string;
-    employmentType: string;
-    seniority: string;
-    salaryRange: string;
-    description: string;
-    requirements: string;
-    closingDate: string;
-}
+const baseUrl = "http://localhost:5001";
+
 
 // Create a new job posting
-export const createJobPosting = async (jobPosting: JobPosting) => {
-  const response = await axios.post(`${baseUrl}/job-postings`, jobPosting, {
+export const createJobPosting = async (jobPosting: CreateJobPostingInput): Promise<CreateJobPostingInput> => {
+  const response = await authFetch(`${baseUrl}/job-postings`, {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    withCredentials: true,
+    body: JSON.stringify(jobPosting),
   });
-  return response.data;
+
+  if (!response.ok) throw new Error(`Failed to create job: ${response.statusText}`);
+  return response.json();
 };
 
 // Fetch all job postings
-export const getJobPostings = async () => {
-  const response = await axios.get(`${baseUrl}/job-postings`, {
-    withCredentials: true
+export const getJobPostings = async (): Promise<JobPosting[]> => {
+  const response = await authFetch(`${baseUrl}/job-postings`, {
+    method: "GET",
   });
-  return response;
+
+  if (!response.ok) throw new Error(`Failed to fetch jobs: ${response.statusText}`);
+  return response.json();
 };
 
 // Delete job posting
-export const deleteJobPosting = async (jobId: any) => {
-  const response = await axios.delete(`${baseUrl}/job-postings/${jobId}`, {
-    withCredentials: true
+export const deleteJobPosting = async (jobId: string) => {
+  const response = await authFetch(`${baseUrl}/job-postings/${jobId}`, {
+    method: "DELETE",
   });
-  return response;
-}
 
-// Get job posting by ID
-export const getJobPostingById = async (jobId: any) => {
-  const response = await axios.get(`${baseUrl}/job-postings/${jobId}`, {
-    withCredentials: true
-  });
-  return response;
+  if (!response.ok) throw new Error(`Failed to delete job: ${response.statusText}`);
+  return response; // Palautetaan koko response, kuten alkuperäisessä koodissa
 };
 
-// Edit existing job osting
-export const editJobPostingById = async (jobId: any, jobPosting: JobPosting) => {
-  const response = await axios.put(`${baseUrl}/job-postings/${jobId}`, jobPosting, {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    withCredentials: true
+// Get job posting by ID
+export const getJobPostingById = async (jobId: string): Promise<JobPosting> => {
+  const response = await authFetch(`${baseUrl}/job-postings/${jobId}`, {
+    method: "GET",
   });
-  return response;
+
+  if (!response.ok) throw new Error(`Failed to fetch job: ${response.statusText}`);
+  return response.json();
+};
+
+// Edit existing job posting
+export const editJobPostingById = async (
+  jobId: string,
+  jobPosting: CreateJobPostingInput,
+): Promise<JobPosting> => {
+  const response = await authFetch(`${baseUrl}/job-postings/${jobId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(jobPosting),
+  });
+
+  if (!response.ok) throw new Error(`Failed to update job: ${response.statusText}`);
+  return response.json();
 };

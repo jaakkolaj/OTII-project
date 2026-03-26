@@ -1,11 +1,12 @@
-import { Request, Response, NextFunction} from "express";
+import { NextFunction, Request, Response } from "express";
 import prisma from "../prisma";
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { AuthenticationError } from "../utils/errors";
 
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
+    const { email, password } = req.body;
 
         const { email, password } = req.body;
 
@@ -13,12 +14,8 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             where: { email: email }
         });
 
-        const passwordCorrect = user === null ? false : await bcrypt.compare(password, user.password)
-
-        if (!user || !passwordCorrect) {
-            const err: any = new Error('Invalid email or password');
-            err.code = 401;
-            return next(err);
+    if(!(user && passwordCorrect)) {
+        return next(new AuthenticationError("Invalid email or password"));
     }
 
         const userForToken = {

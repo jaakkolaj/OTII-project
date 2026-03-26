@@ -45,6 +45,13 @@ export class ConflictError extends AppError {
         Object.setPrototypeOf(this, ConflictError.prototype);
     }
 }
+export class RateLimitError extends AppError {
+    constructor(message: string = 'Too many requests') {
+        super(429, message);
+        Object.setPrototypeOf(this, RateLimitError.prototype);
+    }
+}
+
 
 export class ServerError extends AppError {
     constructor(message: string = 'Internal server error') {

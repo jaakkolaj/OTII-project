@@ -1,30 +1,30 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../prisma";
 import { Prisma } from "@prisma/client";
+import { ValidationError, NotFoundError, AuthenticationError } from "../utils/errors";
 
 // Hakee kaikki kirjautuneen käyttäjän jobPostingit.
 export const getJobPostings = async (req: Request, res: Response, next: NextFunction) => {
+    try {
     // Käyttäjän autentikointi
     if (!req.user) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return next(new AuthenticationError("Unauthorized"));
     }
-    try {
-        const jobs = await prisma.jobPosting.findMany({
-        where: {
-            user_id: req.user.id
-        }
+    const jobs = await prisma.jobPosting.findMany({
+        where: { user_id: req.user.id}
         });
+
         return res.json(jobs);
-    } catch(error) {
-        return res.status(400).json({ error: "Job-postings not found!" })
+    } catch (error) {
+        next(error);
     }
 };
 
 // Hakee kirjautuneen käyttäjän yhden jobPostingin ID:n perusteella
-export const getJobPostingById = async (req: Request<{ id: string }>, res: Response) => {
-    // Käyttäjän autentikointi
+export const getJobPostingById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+   try { // Käyttäjän autentikointi
     if(!req.user) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return next(new AuthenticationError("Unauthorized"));
     }
 
     const job = await prisma.jobPosting.findUnique({
@@ -32,29 +32,30 @@ export const getJobPostingById = async (req: Request<{ id: string }>, res: Respo
     });
 
     if (!job) {
-        return res.status(404).json({ error: "Job posting not found." });
+        return next(new NotFoundError("Job posting not found."));
     }
 
-    res.json(job);
+    return res.json(job);
+    } catch (error) {
+        next(error);
+    }
 };
 
 // Luo uuden jobPostingin kirjautuneelle käyttäjälle
 export const createJobPosting = async (req: Request, res: Response, next: NextFunction) => {
-    const { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate } = req.body ?? {};
+    try {const { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate } = req.body ?? {};
 
     // Title ja description ovat pakolliset kentät jobPostingissa.
     if (!title || !description) {
-        return res
-        .status(400)
-        .json({ error: "Title and description are required." });
+        return next(new ValidationError("Title and description are required."));
     }
 
     // Käyttäjän autentikointi
     if (!req.user) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return next(new AuthenticationError("Unauthorized"));
     }
 
-    try {
+   
         const job = await prisma.jobPosting.create({
         data: {
             title,
@@ -72,22 +73,20 @@ export const createJobPosting = async (req: Request, res: Response, next: NextFu
 
         res.status(201).json(job);
     } catch(error) {
-        return res.status(400).json({ error: "Invalid request" });
+        next(error);
     }
 };
 
 // Muokkaa kirjautuneen käyttäjän olemassa olevaa jobPostingia
-export const editJobPostingById = async (req: Request<{ id: string }>, res: Response) => {
+export const editJobPostingById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     const { title, description, location, employmentType, seniority, department, requirements, salaryRange, closingDate } = req.body ?? {};
 
     if (!req.user) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return next(new AuthenticationError("Unauthorized"));
     }
 
     if (!title || !description) {
-        return res
-        .status(400)
-        .json({ error: "Title and description are required." });
+        return next(new ValidationError("Title and description are required."));
     }
 
     // Tarkistetaan löytyykö tietokannasta jobPosting annetulla ID:llä.
@@ -96,7 +95,7 @@ export const editJobPostingById = async (req: Request<{ id: string }>, res: Resp
     });
 
     if(!jobPosting) {
-        return res.status(404).json({ message: "JobPosting not found!" });
+        return next(new NotFoundError("Job posting not found."));
     }
 
     // Päivitetään jobPosting
@@ -107,20 +106,14 @@ export const editJobPostingById = async (req: Request<{ id: string }>, res: Resp
         });
         return res.status(200).json(job);
     } catch (error) {
-        if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
-        ) {
-        return res.status(404).json({ error: "Job posting not found." });
-        }
-        throw error;
+        next(error);
     }
 };
 
 // Poistetaan kirjautuneen käyttäjän jobPosting annetun ID:n perusteella.
 export const deleteJobPostingById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
     if (!req.user) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return next(new AuthenticationError("Unauthorized"));
     }
 
     // Tarkistetaan löytyykö tietokannasta jobPosting annetulla ID:llä.
@@ -129,7 +122,7 @@ export const deleteJobPostingById = async (req: Request<{ id: string }>, res: Re
     });
 
     if(!jobPosting) {
-        return res.status(404).json({ message: "JobPosting not found!" });
+        return next(new NotFoundError("Job posting not found."));
     }
 
     // Poistetaan jobPosting
@@ -137,12 +130,6 @@ export const deleteJobPostingById = async (req: Request<{ id: string }>, res: Re
         await prisma.jobPosting.delete({ where: { id: req.params.id } });
         res.status(204).send();
     } catch (error) {
-        if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2025"
-        ) {
-        return res.status(404).json({ error: "Job posting not found." });
-        }
-        throw error;
+        next(error);
     }
 };

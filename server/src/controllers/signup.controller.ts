@@ -3,40 +3,43 @@ import { validateEmail } from "../utils/validation";
 import prisma from "../prisma";
 import bcrypt from 'bcrypt';
 import "dotenv/config";
+import { ValidationError, ConflictError } from "../utils/errors";
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
-    // Password must be greater than 5 characters
-    if(password.length < 5) {
-        return res.status(400).json({ error: "Password must be greater than 5 character" })
-    }
-    const isEmailCorrect = validateEmail(email);
-    if(!isEmailCorrect) {
-        return res.status(400).json({error: "Email is invalid!"});
-    }
-
-    const user = await prisma.user.findUnique({
-        where: { 
-            email: email
-        }
-    });
-
-    if(user) {
-        return res.status(400).json({ error: "This email is already in use" })
-    }
-
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
-
-    const data = {
-        email: email,
-        password: passwordHash
-    }
-
     try {
+        const { email, password } = req.body;
+        // Password must be greater than 5 characters
+        if (password.length < 5) {
+            return next(new ValidationError("Password must be greater than 5 characters"));
+        }
+        const isEmailCorrect = validateEmail(email);
+        if (!isEmailCorrect) {
+            return next(new ValidationError("Invalid email format"));
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { 
+                email: email
+            }
+        });
+
+        if (user) {
+            return next(new ConflictError("This email is already in use"));
+        }
+
+        // Tässä pitäisi hashata salasana ennen kuin tallennetaan tietokantaan?
+
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(password, saltRounds);
+
+        const data = {
+            email: email,
+            password: passwordHash
+        }
+
         await prisma.user.create({ data })
         res.status(200).json(data);
-    } catch(error) {
-        next(error)
+    } catch (error) {
+        next(error);
     }
 };

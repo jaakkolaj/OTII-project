@@ -41,12 +41,10 @@ export const analyzeTextWithAI= async (cvText: string, jobRequirements: string):
         ---
         ${jobRequirements}
         ---
-
         EHDOKKAAN CV-TEKSTI:
         ---
         ${cvText}
         ---
-
         Tuota JSON-objekti seuraavilla kentillä:
         {
           "name": "Ehdokkaan nimi (jos löytyy)",

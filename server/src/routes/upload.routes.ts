@@ -1,6 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 import { uploadFiles } from "../controllers/upload.controller";
+import { uploadRateLimitMiddleware } from "../middleware/rateLimiter";
 
 const uploadRouter = Router();
 
@@ -32,6 +33,6 @@ const upload = multer({
 });
 
 // Reitti tiedostojen lataukselle
-uploadRouter.post("/", upload.array("files", 30), uploadFiles);
+uploadRouter.post("/", uploadRateLimitMiddleware, upload.array("files", 30), uploadFiles);
 
 export default uploadRouter;

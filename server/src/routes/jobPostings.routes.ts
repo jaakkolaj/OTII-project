@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authentication } from "../middleware/authentication";
+import { standardRateLimiter } from "../middleware/rateLimiter";
 import { getJobPostings, 
   getJobPostingById,
   createJobPosting,
@@ -16,12 +17,12 @@ jobPostingsRouter.get('/', authentication, getJobPostings);
 jobPostingsRouter.get('/:id', authentication, getJobPostingById);
 
 // Routti luo uuden jobPostingin
-jobPostingsRouter.post('/', authentication, createJobPosting);
+jobPostingsRouter.post('/', authentication, standardRateLimiter("create-job-posting"), createJobPosting);
 
 // Routti muokkaa olemassa olevaa jobPostingia ID:n perusteella
-jobPostingsRouter.put('/:id', authentication, editJobPostingById);
+jobPostingsRouter.put('/:id', authentication, standardRateLimiter("update-job-posting"), editJobPostingById);
 
 // Routti poistaa olemassa olevan jobPostingin ID:n perusteella
-jobPostingsRouter.delete('/:id', authentication, deleteJobPostingById);
+jobPostingsRouter.delete('/:id', authentication, standardRateLimiter("delete-job-posting"), deleteJobPostingById);
 
 export default jobPostingsRouter;
