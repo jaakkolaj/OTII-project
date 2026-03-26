@@ -58,7 +58,7 @@ export function CandidatesKanban({ candidates, onStatusChange }: CandidatesKanba
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div className="overflow-x-auto pb-4">
-        <div className="flex gap-4" style={{ minWidth: "max-content" }}>
+        <div className="flex min-w-full gap-4">
           {STATUSES.map((status) => (
             <KanbanColumn
               key={status}

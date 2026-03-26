@@ -23,7 +23,7 @@ export function KanbanColumn({ status, label, candidates }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
 
   return (
-    <div className="flex w-64 shrink-0 flex-col gap-3">
+    <div className="flex flex-1 min-w-44 flex-col gap-3">
       <div className="flex items-center justify-between px-1">
         <span className="text-sm font-semibold">{label}</span>
         <span
