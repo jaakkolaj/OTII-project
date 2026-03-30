@@ -15,6 +15,7 @@ import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { changeEmailAction } from "@/app/(main)/profile/actions";
 import { toast } from "sonner";
+import { useLanguage } from "@/lib/language-provider";
 
 type ProfileOverviewProps = {
   openJobPostings: number;
@@ -32,24 +33,26 @@ export function ProfileOverview({
   const emailFormRef = useRef<HTMLFormElement>(null);
   const [isEmailPending, startEmailTransition] = useTransition();
 
+  const { t } = useLanguage();
+
   const workloadMetrics = [
     {
-      label: "Open job postings",
+      label: t('profile.metrics.openJobPostings'),
       value: String(openJobPostings),
       icon: Briefcase,
     },
     {
-      label: "Total candidates",
+      label: t('profile.metrics.totalCandidates'),
       value: String(totalCandidates),
       icon: Users,
     },
     {
-      label: "Tasks created",
+      label: t('profile.metrics.tasksCreated'),
       value: String(tasksCreatedLength),
       icon: ListTodo,
     },
     {
-      label: "Latest job posting created at",
+      label: t('profile.metrics.latestJobPosting'),
       value: latestJobPostingCreatedAt,
       icon: Calendar,
     },
@@ -63,13 +66,13 @@ export function ProfileOverview({
       const result = await changeEmailAction(formData);
 
       if (!result.success) {
-        toast.error("Email change failed", {
+        toast.error(t('profile.messages.emailChangeFailed'), {
           description: result.message,
         });
         return;
       }
 
-      toast.success("Email updated", {
+      toast.success(t('profile.messages.emailUpdated'), {
         description: result.message,
       });
       emailFormRef.current?.reset();
@@ -79,9 +82,9 @@ export function ProfileOverview({
   return (
     <Card className="rounded-2xl">
       <CardHeader>
-        <CardTitle className="text-lg">Profile overview</CardTitle>
+        <CardTitle className="text-lg">{t('profile.overview.title')}</CardTitle>
         <CardDescription>
-          Your recruiter identity, workload, and quick stats at a glance.
+          {t('profile.overview.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -105,21 +108,21 @@ export function ProfileOverview({
         <div className="rounded-xl border bg-muted/30 p-4">
           <form ref={emailFormRef} onSubmit={onEmailSubmit}>
             <Field>
-              <FieldLabel htmlFor="profile-overview-email">Change email</FieldLabel>
+              <FieldLabel htmlFor="profile-overview-email">{t('profile.emailChange.change')}</FieldLabel>
               <Input
                 id="profile-overview-email"
                 name="email"
                 type="email"
                 autoComplete="email"
-                placeholder="your_email@gmail.com"
+                placeholder={t('profile.emailChange.placeholder')}
               />
               <FieldDescription>
-                This email is used for sign-in and account notifications.
+                {t('profile.emailChange.description')}
               </FieldDescription>
             </Field>
             <div className="mt-3 flex justify-end">
               <Button type="submit" size="sm" disabled={isEmailPending}>
-                {isEmailPending ? "Updating..." : "Update email"}
+                {isEmailPending ? t('profile.emailChange.updating') : t('profile.emailChange.updateButton')}
               </Button>
             </div>
           </form>

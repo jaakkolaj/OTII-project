@@ -10,15 +10,7 @@ import {
 } from "@/components/ui/select";
 import type { CandidateStatus } from "../../../resumeAnalyzer/types";
 import { updateCandidateStatusAction } from "../actions";
-
-const STATUS_LABELS: Record<CandidateStatus, string> = {
-  NEW: "Uusi",
-  SCREENING: "Esikarsinta",
-  INTERVIEW: "Haastattelu",
-  OFFER: "Tarjous",
-  ACCEPTED: "Hyväksytty",
-  REJECTED: "Hylätty",
-};
+import { useStatusLabels } from "@/lib/use-status-labels";
 
 export function StatusSelect({
   candidateId,
@@ -28,6 +20,8 @@ export function StatusSelect({
   status: CandidateStatus;
 }) {
   const [isPending, startTransition] = useTransition();
+  const { getStatusLabels } = useStatusLabels();
+  const statusLabels = getStatusLabels();
 
   const handleChange = (newStatus: CandidateStatus) => {
     startTransition(async () => {
@@ -45,9 +39,9 @@ export function StatusSelect({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {(Object.keys(STATUS_LABELS) as CandidateStatus[]).map((s) => (
+        {(Object.keys(statusLabels) as CandidateStatus[]).map((s) => (
           <SelectItem key={s} value={s}>
-            {STATUS_LABELS[s]}
+            {statusLabels[s]}
           </SelectItem>
         ))}
       </SelectContent>

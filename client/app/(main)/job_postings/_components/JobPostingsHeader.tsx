@@ -1,14 +1,18 @@
+"use client";
+
+import { useLanguage } from "@/lib/language-provider";
 
 export function JobPostingsHeader() {
+  const { t } = useLanguage();
+
   return (
     <header className="space-y-2">
       <p className="text-sm uppercase tracking-widest text-muted-foreground">
-        Job Postings
+        {t('jobPostings.title')}
       </p>
-      <h1 className="text-3xl font-bold">Manage job postings</h1>
+      <h1 className="text-3xl font-bold">{t('jobPostings.subtitle')}</h1>
       <p className="max-w-2xl text-muted-foreground">
-        Create, edit, and review your open roles. Jump into a posting to see
-        applicants and best matches.
+        {t('jobPostings.description')}
       </p>
     </header>
   );

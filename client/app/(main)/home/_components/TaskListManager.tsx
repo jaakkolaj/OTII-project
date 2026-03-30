@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import { addTaskAction, removeTaskAction } from "../actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/lib/language-provider";
 
 type Task = {
   id: string;
@@ -17,6 +18,7 @@ type TaskListManagerProps = {
 };
 
 export function TaskListManager({ initialTasks }: TaskListManagerProps) {
+  const { t } = useLanguage();
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [taskText, setTaskText] = useState("");
   const [isInputVisible, setIsInputVisible] = useState(false);
@@ -62,7 +64,7 @@ export function TaskListManager({ initialTasks }: TaskListManagerProps) {
           onClick={() => setIsInputVisible((prev) => !prev)}
           disabled={isPending}
         >
-          Add task
+          {t("home.addTask")}
         </Button>
       </div>
 
@@ -76,12 +78,12 @@ export function TaskListManager({ initialTasks }: TaskListManagerProps) {
                 addTask();
               }
             }}
-            placeholder="Type a task..."
+            placeholder={t("home.taskPlaceholder")}
             aria-label="Task input"
             disabled={isPending}
           />
           <Button size="sm" onClick={addTask} disabled={isPending}>
-            Save
+            {t("home.saveTask")}
           </Button>
         </div>
       ) : null}
@@ -89,7 +91,7 @@ export function TaskListManager({ initialTasks }: TaskListManagerProps) {
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       {tasks.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No tasks yet.</p>
+        <p className="text-sm text-muted-foreground">{t("home.noTasksYet")}</p>
       ) : (
         <div className="space-y-3">
           {tasks.map((task) => (

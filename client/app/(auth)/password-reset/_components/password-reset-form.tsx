@@ -18,16 +18,18 @@ import {
 import { Input } from "@/components/ui/input";
 import FormSubmitButton from "@/components/ui-build/formSubmitButton";
 import { requestPasswordResetAction } from "../actions";
+import { useLanguage } from "@/lib/language-provider";
 
 export function ResetPasswordForm() {
   const [state, formAction] = useActionState(requestPasswordResetAction, null);
+  const { t } = useLanguage();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Reset your password</CardTitle>
+        <CardTitle>{t('auth.resetPassword.title')}</CardTitle>
         <CardDescription>
-          Enter your email and we&apos;ll send you a password reset link.
+          {t('auth.resetPassword.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -35,14 +37,14 @@ export function ResetPasswordForm() {
           <div className="space-y-3 text-center">
             <p className="text-green-600">{state?.message}</p>
             <FieldDescription>
-              Return to <a href="/login">sign in</a>.
+              {t('auth.resetPassword.returnToSignIn')} <a href="/login">{t('auth.resetPassword.signIn')}</a>.
             </FieldDescription>
           </div>
         ) : (
           <form action={formAction} className="space-y-4" noValidate>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email">{t('auth.resetPassword.email')}</FieldLabel>
                 <Input
                   id="email"
                   name="email"
@@ -55,12 +57,12 @@ export function ResetPasswordForm() {
               <Field>
                 <FieldError>{state?.message}</FieldError>
                 <FormSubmitButton
-                  text="Send reset link"
-                  loadingText="Sending reset link"
+                  text={t('auth.resetPassword.submit')}
+                  loadingText={t('auth.resetPassword.loading')}
                   className="w-full"
                 />
                 <FieldDescription className="text-center">
-                  Remembered your password? <a href="/login">Sign in</a>
+                  {t('auth.resetPassword.rememberedPassword')} <a href="/login">{t('auth.resetPassword.signIn')}</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>

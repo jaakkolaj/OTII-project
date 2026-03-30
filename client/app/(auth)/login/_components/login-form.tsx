@@ -18,22 +18,26 @@ import { Input } from "@/components/ui/input";
 import FormSubmitButton from "@/components/ui-build/formSubmitButton";
 import { useActionState } from "react";
 import { loginAction } from "../actions";
+import { useLanguage } from "@/lib/language-provider";
+import Link from "next/link";
 
 export function LoginForm() {
   const [state, formAction] = useActionState(loginAction, null);
+  const { t } = useLanguage();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Login to your account</CardTitle>
+        <CardTitle>{t('auth.login.title')}</CardTitle>
         <CardDescription>
-          Enter your email and password below to login to your account
+          {t('auth.login.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-4" noValidate>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <FieldLabel htmlFor="email">{t('auth.login.email')}</FieldLabel>
               <Input
                 id="email"
                 name="email"
@@ -44,26 +48,26 @@ export function LoginForm() {
             </Field>
             <Field>
               <div className="flex items-center">
-                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <FieldLabel htmlFor="password">{t('auth.login.password')}</FieldLabel>
                 <a
                   href="/password-reset"
                   className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                 >
-                  Forgot your password?
+                  {t('auth.login.forgotPassword')}
                 </a>
               </div>
               <Input
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder={t('auth.login.passwordPlaceholder')}
               />
             </Field>
             <Field>
               <FieldError>{state?.message}</FieldError>
-              <FormSubmitButton text="Login" loadingText="Logging in" />
+              <FormSubmitButton text={t('auth.login.submit')} loadingText={t('auth.login.loading')} />
               <FieldDescription className="text-center">
-                Don&apos;t have an account? <a href="register">Sign up</a>
+                {t('auth.login.noAccount')} <a href="register">{t('auth.login.signUp')}</a>
               </FieldDescription>
             </Field>
           </FieldGroup>

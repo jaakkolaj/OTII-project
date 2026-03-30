@@ -13,7 +13,7 @@ function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
 function SheetTrigger({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
-  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
+  return <SheetPrimitive.Trigger data-slot="sheet-trigger" suppressHydrationWarning {...props} />
 }
 
 function SheetClose({
@@ -71,6 +71,7 @@ function SheetContent({
             "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
           className
         )}
+        suppressHydrationWarning
         {...props}
       >
         {children}

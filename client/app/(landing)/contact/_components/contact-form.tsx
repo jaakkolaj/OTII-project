@@ -10,12 +10,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { stat } from "fs";
 import { email } from "zod";
 import { useLocalStorage } from "usehooks-ts";
+import { useLanguage } from "@/lib/language-provider";
 const STORAGE_KEY = "contact-form-draft";
 
 
 
 export function ContactForm() {
     const [state, action, isPending] = useActionState(sendContactEmail, null);
+    const { t } = useLanguage();
     // initialize stored draft with empty strings so inputs remain controlled
     const [savedData, setSavedData] = useLocalStorage<Partial<ContactFormState>>(STORAGE_KEY, {
         name: "",
@@ -56,7 +58,7 @@ export function ContactForm() {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Message sent!</CardTitle>
+                    <CardTitle>{t('contact.successTitle')}</CardTitle>
                     <CardDescription>{state.message}</CardDescription>
                 </CardHeader>
             </Card>
@@ -66,20 +68,20 @@ export function ContactForm() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Contact Us</CardTitle>
+                <CardTitle>{t('contact.title')}</CardTitle>
                 <CardDescription>
-                    Fill out the form below and we&apos;ll get back to you as soon as possible.
+                    {t('contact.description')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <form action={action} noValidate>
                     <FieldGroup>
                         <Field>
-                            <FieldLabel htmlFor="name">Name</FieldLabel>
+                            <FieldLabel htmlFor="name">{t('contact.name')}</FieldLabel>
                             <Input
                                 id="name"
                                 name="name"
-                                placeholder="John Doe"
+                                placeholder={t('contact.namePlaceholder')}
                                 required
                                 disabled={isPending}
                                 value={formData.name || ""}
@@ -91,12 +93,12 @@ export function ContactForm() {
                         </Field>
 
                         <Field>
-                            <FieldLabel htmlFor="email">Email</FieldLabel>
+                            <FieldLabel htmlFor="email">{t('contact.email')}</FieldLabel>
                             <Input
                                 id="email"
                                 name="email"
                                 type="email"
-                                placeholder="john@example.com"
+                                placeholder={t('contact.emailPlaceholder')}
                                 required
                                 disabled={isPending}
                                 value={formData.email || ""}
@@ -108,11 +110,11 @@ export function ContactForm() {
                         </Field>
 
                         <Field>
-                            <FieldLabel htmlFor="subject">Subject</FieldLabel>
+                            <FieldLabel htmlFor="subject">{t('contact.subject')}</FieldLabel>
                             <Input
                                 id="subject"
                                 name="subject"
-                                placeholder="How can we help?"
+                                placeholder={t('contact.subjectPlaceholder')}
                                 required
                                 disabled={isPending}
                                 value={formData.subject || ""}
@@ -124,11 +126,11 @@ export function ContactForm() {
                         </Field>
 
                         <Field>
-                            <FieldLabel htmlFor="message">Message</FieldLabel>
+                            <FieldLabel htmlFor="message">{t('contact.message')}</FieldLabel>
                             <Textarea
                                 id="message"
                                 name="message"
-                                placeholder="Your message..."
+                                placeholder={t('contact.messagePlaceholder')}
                                 rows={5}
                                 required
                                 disabled={isPending}
@@ -146,7 +148,7 @@ export function ContactForm() {
 
                         <Field>
                             <Button type="submit" disabled={isPending}>
-                                {isPending ? "Sending..." : "Send Message"}
+                                {isPending ? t('contact.sending') : t('contact.submit')}
                             </Button>
                         </Field>
                     </FieldGroup>

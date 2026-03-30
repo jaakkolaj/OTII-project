@@ -2,32 +2,45 @@
 
 import { useEffect, useRef } from "react"
 import { Brain, Zap, FileText, Timer } from "lucide-react"
+import { useLanguage } from "@/lib/language-provider"
 
-const benefits = [
-  {
-    icon: Brain,
-    title: "Intelligent Matching",
-    description: "AI compares candidates directly to your job requirements.",
-  },
-  {
-    icon: Zap,
-    title: "Instant Ranking",
-    description: "See who fits best — immediately.",
-  },
-  {
-    icon: FileText,
-    title: "Explainable Results",
-    description: "Clear reasoning behind every ranking decision.",
-  },
-  {
-    icon: Timer,
-    title: "Time Saved",
-    description: "Reduce screening time by up to 80%.",
-  },
-]
+const benefitIconMap = {
+  matching: Brain,
+  ranking: Zap,
+  explainable: FileText,
+  timeSaved: Timer,
+}
 
 export function Solution() {
   const sectionRef = useRef<HTMLElement>(null)
+  const { t } = useLanguage()
+
+  const benefits = [
+    {
+      icon: benefitIconMap.matching,
+      key: 'matching',
+      title: t('solution.items.matching.title'),
+      description: t('solution.items.matching.description'),
+    },
+    {
+      icon: benefitIconMap.ranking,
+      key: 'ranking',
+      title: t('solution.items.ranking.title'),
+      description: t('solution.items.ranking.description'),
+    },
+    {
+      icon: benefitIconMap.explainable,
+      key: 'explainable',
+      title: t('solution.items.explainable.title'),
+      description: t('solution.items.explainable.description'),
+    },
+    {
+      icon: benefitIconMap.timeSaved,
+      key: 'timeSaved',
+      title: t('solution.items.timeSaved.title'),
+      description: t('solution.items.timeSaved.description'),
+    },
+  ]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -55,27 +68,26 @@ export function Solution() {
             data-animate
             className="animate-fade-in-up mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground"
           >
-            The Solution
+            {t('solution.label')}
           </p>
           <h2
             data-animate
             className="animate-fade-in-up animation-delay-100 mb-6 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl"
           >
-            Let AI Handle the Screening
+            {t('solution.title')}
           </h2>
           <p
             data-animate
             className="animate-fade-in-up animation-delay-200 text-lg leading-relaxed text-muted-foreground"
           >
-            RankWise AI analyzes every applicant against your job description and delivers a ranked, explainable
-            shortlist in seconds.
+            {t('solution.description')}
           </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {benefits.map((benefit, index) => (
             <div
-              key={benefit.title}
+              key={benefit.key}
               data-animate
               className={`animate-fade-in-up animation-delay-${(index + 3) * 100} group rounded-2xl border border-border bg-background p-8 transition-shadow hover:shadow-lg`}
             >

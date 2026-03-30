@@ -22,15 +22,7 @@ import type { CandidateStatus, ResumeCandidate } from "../../types";
 import { ScoreRing } from "./ScoreRing";
 import { useState, useTransition } from "react";
 import { updateCandidateStatusAction } from "../actions";
-
-const STATUS_LABELS: Record<CandidateStatus, string> = {
-  NEW: "Uusi",
-  SCREENING: "Esikarsinta",
-  INTERVIEW: "Haastattelu",
-  OFFER: "Tarjous",
-  ACCEPTED: "Hyväksytty",
-  REJECTED: "Hylätty",
-};
+import { useStatusLabels } from "@/lib/use-status-labels";
 
 type CandidateCardProps = {
   candidate: ResumeCandidate;
@@ -38,6 +30,8 @@ type CandidateCardProps = {
 };
 
 export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
+  const { getStatusLabels } = useStatusLabels();
+  const statusLabels = getStatusLabels();
   const [viewDocument, setViewDocument] = useState(false);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -125,9 +119,9 @@ export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(Object.keys(STATUS_LABELS) as CandidateStatus[]).map((s) => (
+                {(Object.keys(statusLabels) as CandidateStatus[]).map((s) => (
                   <SelectItem key={s} value={s} className="text-xs">
-                    {STATUS_LABELS[s]}
+                    {statusLabels[s]}
                   </SelectItem>
                 ))}
               </SelectContent>

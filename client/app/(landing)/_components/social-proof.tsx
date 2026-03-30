@@ -1,29 +1,31 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-
-const testimonials = [
-  {
-    quote: "We reduced screening time from 12 hours to 2.",
-    author: "Sarah Chen",
-    role: "Head of Talent, TechScale",
-  },
-  {
-    quote: "The explainable rankings changed how our team hires. We trust the results.",
-    author: "Marcus Rivera",
-    role: "VP People, CloudBridge",
-  },
-  {
-    quote: "Finally, a tool that actually saves time instead of adding complexity.",
-    author: "Anya Patel",
-    role: "Recruiting Lead, DataForge",
-  },
-]
+import { useLanguage } from "@/lib/language-provider"
 
 const logos = ["Acme Corp", "TechScale", "CloudBridge", "DataForge", "StackOps", "PipelineCo"]
 
 export function SocialProof() {
   const sectionRef = useRef<HTMLElement>(null)
+  const { t } = useLanguage()
+
+  const testimonials = [
+    {
+      quote: t('socialProof.testimonials.quote1'),
+      author: t('socialProof.testimonials.author1'),
+      role: t('socialProof.testimonials.role1'),
+    },
+    {
+      quote: t('socialProof.testimonials.quote2'),
+      author: t('socialProof.testimonials.author2'),
+      role: t('socialProof.testimonials.role2'),
+    },
+    {
+      quote: t('socialProof.testimonials.quote3'),
+      author: t('socialProof.testimonials.author3'),
+      role: t('socialProof.testimonials.role3'),
+    },
+  ]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -51,13 +53,13 @@ export function SocialProof() {
             data-animate
             className="animate-fade-in-up mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground"
           >
-            Social Proof
+            {t('socialProof.label')}
           </p>
           <h2
             data-animate
             className="animate-fade-in-up animation-delay-100 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl"
           >
-            Built for Modern Recruitment Teams
+            {t('socialProof.title')}
           </h2>
         </div>
 

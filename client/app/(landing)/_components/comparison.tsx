@@ -2,21 +2,23 @@
 
 import { useEffect, useRef } from "react"
 import { X, Check } from "lucide-react"
-
-const atsFeatures = [
-  "Stores applications",
-  "Basic keyword filters",
-  "Manual review still required",
-]
-
-const rankwiseFeatures = [
-  "Deep AI analysis",
-  "Context-aware skill matching",
-  "Automated ranking with explanations",
-]
+import { useLanguage } from "@/lib/language-provider"
 
 export function Comparison() {
   const sectionRef = useRef<HTMLElement>(null)
+  const { t } = useLanguage()
+
+  const atsFeatures = [
+    t('comparison.atsFeatures.feature1'),
+    t('comparison.atsFeatures.feature2'),
+    t('comparison.atsFeatures.feature3'),
+  ]
+
+  const rankwiseFeatures = [
+    t('comparison.rankwiseFeatures.feature1'),
+    t('comparison.rankwiseFeatures.feature2'),
+    t('comparison.rankwiseFeatures.feature3'),
+  ]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -44,13 +46,13 @@ export function Comparison() {
             data-animate
             className="animate-fade-in-up mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground"
           >
-            Comparison
+            {t('comparison.label')}
           </p>
           <h2
             data-animate
             className="animate-fade-in-up animation-delay-100 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl"
           >
-            {"Why Not Just Use an ATS?"}
+            {t('comparison.title')}
           </h2>
         </div>
 
@@ -64,7 +66,7 @@ export function Comparison() {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                 <X className="h-5 w-5 text-muted-foreground" />
               </div>
-              <h3 className="font-display text-lg font-semibold text-foreground">Traditional ATS</h3>
+              <h3 className="font-display text-lg font-semibold text-foreground">{t('comparison.ats')}</h3>
             </div>
             <ul className="flex flex-col gap-4">
               {atsFeatures.map((feature) => (
@@ -84,7 +86,7 @@ export function Comparison() {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-background/10">
                 <Check className="h-5 w-5 text-background" />
               </div>
-              <h3 className="font-display text-lg font-semibold text-background">RankWise AI</h3>
+              <h3 className="font-display text-lg font-semibold text-background">{t('comparison.rankwise')}</h3>
             </div>
             <ul className="flex flex-col gap-4">
               {rankwiseFeatures.map((feature) => (
