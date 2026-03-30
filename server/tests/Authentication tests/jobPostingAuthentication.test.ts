@@ -11,6 +11,11 @@ jest.mock("../../src/middleware/rateLimiter", () => ({
     uploadRateLimitMiddleware: (req: any, res: any, next: any) => next()
 }));
 
+const SECRET = process.env.JWT_SECRET
+if (!SECRET) {
+  throw new Error("JWT_SECRET is not defined in environment variables");
+}
+
 describe('Authentication', () => {
     let user_id: string;
     let userEmail: string;
@@ -59,7 +64,7 @@ describe('Authentication', () => {
         // Luodaan jwt token
         const token = jwt.sign(
             { id: user_id, email: userEmail },
-            "kosodpskop"
+            SECRET
         );
 
         const response = await request(app)

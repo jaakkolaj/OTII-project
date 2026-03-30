@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import prisma from "../prisma";
 import { supabase } from "../config/supabaseClient";
-import { NotFoundError, ValidationError } from "../utils/errors";
+import { AuthenticationError, NotFoundError, ValidationError } from "../utils/errors";
 
 export const getDocument = async (
   req: Request<{ candidate: string }>,
@@ -9,6 +9,9 @@ export const getDocument = async (
   next: NextFunction
 ) => {
   try {
+    if (!req.user) {
+      return next(new AuthenticationError("Unauthorized"));
+    }
     // 1. Haetaan candidate
     const candidate = await prisma.candidate.findFirst({
       where: { id: req.params.candidate },

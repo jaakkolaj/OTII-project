@@ -5,6 +5,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AuthenticationError } from "../utils/errors";
 
+const SECRET = process.env.JWT_SECRET
+if (!SECRET) {
+  throw new Error("JWT_SECRET is not defined in environment variables");
+}
+
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
    try {
     const { email, password } = req.body;
@@ -24,7 +29,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         id: user.id
     }
 
-    const token = jwt.sign(userForToken, "kosodpskop");
+    const token = jwt.sign(userForToken, SECRET);
 
     res.cookie("access_token", token, {
         httpOnly: true,
