@@ -32,6 +32,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { FormErrors, FormState } from "@/lib/forms/types";
 import type { CreateJobPostingInput } from "@/app/(main)/job_postings/_schemas/jobposting.schema";
+import { useLanguage } from "@/lib/language-provider";
 
 type JobPostingFormProps = {
   action: (
@@ -54,6 +55,7 @@ export default function JobPostingForm({
   submitText,
   loadingText,
 }: JobPostingFormProps) {
+  const { t } = useLanguage();
   const router = useRouter();
   const [state, formAction] = useActionState(action, null);
 
@@ -100,9 +102,9 @@ export default function JobPostingForm({
               <Briefcase className="h-4 w-4 text-muted-foreground" />
             </span>
             <div>
-              <CardTitle>Role details</CardTitle>
+              <CardTitle>{t('jobPostings.createPage.roleDetails.title')}</CardTitle>
               <CardDescription>
-                These fields appear on the job posting page.
+                {t('jobPostings.createPage.roleDetails.description')}
               </CardDescription>
             </div>
           </div>
@@ -112,13 +114,13 @@ export default function JobPostingForm({
           <FieldGroup className="grid gap-5 md:grid-cols-2">
             <Field>
               <FieldLabel htmlFor="title">
-                Job title <span className="text-destructive">*</span>
+                {t('jobPostings.createPage.form.jobTitle')} <span className="text-destructive">*</span>
               </FieldLabel>
               <Input
                 id="title"
                 name="title"
                 defaultValue={savedFields.title || ""}
-                placeholder="e.g. Backend Developer"
+                placeholder={t('jobPostings.createPage.form.jobTitlePlaceholder')}
                 required
                 aria-invalid={!!localErrors?.title}
                 onChange={(e) => handleFieldChange("title", e.target.value)}
@@ -128,82 +130,82 @@ export default function JobPostingForm({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="department">Department</FieldLabel>
+              <FieldLabel htmlFor="department">{t('jobPostings.createPage.form.department')}</FieldLabel>
               <Input
                 id="department"
                 name="department"
                 defaultValue={savedFields.department}
-                placeholder="Engineering"
+                placeholder={t('jobPostings.createPage.form.departmentPlaceholder')}
                 onChange={(e) => handleFieldChange("department", e.target.value)}
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="location">Location</FieldLabel>
+              <FieldLabel htmlFor="location">{t('jobPostings.createPage.form.location')}</FieldLabel>
               <Input
                 id="location"
                 name="location"
                 defaultValue={savedFields.location}
-                placeholder="Helsinki, Hybrid"
+                placeholder={t('jobPostings.createPage.form.locationPlaceholder')}
                 onChange={(e) => handleFieldChange("location", e.target.value)}
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="employmentType">Employment type</FieldLabel>
+              <FieldLabel htmlFor="employmentType">{t('jobPostings.createPage.form.employmentType')}</FieldLabel>
               <Select
                 name="employmentType"
                 defaultValue={savedFields.employmentType || "full-time"}
                 onValueChange={(value) => handleFieldChange("employmentType", value)}
               >
                 <SelectTrigger id="employmentType" className="w-full">
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('jobPostings.createPage.form.selectType')} />
                 </SelectTrigger>
                 <SelectContent id="employmentType-content">
-                  <SelectItem value="full-time">Full-time</SelectItem>
-                  <SelectItem value="part-time">Part-time</SelectItem>
-                  <SelectItem value="contract">Contract</SelectItem>
-                  <SelectItem value="internship">Internship</SelectItem>
+                  <SelectItem value="full-time">{t('jobPostings.createPage.form.fullTime')}</SelectItem>
+                  <SelectItem value="part-time">{t('jobPostings.createPage.form.partTime')}</SelectItem>
+                  <SelectItem value="contract">{t('jobPostings.createPage.form.contract')}</SelectItem>
+                  <SelectItem value="internship">{t('jobPostings.createPage.form.internship')}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="seniority">Seniority</FieldLabel>
+              <FieldLabel htmlFor="seniority">{t('jobPostings.createPage.form.seniority')}</FieldLabel>
               <Select
                 name="seniority"
                 defaultValue={savedFields.seniority || "mid"}
                 onValueChange={(value) => handleFieldChange("seniority", value)}
               >
                 <SelectTrigger id="seniority" className="w-full">
-                  <SelectValue placeholder="Select seniority" />
+                  <SelectValue placeholder={t('jobPostings.createPage.form.selectSeniority')} />
                 </SelectTrigger>
                 <SelectContent id="seniority-content">
-                  <SelectItem value="junior">Junior</SelectItem>
-                  <SelectItem value="mid">Mid-level</SelectItem>
-                  <SelectItem value="senior">Senior</SelectItem>
-                  <SelectItem value="lead">Lead</SelectItem>
+                  <SelectItem value="junior">{t('jobPostings.createPage.form.junior')}</SelectItem>
+                  <SelectItem value="mid">{t('jobPostings.createPage.form.mid')}</SelectItem>
+                  <SelectItem value="senior">{t('jobPostings.createPage.form.senior')}</SelectItem>
+                  <SelectItem value="lead">{t('jobPostings.createPage.form.lead')}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="salaryRange">Salary range</FieldLabel>
+              <FieldLabel htmlFor="salaryRange">{t('jobPostings.createPage.form.salaryRange')}</FieldLabel>
               <Input
                 id="salaryRange"
                 name="salaryRange"
-                placeholder="EUR 3,500 - EUR 5,500"
+                placeholder={t('jobPostings.createPage.form.salaryPlaceholder')}
                 defaultValue={savedFields.salaryRange}
                 onChange={(e) => handleFieldChange("salaryRange", e.target.value)}
               />
             </Field>
 
             <Field className="md:col-span-2">
-              <FieldLabel htmlFor="description">Role description<span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel htmlFor="description">{t('jobPostings.createPage.form.roleDescription')}<span className="text-destructive">*</span></FieldLabel>
               <Textarea
                 id="description"
                 name="description"
-                placeholder="Describe the role, team, and main responsibilities."
+                placeholder={t('jobPostings.createPage.form.roleDescriptionPlaceholder')}
                 className="min-h-35"
                 required
                 aria-invalid={!!localErrors?.description}
@@ -214,11 +216,11 @@ export default function JobPostingForm({
             </Field>
 
             <Field className="md:col-span-2">
-              <FieldLabel htmlFor="requirements">Requirements</FieldLabel>
+              <FieldLabel htmlFor="requirements">{t('jobPostings.createPage.form.requirements')}</FieldLabel>
               <Textarea
                 id="requirements"
                 name="requirements"
-                placeholder="Key skills, technologies, or experience needed."
+                placeholder={t('jobPostings.createPage.form.requirementsPlaceholder')}
                 className="min-h-30"
                 defaultValue={savedFields.requirements}
                 onChange={(e) => handleFieldChange("requirements", e.target.value)}
@@ -230,14 +232,14 @@ export default function JobPostingForm({
 
       <Card>
         <CardHeader className="border-b">
-          <CardTitle>Publishing</CardTitle>
+          <CardTitle>{t('jobPostings.createPage.publishing.title')}</CardTitle>
           <CardDescription>
-            Choose when to close applications or leave it open-ended.
+            {t('jobPostings.createPage.publishing.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Field className="max-w-xs">
-            <FieldLabel htmlFor="closingDate">Closing date</FieldLabel>
+            <FieldLabel htmlFor="closingDate">{t('jobPostings.createPage.form.closingDate')}</FieldLabel>
             <Input
               id="closingDate"
               type="date"
@@ -251,7 +253,7 @@ export default function JobPostingForm({
 
       <div className="flex flex-wrap items-center justify-end gap-3">
         <Button asChild variant="outline" size="lg">
-          <Link href="/job_postings">Cancel</Link>
+          <Link href="/job_postings">{t('jobPostings.createPage.buttons.cancel')}</Link>
         </Button>
         <FormSubmitButton text={submitText} loadingText={loadingText} size="lg" />
       </div>

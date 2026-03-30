@@ -27,25 +27,27 @@ import {
   SidebarFooter,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher"
 import { useRouter } from "next/navigation"
-
-const mainItems = [
-  { title: "Home", href: "/home", icon: Home },
-  { title: "Job Postings", href: "/job_postings", icon: Briefcase },
-  { title: "Resume Analyzer", href: "/resumeAnalyzer", icon: LayoutDashboard },
-  { title: "Pipeline", href: "/pipeline", icon: KanbanSquare },
-  { title: "Analytics", href: "#", icon: BarChart },
-  { title: "Contact", href: "#", icon: Mail },
-]
-
-const footerItems = [
-  { title: "Profile", href: "/profile", icon: User },
-  { title: "Settings", href: "/settings", icon: Settings },
-]
+import { useLanguage } from "@/lib/language-provider"
 
 export function AppSidebar() {
   const router = useRouter()
+  const { t } = useLanguage()
+
+  const mainItems = [
+    { title: t('sidebar.home'), href: "/home", icon: Home },
+    { title: t('sidebar.jobPostings'), href: "/job_postings", icon: Briefcase },
+    { title: t('sidebar.resumeAnalyzer'), href: "/resumeAnalyzer", icon: LayoutDashboard },
+    { title: t('sidebar.pipeline'), href: "/pipeline", icon: KanbanSquare },
+    { title: t('sidebar.analytics'), href: "#", icon: BarChart },
+    { title: t('sidebar.contact'), href: "#", icon: Mail },
+  ]
+
+  const footerItems = [
+    { title: t('sidebar.profile'), href: "/profile", icon: User },
+    { title: t('sidebar.settings'), href: "/settings", icon: Settings },
+  ]
+
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -72,7 +74,7 @@ export function AppSidebar() {
       {/* MAIN CONTENT */}
       <SidebarContent >
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('sidebar.navigation')}</SidebarGroupLabel>
 
           <SidebarMenu className="gap-4">
             {mainItems.map((item) => (
@@ -92,25 +94,18 @@ export function AppSidebar() {
       {/* LOGOUT */}
         <SidebarMenuItem>
           <SidebarMenuButton
-            tooltip="Logout"
+            tooltip={t('sidebar.logout')}
             onClick={handleLogout}
             className="py-2 px-3 text-sm text-red-600"
           >
             <LogOut className="h-4 w-4" />
-            <span>Logout</span>
+            <span>{t('sidebar.logout')}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
 
       {/* FOOTER (BOTTOM) */}
       <SidebarFooter className="pb-16">
         <SidebarMenu className="gap-4">
-          {/* Language Switcher */}
-          <SidebarMenuItem>
-            <div className="px-3 py-2">
-              <LanguageSwitcher />
-            </div>
-          </SidebarMenuItem>
-
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild className="py-2 px-3 text-sm">

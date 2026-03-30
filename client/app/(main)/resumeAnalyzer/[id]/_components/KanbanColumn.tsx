@@ -3,6 +3,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import type { CandidateStatus, KanbanCandidate } from "../../types";
 import { KanbanCard } from "./KanbanCard";
+import { useLanguage } from "@/lib/language-provider";
 
 const STATUS_COLORS: Record<CandidateStatus, string> = {
   NEW: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -21,6 +22,7 @@ type KanbanColumnProps = {
 
 export function KanbanColumn({ status, label, candidates }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
+  const { t } = useLanguage();
 
   return (
     <div className="flex flex-1 min-w-44 flex-col gap-3">
@@ -43,7 +45,7 @@ export function KanbanColumn({ status, label, candidates }: KanbanColumnProps) {
       >
         {candidates.length === 0 ? (
           <div className="flex flex-1 items-center justify-center py-6 text-xs text-muted-foreground">
-            Ei kandidaatteja
+            {t('dashboard.candidates.empty')}
           </div>
         ) : (
           candidates.map((candidate) => (

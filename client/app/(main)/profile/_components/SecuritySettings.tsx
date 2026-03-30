@@ -16,8 +16,10 @@ import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { changePasswordAction } from "@/app/(main)/profile/actions";
 import { toast } from "sonner";
+import { useLanguage } from "@/lib/language-provider";
 
 export function SecuritySettings() {
+  const { t } = useLanguage();
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -29,13 +31,13 @@ export function SecuritySettings() {
       const result = await changePasswordAction(formData);
 
       if (!result.success) {
-        toast.error("Password change failed", {
+        toast.error(t('profile.security.passwordChangeFailed'), {
           description: result.message,
         });
         return;
       }
 
-      toast.success("Password updated", {
+      toast.success(t('profile.security.passwordUpdated'), {
         description: result.message,
       });
       formRef.current?.reset();
@@ -49,16 +51,16 @@ export function SecuritySettings() {
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
             <LockKeyhole className="h-4 w-4 text-muted-foreground" />
           </span>
-          Security
+          {t('profile.security.title')}
         </CardTitle>
         <CardDescription>
-          Update your password and keep account access secure.
+          {t('profile.security.description')}
         </CardDescription>
       </CardHeader>
       <form ref={formRef} onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           <Field>
-            <FieldLabel htmlFor="current-password">Current password</FieldLabel>
+            <FieldLabel htmlFor="current-password">{t('profile.security.currentPassword')}</FieldLabel>
             <Input
               id="current-password"
               name="currentPassword"
@@ -67,17 +69,17 @@ export function SecuritySettings() {
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="new-password">New password</FieldLabel>
+            <FieldLabel htmlFor="new-password">{t('profile.security.newPassword')}</FieldLabel>
             <Input
               id="new-password"
               name="newPassword"
               type="password"
               autoComplete="new-password"
             />
-            <FieldDescription>Use at least 6 characters.</FieldDescription>
+            <FieldDescription>{t('profile.security.passwordHelp')}</FieldDescription>
           </Field>
           <Field>
-            <FieldLabel htmlFor="confirm-password">Confirm password</FieldLabel>
+            <FieldLabel htmlFor="confirm-password">{t('profile.security.confirmPassword')}</FieldLabel>
             <Input
               id="confirm-password"
               name="confirmPassword"
@@ -88,7 +90,7 @@ export function SecuritySettings() {
         </CardContent>
         <CardFooter className="justify-end gap-2 border-t">
           <Button type="submit" size="sm" disabled={isPending}>
-            {isPending ? "Updating..." : "Update password"}
+            {isPending ? t('profile.security.updating') : t('profile.security.update')} 
           </Button>
         </CardFooter>
       </form>

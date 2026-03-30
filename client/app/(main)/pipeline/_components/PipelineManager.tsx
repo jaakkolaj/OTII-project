@@ -14,6 +14,7 @@ import {
 import { CandidatesKanban } from "../../resumeAnalyzer/[id]/_components/CandidatesKanban";
 import { updatePipelineCandidateStatusAction } from "../actions";
 import type { CandidateStatus, KanbanCandidate } from "../../resumeAnalyzer/types";
+import { useLanguage } from "@/lib/language-provider";
 
 type JobPosting = { id: string; title: string };
 
@@ -24,6 +25,7 @@ export default function PipelineManager({
   initialCandidates: KanbanCandidate[];
   jobPostings: JobPosting[];
 }) {
+  const { t } = useLanguage();
   const [candidates, setCandidates] = useState(initialCandidates);
   const [query, setQuery] = useState("");
   const [selectedJob, setSelectedJob] = useState<string>("all");
@@ -38,7 +40,7 @@ export default function PipelineManager({
         await updatePipelineCandidateStatusAction(candidateId, newStatus);
       } catch {
         setCandidates(initialCandidates);
-        toast.error("Statuksen päivitys epäonnistui");
+        toast.error(t('dashboard.messages.errorSaving'));
       }
     });
   };
@@ -59,7 +61,7 @@ export default function PipelineManager({
         <div className="relative w-full md:max-w-md">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Hae kandidaatteja..."
+            placeholder={t('dashboard.pipeline.searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="pl-9"
@@ -67,10 +69,10 @@ export default function PipelineManager({
         </div>
         <Select value={selectedJob} onValueChange={setSelectedJob}>
           <SelectTrigger className="w-full md:w-64">
-            <SelectValue placeholder="Kaikki työpaikat" />
+            <SelectValue placeholder={t('dashboard.pipeline.selectJob')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Kaikki työpaikat</SelectItem>
+            <SelectItem value="all">{t('dashboard.pipeline.allJobPostings')}</SelectItem>
             {jobPostings.map((job) => (
               <SelectItem key={job.id} value={job.id}>
                 {job.title}

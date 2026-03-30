@@ -3,6 +3,7 @@
 import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import type { CandidateStatus, KanbanCandidate } from "../../types";
 import { KanbanColumn } from "./KanbanColumn";
+import { useStatusLabels } from "@/lib/use-status-labels";
 
 const STATUSES: CandidateStatus[] = [
   "NEW",
@@ -13,21 +14,14 @@ const STATUSES: CandidateStatus[] = [
   "REJECTED",
 ];
 
-const STATUS_LABELS: Record<CandidateStatus, string> = {
-  NEW: "Uusi",
-  SCREENING: "Esikarsinta",
-  INTERVIEW: "Haastattelu",
-  OFFER: "Tarjous",
-  ACCEPTED: "Hyväksytty",
-  REJECTED: "Hylätty",
-};
-
 type CandidatesKanbanProps = {
   candidates: KanbanCandidate[];
   onStatusChange: (candidateId: string, newStatus: CandidateStatus) => void;
 };
 
 export function CandidatesKanban({ candidates, onStatusChange }: CandidatesKanbanProps) {
+  const { getStatusLabels } = useStatusLabels();
+  const statusLabels = getStatusLabels();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5 },
@@ -63,7 +57,7 @@ export function CandidatesKanban({ candidates, onStatusChange }: CandidatesKanba
             <KanbanColumn
               key={status}
               status={status}
-              label={STATUS_LABELS[status]}
+              label={statusLabels[status]}
               candidates={grouped[status]}
             />
           ))}
