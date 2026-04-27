@@ -10,23 +10,23 @@ export function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-xl font-bold tracking-tight text-foreground">
-          RankIt
-        </Link>
+        <a href="#" className="font-display text-xl font-bold tracking-tight text-foreground">
+          RankWise AI
+        </a>
 
         <div className="hidden items-center gap-8 md:flex">
-          <Link href="/landing/problem" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <a href="#problem" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Problem
-          </Link>
-          <Link href="/landing/solution" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          </a>
+          <a href="#solution" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Solution
-          </Link>
-          <Link href="/landing/how-it-works" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          </a>
+          <a href="#how-it-works" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             How It Works
-          </Link>
-          <Link href="/landing/comparison" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Why RankIt
-          </Link>
+          </a>
+          <a href="#comparison" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Why RankWise
+          </a>
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -52,27 +52,25 @@ export function Navbar() {
       {mobileOpen && (
         <div className="border-t border-border bg-background px-6 pb-6 pt-4 md:hidden">
           <div className="flex flex-col gap-4">
-            <Link href="/landing/problem" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
+            <a href="#problem" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
               Problem
-            </Link>
-            <Link href="/landing/solution" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
+            </a>
+            <a href="#solution" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
               Solution
-            </Link>
-            <Link href="/landing/how-it-works" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
+            </a>
+            <a href="#how-it-works" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
               How It Works
-            </Link>
-            <Link href="/landing/comparison" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
-              Why RankIt
-            </Link>
+            </a>
+            <a href="#comparison" className="text-sm text-muted-foreground" onClick={() => setMobileOpen(false)}>
+              Why RankWise
+            </a>
             <div className="flex flex-col gap-3 pt-4">
               <Button variant="outline" size="sm" className="w-full">
                 Book a Demo
               </Button>
-              <Link href="/login" className="w-full">
-                <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90">
-                  Login
-                </Button>
-              </Link>
+              <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90">
+                login
+              </Button>
             </div>
           </div>
         </div>
