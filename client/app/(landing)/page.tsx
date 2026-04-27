@@ -1,5 +1,3 @@
-"use client"
-
 import { Navbar } from '@/app/(landing)/_components/navbar'
 import { Hero } from '@/app/(landing)/_components/hero'
 import { Problem } from '@/app/(landing)/_components/problem'
@@ -9,22 +7,8 @@ import { Comparison } from '@/app/(landing)/_components/comparison'
 import { SocialProof } from '@/app/(landing)/_components/social-proof'
 import { FinalCTA } from '@/app/(landing)/_components/final-cta'
 import { Footer } from '@/app/(landing)/_components/footer'
-import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 
 export default function LandingPage() {
-    const searchParams = useSearchParams()
-    const section = searchParams.get('section')
-
-    useEffect(() => {
-        if (section) {
-            const element = document.getElementById(section)
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' })
-            }
-        }
-    }, [section])
-
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
