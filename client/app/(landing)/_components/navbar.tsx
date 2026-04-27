@@ -30,9 +30,11 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Button variant="ghost" size="sm" className="text-sm text-muted-foreground hover:text-foreground">
-            Book a Demo
-          </Button>
+          <Link href="/book-demo">
+            <Button variant="ghost" size="sm" className="text-sm text-muted-foreground hover:text-foreground">
+              Book a Demo
+            </Button>
+          </Link>
           <Link href="/login">
           <Button  size="sm" className="rounded-full bg-foreground px-5 text-sm text-background hover:bg-foreground/90">
             Login
@@ -65,12 +67,16 @@ export function Navbar() {
               Why RankWise
             </a>
             <div className="flex flex-col gap-3 pt-4">
+              <Link href="/book-demo">
               <Button variant="outline" size="sm" className="w-full">
                 Book a Demo
               </Button>
+            </Link>
+            <Link href="/login">
               <Button size="sm" className="w-full bg-foreground text-background hover:bg-foreground/90">
                 login
               </Button>
+            </Link>
             </div>
           </div>
         </div>
