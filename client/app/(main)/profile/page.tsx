@@ -1,7 +1,7 @@
 import { ProfileHeader } from "./_components/ProfileHeader";
 import { ProfileOverview } from "./_components/ProfileOverview";
 import { SecuritySettings } from "./_components/SecuritySettings";
-import { requireAuth } from "@/lib/require-auth";
+import { requireAuth } from "@/lib/auth/require-auth";
 import { getJobPostings } from "@/app/services/jobPostingService";
 import { getCandidatesInReview, getTasks } from "@/app/services/homePageService";
 

@@ -7,7 +7,10 @@ import bcrypt from 'bcrypt';
 import { NotFoundError, ValidationError, AuthenticationError } from "../utils/errors";
 
 const MAIL_USER = process.env.MAIL_USER;
-const JWT_SECRET = "kosodpskop";
+const SECRET = process.env.JWT_SECRET
+if (!SECRET) {
+  throw new Error("JWT_SECRET is not defined in environment variables");
+}
 
 // Routti lähettää sähköposti viestin ja linkin salasanan palautusta varten.
 export const sendPasswordResetEmail = async(req: Request, res: Response, next: NextFunction) => {
@@ -28,7 +31,7 @@ export const sendPasswordResetEmail = async(req: Request, res: Response, next: N
     }
 
     // JWT token salasanan palautusta varten
-    const token = jwt.sign(userForToken, "kosodpskop");
+    const token = jwt.sign(userForToken, SECRET);
 
     // HTML-sähköpostiviesti palautusta varten
     const emailBody = `
@@ -80,7 +83,7 @@ export const resetPasswordWithToken = async(req: Request, res: Response, next: N
     }
 
 
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, SECRET) as JwtPayload;
     const userId = decoded.id;
     if (!userId) {
         return next(new AuthenticationError("Token payload is invalid"));

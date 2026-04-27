@@ -1,5 +1,5 @@
 import "server-only";
-import { authFetch } from "@/lib/authFetch";
+import { authFetch } from "@/lib//auth/authFetch";
 
 const baseUrl = "http://localhost:5001/users";
 

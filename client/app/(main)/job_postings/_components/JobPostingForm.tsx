@@ -169,23 +169,24 @@ export default function JobPostingForm({
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="seniority">Seniority</FieldLabel>
-              <Select
-                name="seniority"
-                defaultValue={savedFields.seniority || "mid"}
-                onValueChange={(value) => handleFieldChange("seniority", value)}
-              >
-                <SelectTrigger id="seniority" className="w-full">
-                  <SelectValue placeholder="Select seniority" />
-                </SelectTrigger>
-                <SelectContent id="seniority-content">
-                  <SelectItem value="junior">Junior</SelectItem>
-                  <SelectItem value="mid">Mid-level</SelectItem>
-                  <SelectItem value="senior">Senior</SelectItem>
-                  <SelectItem value="lead">Lead</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
+                <FieldLabel htmlFor="seniority">Seniority</FieldLabel>
+                <Select
+                  name="seniority"
+                  defaultValue={savedFields.seniority || "none"}
+                  onValueChange={(value) => handleFieldChange("seniority", value)}
+                >
+                  <SelectTrigger id="seniority" className="w-full">
+                    <SelectValue placeholder="Seniority" />
+                  </SelectTrigger>
+                  <SelectContent id="seniority-content">
+                    <SelectItem value="none">-</SelectItem>
+                    <SelectItem value="junior">Junior</SelectItem>
+                    <SelectItem value="mid">Mid-level</SelectItem>
+                    <SelectItem value="senior">Senior</SelectItem>
+                    <SelectItem value="lead">Lead</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
 
             <Field>
               <FieldLabel htmlFor="salaryRange">Salary range</FieldLabel>

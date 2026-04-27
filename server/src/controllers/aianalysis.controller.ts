@@ -1,24 +1,23 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import prisma from "../prisma";
 import { aiAnalysisQueue } from "../queues/aiAnalysis.queue";
 import { redis } from "../config/redis";
+import { AuthenticationError, NotFoundError, ServerError, ValidationError } from "../utils/errors";
 
 const isUuid = (id: string) => 
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
 
-export const aianalysis = async (req: Request, res: Response) => {
+export const aianalysis = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
-        return res.status(401).json({ error: "Unauthorized" });
+      return next(new AuthenticationError("Unauthorized"));
     }
 
     const { jobPostingId } = req.params;
 
     // Varmistetaan, että jobPostingId on validi UUID-merkkijono
     if (typeof jobPostingId !== "string" || !isUuid(jobPostingId)) {
-      return res.status(400).json({
-        error: "Virheellinen jobPostingId. ID:n on oltava validi UUID-merkkijono.",
-      });
+      return next(new ValidationError("Incorrect jobPostingId"));
     }
 
     // Lisätään redis queueen
@@ -33,16 +32,15 @@ export const aianalysis = async (req: Request, res: Response) => {
       jobId: job.id
     });
   } catch (error: any) {
-    console.error("Virhe analyysiä tehdessä", error.message);
-    res.status(500).json({ error: "Palvelinvirhe analyysin alustuksessa" });
+    return next(new ServerError("Server error with starting analysis"));
   }
 };
 
-export const cancelAiAnalysis = async (req: Request, res: Response) => {
+export const cancelAiAnalysis = async (req: Request, res: Response, next: NextFunction) => {
   const { jobPostingId } = req.params;
 
   if (typeof jobPostingId !== "string" || !isUuid(jobPostingId)) {
-    return res.status(400).json({ error: "Virheellinen jobPostingId" });
+    return next(new ValidationError("Incorrect jobPostingId"))
   }
 
   try {
@@ -65,17 +63,16 @@ export const cancelAiAnalysis = async (req: Request, res: Response) => {
 
     return res.json({ message: "Analysis cancellation requested" });
   } catch (error: any) {
-    console.error("Cancel analysis failed:", error?.message);
-    return res.status(500).json({ error: "Error in closing analysis" });
+    return next(new ServerError("Error in closing analysis"));
   }
 };
 
-export const getAiAnalysisStatus = async (req: Request, res: Response) => {
+export const getAiAnalysisStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { jobPostingId } = req.params;
 
     if (typeof jobPostingId !== "string") {
-      return res.status(400).json({ error: "Virheellinen jobPostingId" });
+      return next(new ValidationError("Incorrect jobPostingId"));
     }
 
     const totalCandidates = await prisma.candidate.count({
@@ -97,8 +94,7 @@ export const getAiAnalysisStatus = async (req: Request, res: Response) => {
       analyzedCandidates,
     });
   } catch (error: any) {
-    console.error("Status haku epäonnistui:", error.message);
-    return res.status(500).json({ error: "Sisäinen palvelinvirhe" });
+    return next(new ServerError("Server Error with getting status"));
   }
 };
 
@@ -106,18 +102,16 @@ export const getAiAnalysisStatus = async (req: Request, res: Response) => {
 export const getAiAnalysesByJobPostingId = async (
   req: Request,
   res: Response,
+  next: NextFunction
 ) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return next(new AuthenticationError("Unauhtorized"));
     }
 
     const { jobPostingId } = req.params;
     if (typeof jobPostingId !== "string") {
-      return res.status(400).json({
-        error:
-          "Virheellinen jobPostingId. ID:n on oltava yksittäinen merkkijono.",
-      });
+      return next(new ValidationError("Incorrect jobPostingID"));
     }
 
     // Haetaan kaikki analyysit yhdestä jobPostingista
@@ -148,22 +142,19 @@ export const getAiAnalysesByJobPostingId = async (
 
     return res.status(200).json(aiAnalysesWithName);
   } catch (error) {
-    res.status(400).json({ message: error });
+    return next(new ServerError("Server error with getting analyses"));
   }
 };
 
 // Hae analyysi ehdokkaan ID:n perusteella
-export const getAnalysisById = async (req: Request, res: Response) => {
+export const getAnalysisById = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return next(new AuthenticationError("Unauhtorized"));
   }
 
   const { analysisId } = req.params;
   if (typeof analysisId !== "string") {
-    return res.status(400).json({
-      error:
-        "Virheellinen jobPostingId. ID:n on oltava yksittäinen merkkijono.",
-    });
+    return next(new ValidationError("Incorrect jobPostingID"));
   }
 
   try {
@@ -174,18 +165,18 @@ export const getAnalysisById = async (req: Request, res: Response) => {
     });
     res.status(200).json(aiAnalysis);
   } catch (error) {
-    return res.status(400).json({ message: error });
+    return next(new ServerError("Server error with getting analysis"));
   }
 };
 
 // Poista analyysin ID:n perusteella
-export const deleteAnalysis = async (req: Request, res: Response) => {
+export const deleteAnalysis = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return next(new AuthenticationError("Unauthorized"));
   }
   const { analysisId } = req.params;
   if (typeof analysisId !== "string") {
-    return res.status(400).json({ message: "Virheellinen AI Analyysin ID" });
+    return next(new ValidationError("Incorrect jobPostingID"));
   }
 
   const aiAnalysis = await prisma.aIAnalysis.findUnique({
@@ -195,29 +186,27 @@ export const deleteAnalysis = async (req: Request, res: Response) => {
   });
 
   if (!aiAnalysis) {
-    return res.status(404).json({ message: "AI analyysiä ei löytynt!" });
+    return next(new NotFoundError("AI analysis not found"));
   }
 
   try {
     await prisma.aIAnalysis.delete({ where: { id: analysisId } });
     res.status(200).json({ message: "Analyysi poistettu" });
   } catch (error) {
-    res.status(400).json({ message: error });
+    return next(new ServerError("Server error with deleting analysis"));
   }
 };
 
 // Poista kaikki analyysit yhdelle jobPostingille
-export const deleteAllAnalysesByJobPostingId = async (req: Request, res: Response) => {
+export const deleteAllAnalysesByJobPostingId = async (req: Request, res: Response, next:  NextFunction) => {
   if (!req.user) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return next(new AuthenticationError("Unauthorized"));
   }
 
   const { jobPostingId } = req.params;
   
   if (typeof jobPostingId !== "string" || !isUuid(jobPostingId)) {
-    return res.status(400).json({
-      error: "Virheellinen jobPostingId. ID:n on oltava validi UUID-merkkijono.",
-    });
+    return next(new ValidationError("Incorrect jobPostingID"));
   }
 
   try {
@@ -232,9 +221,6 @@ export const deleteAllAnalysesByJobPostingId = async (req: Request, res: Respons
       deleted_count: result.count,
     });
   } catch (error) {
-    res.status(500).json({
-      error: "Virhe analyysien poistamisessa",
-      details: error instanceof Error ? error.message : "Tuntematon virhe",
-    });
+    return next(new ServerError("Server error with deleting analyses"));
   }
 };

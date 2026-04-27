@@ -8,7 +8,7 @@ export const JobPostingSchema = z.object({
   employmentType: z
     .enum(["full-time", "part-time", "contract", "internship"])
     .optional(),
-  seniority: z.enum(["junior", "mid", "senior", "lead"]).optional(),
+  seniority: z.enum(["none", "junior", "mid", "senior", "lead"]).optional(),
   salaryRange: z.string().optional(),
   description: z
     .string()

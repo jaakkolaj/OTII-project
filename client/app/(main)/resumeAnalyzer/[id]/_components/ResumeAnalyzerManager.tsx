@@ -12,7 +12,10 @@ import {
   deleteAllAnalysisAction,
   cancelAnalysisAction,
   getAnalyzedCandidatesAction,
+  updateCandidateStatusAction,
 } from "../actions";
+import type { CandidateStatus } from "../../types";
+import { CandidatesKanban } from "./CandidatesKanban";
 
 type AnalysisStatus = {
   status: "processing" | "completed";
@@ -31,6 +34,7 @@ export default function ResumeAnalyzerClient({
 }) {
   const storageKey = `ai-analysis-running-${jobId}`;
   const [query, setQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
   const [candidates, setCandidates] =
     useState<ResumeCandidate[]>(initialCandidates);
   const [analysisStatus, setAnalysisStatus] =
@@ -168,6 +172,20 @@ export default function ResumeAnalyzerClient({
     });
   };
 
+  const handleKanbanStatusChange = (candidateId: string, newStatus: CandidateStatus) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c.id === candidateId ? { ...c, status: newStatus } : c)),
+    );
+    startTransition(async () => {
+      try {
+        await updateCandidateStatusAction(candidateId, newStatus, jobId);
+      } catch {
+        setCandidates(initialCandidates);
+        toast.error("Statuksen päivitys epäonnistui");
+      }
+    });
+  };
+
   const filteredCandidates = useMemo(() => {
     const term = query.toLowerCase();
     return candidates.filter(
@@ -193,8 +211,20 @@ export default function ResumeAnalyzerClient({
             : undefined
         }
       />
-      <CandidatesToolbar query={query} onQueryChange={setQuery} />
-      <CandidatesList candidates={filteredCandidates} jobId={jobId} />
+      <CandidatesToolbar
+        query={query}
+        onQueryChange={setQuery}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+      />
+      {viewMode === "list" ? (
+        <CandidatesList candidates={filteredCandidates} jobId={jobId} />
+      ) : (
+        <CandidatesKanban
+          candidates={filteredCandidates}
+          onStatusChange={handleKanbanStatusChange}
+        />
+      )}
     </main>
   );
 }

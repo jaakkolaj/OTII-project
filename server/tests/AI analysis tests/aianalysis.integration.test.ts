@@ -84,7 +84,6 @@ describe("AI Analysis Controller - Integration Tests", () => {
       .send();
 
     expect(response.status).toBe(500);
-    expect(response.body.error).toBe("Palvelinvirhe analyysin alustuksessa");
   });
 
   test("IT-04: Status should be completed when all candidates are analyzed", async () => {

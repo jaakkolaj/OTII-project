@@ -9,6 +9,7 @@ import {
   Settings,
   User,
   PanelLeft,
+  KanbanSquare,
 } from "lucide-react"
 
 import { LogOut } from "lucide-react"
@@ -32,6 +33,7 @@ const mainItems = [
   { title: "Home", href: "/home", icon: Home },
   { title: "Job Postings", href: "/job_postings", icon: Briefcase },
   { title: "Resume Analyzer", href: "/resumeAnalyzer", icon: LayoutDashboard },
+  { title: "Pipeline", href: "/pipeline", icon: KanbanSquare },
   { title: "Analytics", href: "#", icon: BarChart },
   { title: "Contact", href: "#", icon: Mail },
 ]
@@ -74,7 +76,7 @@ export function AppSidebar() {
           <SidebarMenu className="gap-4">
             {mainItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title} asChild  className="py-[1vh] px-[1vw] text-[clamp(0.8rem,1vw,1.2rem)]">
+                <SidebarMenuButton tooltip={item.title} asChild  className="py-2 px-3 text-sm">
                   <Link href={item.href}>
                     <item.icon className="h-4 w-4" />
                     <span>{item.title}</span>
@@ -91,7 +93,7 @@ export function AppSidebar() {
           <SidebarMenuButton
             tooltip="Logout"
             onClick={handleLogout}
-            className="py-[1vh] px-[1vw] text-[clamp(0.8rem,1vw,1.2rem)] text-red-600"
+            className="py-2 px-3 text-sm text-red-600"
           >
             <LogOut className="h-4 w-4" />
             <span>Logout</span>
@@ -103,7 +105,7 @@ export function AppSidebar() {
         <SidebarMenu className="gap-4">
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} asChild className="py-[1vh] px-[1vw] text-[clamp(0.8rem,1vw,1.2rem)]">
+              <SidebarMenuButton tooltip={item.title} asChild className="py-2 px-3 text-sm">
                 <Link href={item.href}>
                   <item.icon className="h-4 w-4" />
                   <span>{item.title}</span>

@@ -12,6 +12,11 @@ jest.mock("../../src/config/mail", () => ({
   },
 }));
 
+const SECRET = process.env.JWT_SECRET
+if (!SECRET) {
+  throw new Error("JWT_SECRET is not defined in environment variables");
+}
+
 jest.mock("../../src/middleware/rateLimiter", () => ({
     standardRateLimiter: () => (req: any, res: any, next: any) => next(),
     AiAnalysisRateLimitMiddleware: (req: any, res: any, next: any) => next(),
@@ -49,7 +54,7 @@ describe('Password reset routes', () => {
     it('fails to update password if token is not correct', async() => {
         const token = jwt.sign(
             { id: user_id, email: email },
-            "kosodpskopssss"
+            "SECRET_IS_INCORRECT"
         );
         const response = await request(app)
             .post(`/reset-password/${token}`)
@@ -60,7 +65,7 @@ describe('Password reset routes', () => {
     it('fails if password is not valid', async() => {
         const token = jwt.sign(
             { id: user_id, email: email },
-            "kosodpskop"
+            SECRET
         );
         const response = await request(app)
             .post(`/reset-password/${token}`)
@@ -71,7 +76,7 @@ describe('Password reset routes', () => {
     it('Updates password correctly', async() => {
         const token = jwt.sign(
             { id: user_id, email: email },
-            "kosodpskop"
+            SECRET
         );
         const response = await request(app)
             .post(`/reset-password/${token}`)
