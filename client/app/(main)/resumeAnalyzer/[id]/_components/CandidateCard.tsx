@@ -41,7 +41,6 @@ export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
   const [viewDocument, setViewDocument] = useState(false);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleStatusChange = (status: CandidateStatus) => {
@@ -62,7 +61,13 @@ export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
     try {
       const res = await fetch(candidate.pdfUrl!);
       const data = await res.json();
-      const url: string = data.url;
+      const url: string | undefined = data.url;
+
+      if (!url) {
+        setIsLoading(false);
+        setViewDocument(false);
+        return;
+      }
 
       // Tunnista tiedostotyyppi URL:n polusta
       const ext = url.split("?")[0].split(".").pop()?.toLowerCase();
@@ -75,7 +80,6 @@ export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
       } else {
         // PDF suoraan
         setIframeSrc(url);
-        setDownloadUrl(url); //Tallennetaan alkuperäinen URL latausta varten
       }
     } catch (error) {
       console.error("Tiedoston haku epäonnistui:", error);
@@ -84,30 +88,25 @@ export function CandidateCard({ candidate, jobId }: CandidateCardProps) {
   };
 
   const handleDownload = async () => {
+    try {
+      // Haetaan aina tuore signed URL jotta ei käytetä vanhentunutta
+      const res = await fetch(candidate.pdfUrl!);
+      const data = await res.json();
+      const url: string = data.url;
 
-    // Jos URL on jo haettu, käytä sitä suoraan, muuten haetaan uusi
-    let url = downloadUrl;
+      const ext = url.split("?")[0].split(".").pop()?.toLowerCase() ?? "pdf";
 
-    if (!url) {
-      try {
-        const res = await fetch(candidate.pdfUrl!);
-        const data = await res.json();
-        url = data.url;
-        setDownloadUrl(url); // Tallennetaan URL latausta varten
-      } catch (error) {
-        console.error("Tiedoston haku epäonnistui:", error);
-        return;
-      }
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = objectUrl;
+      a.download = `${candidate.name}_CV.${ext}`;
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch (error) {
+      console.error("Tiedoston lataus epäonnistui:", error);
     }
-    // Blob-lataus toimii cross-origin URL:ien kanssa
-    const response = await fetch(url!);
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = objectUrl;
-    a.download = `${candidate.name}_CV`;
-    a.click();
-    URL.revokeObjectURL(objectUrl);
   };
 
   return (
